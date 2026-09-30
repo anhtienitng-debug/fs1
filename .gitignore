@@ -16,3 +16,7 @@ jobs/*/
 dist/
 build/
 *.egg-info/
+VieNeu-TTS/
+assets/geo/*.geojson
+assets/music/*
+!assets/music/.gitkeep

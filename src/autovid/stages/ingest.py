@@ -74,7 +74,7 @@ def extract(url: str, *, html: str | None = None) -> Article:
 
 def from_text(url: str, text: str, *, title: str = "") -> Article:
     """Dung khi ban tu dan toan van bai bao (ban co quyen doc)."""
-    lines = [l.strip() for l in text.strip().splitlines() if l.strip()]
+    lines = [ln.strip() for ln in text.strip().splitlines() if ln.strip()]
     art = Article(
         url=url,
         title=title or (lines[0] if lines else "Bài viết The Economist"),

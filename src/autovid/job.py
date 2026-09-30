@@ -51,7 +51,7 @@ class Job:
 
     # ---------- tao / mo ----------
     @classmethod
-    def create(cls, url: str, title_hint: str = "", jobs_dir: Path | None = None) -> "Job":
+    def create(cls, url: str, title_hint: str = "", jobs_dir: Path | None = None) -> Job:
         base = jobs_dir or ROOT / "jobs"
         stamp = datetime.now().strftime("%Y%m%d-%H%M")
         name = f"{stamp}-{slugify(title_hint or url.rsplit('/', 1)[-1])}"
@@ -61,7 +61,7 @@ class Job:
         return job
 
     @classmethod
-    def open(cls, ref: str, jobs_dir: Path | None = None) -> "Job":
+    def open(cls, ref: str, jobs_dir: Path | None = None) -> Job:
         base = jobs_dir or ROOT / "jobs"
         p = Path(ref)
         if p.is_dir():

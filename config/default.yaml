@@ -23,18 +23,23 @@ script:
   max_scene_words: 55         # 1 canh ~ 20-25s, doi 1 khung hinh
 
 llm:
-  provider: "anthropic"
-  model_script: "claude-opus-5-5"        # viet script dai, can chat luong
-  model_utility: "claude-sonnet-5-5"   # tach canh, metadata, truy van anh
-  max_tokens: 16000
-  effort: "high"        # low | medium | high | xhigh | max
+  provider: "deepseek"        # deepseek | ollama | openai | openrouter | anthropic
+  base_url: ""                # de trong = dung mac dinh cua provider
+  model_script: "deepseek-flash"    # viet script dai
+  model_utility: "deepseek-flash"   # tach canh, metadata, truy van tim kiem
+  max_tokens: 8192
+  temperature: 0.7
+  # Chay mien phi hoan toan tren GPU cua ban:
+  #   ollama pull qwen2.5:14b
+  #   autovid ... --set llm.provider=ollama --set llm.model_script=qwen2.5:14b
 
 research:
   enabled: true
   max_queries: 8
   max_sources: 15
-  # Nguon du lieu co API mien phi de doi chieu con so
-  data_apis: ["worldbank", "fred", "imf"]
+  fetch_top: 10               # so nguon tai toan van ve cho LLM doc
+  # Backend tim kiem tu dong chon: tavily > brave > searxng > duckduckgo
+  # DuckDuckGo khong can key nen mac dinh luon chay duoc
 
 tts:
   engine: "vieneu-http"       # vieneu-http | vieneu-python
@@ -60,7 +65,9 @@ align:
 
 visuals:
   # Thu tu uu tien nguon. Tat ca deu free + cho phep dung thuong mai.
-  sources: ["pexels_video", "pexels_photo", "pixabay_video", "pixabay_photo", "openverse", "wikimedia", "nasa"]
+  # Cac nguon KHONG can API key chay truoc; pexels/pixabay chi dung neu ban co key.
+  sources: ["openverse", "wikimedia", "nasa", "archive_video", "pexels_video",
+            "pexels_photo", "pixabay_video", "pixabay_photo"]
   per_scene_candidates: 6
   min_width: 1920
   prefer_video_ratio: 0.55    # ~55% canh dung video B-roll, con lai anh tinh + Ken Burns
@@ -70,7 +77,8 @@ visuals:
 charts:
   enabled: true
   max_charts: 6               # bieu do tu sinh cho cac so lieu trong script
-  style: "dark"
+  maps: true                  # ban do the gioi highlight quoc gia (Natural Earth)
+  timeline: true              # timeline su kien tu "tien_le" trong brief
 
 video:
   resolution: [1920, 1080]
