@@ -1,0 +1,112 @@
+# ============================================================
+# autovid - cau hinh mac dinh
+# Ghi de bang: config/local.yaml (khong commit) hoac --set key=value
+# ============================================================
+
+channel:
+  name: "Kênh review The Economist"
+  language: "vi"
+  # Giong dieu bien tap: dung cho prompt viet script
+  persona: >
+    Người dẫn chuyện phân tích kinh tế - chính trị quốc tế cho khán giả Việt Nam.
+    Điềm đạm, sắc sảo, không giật gân, không lên gân dạy đời. Luôn phân biệt rõ
+    "The Economist nói" và "tôi nhận xét". Ưu tiên số liệu, so sánh, phản biện.
+  audience: "Người Việt 25-45 tuổi quan tâm kinh tế vĩ mô, đầu tư, chính sách."
+  cta: "Nếu thấy hữu ích, để lại bình luận bạn đồng ý hay phản đối luận điểm nào."
+
+script:
+  target_minutes: 18          # video dai: 15-25 phut la vung ngot cho watch time
+  words_per_minute: 145       # toc do doc tieng Viet trung binh cua VieNeu
+  chapters: 6                 # so chuong noi dung (chua tinh hook/outro)
+  include_counterargument: true
+  include_vietnam_angle: true # rat quan trong: goc nhin Viet Nam -> khac biet hoa kenh
+  max_scene_words: 55         # 1 canh ~ 20-25s, doi 1 khung hinh
+
+llm:
+  provider: "anthropic"
+  model_script: "claude-opus-5-5"        # viet script dai, can chat luong
+  model_utility: "claude-sonnet-5-5"   # tach canh, metadata, truy van anh
+  max_tokens: 16000
+  effort: "high"        # low | medium | high | xhigh | max
+
+research:
+  enabled: true
+  max_queries: 8
+  max_sources: 15
+  # Nguon du lieu co API mien phi de doi chieu con so
+  data_apis: ["worldbank", "fred", "imf"]
+
+tts:
+  engine: "vieneu-http"       # vieneu-http | vieneu-python
+  voice: "Phạm Tuyên"
+  base_url: "http://127.0.0.1:8000"
+  sample_rate: 48000
+  max_chars: 256              # gioi han cua server, tu dong chia cau
+  temperature: 0.7
+  top_k: 25
+  top_p: 0.95
+  repetition_penalty: 1.2
+  speed: 1.0
+  pause_between_scenes_ms: 450
+  pause_between_chapters_ms: 900
+  # Chen the cam xuc cua VieNeu ([cười], [thở dài]...) vao script? Rat huu ich
+  allow_emotion_tags: true
+
+align:
+  enabled: true
+  engine: "faster-whisper"    # faster-whisper | estimate
+  model: "large-v3"
+  device: "auto"
+
+visuals:
+  # Thu tu uu tien nguon. Tat ca deu free + cho phep dung thuong mai.
+  sources: ["pexels_video", "pexels_photo", "pixabay_video", "pixabay_photo", "openverse", "wikimedia", "nasa"]
+  per_scene_candidates: 6
+  min_width: 1920
+  prefer_video_ratio: 0.55    # ~55% canh dung video B-roll, con lai anh tinh + Ken Burns
+  license_whitelist: ["cc0", "pdm", "by", "by-sa", "pexels", "pixabay"]
+  download_dir: "media"
+
+charts:
+  enabled: true
+  max_charts: 6               # bieu do tu sinh cho cac so lieu trong script
+  style: "dark"
+
+video:
+  resolution: [1920, 1080]
+  fps: 30
+  crf: 19
+  preset: "medium"
+  audio_bitrate: "192k"
+  kenburns_zoom: 0.10         # zoom 10% trong suot canh
+  crossfade_ms: 500
+  # Phu de: dot vao video (burn-in) va/hoac xuat file .srt rieng
+  subtitles_burn: true
+  subtitles_file: true
+  subtitle_font: "Be Vietnam Pro"
+  subtitle_size: 54
+  safe_margin_px: 90
+
+music:
+  enabled: true
+  # Nhac nen free: tu tai vao assets/music/ hoac lay tu Pixabay Music
+  dir: "assets/music"
+  volume_db: -26
+  ducking_db: -14             # ha nhac khi co giong noi
+  fade_ms: 2000
+
+branding:
+  intro: ""                   # assets/branding/intro.mp4
+  outro: ""                   # assets/branding/outro.mp4
+  watermark: ""               # assets/branding/logo.png
+  lower_third: true
+
+publish:
+  auto_upload: false          # LUON de false cho den khi ban tin pipeline
+  privacy: "private"
+  category_id: "25"           # News & Politics
+  made_for_kids: false
+
+review:
+  # Cong "dung lai cho nguoi duyet". Pipeline dung o day cho den khi ban `autovid approve`
+  gates: ["script"]           # co the them: "scenes", "audio", "visuals"
