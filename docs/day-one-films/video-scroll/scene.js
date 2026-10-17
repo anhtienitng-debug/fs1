@@ -57,10 +57,20 @@
     }
     return s;
   }
-  // logo YouTube (màu đỏ của hãng, không phải đỏ kẻ thù) để người xem nhận ra ngay
-  function ytIcon(x, y, k = 1) {
-    return `<g transform="translate(${x},${y}) scale(${k})"><rect x="-16" y="-11" width="32" height="22" rx="7" fill="#ff0033"/><path d="M-5,-6 L7,0 L-5,6Z" fill="#fff"/></g>`;
+  // logo TikTok (nốt nhạc lệch xanh–hồng của hãng, không phải đỏ kẻ thù) để người xem nhận ra ngay
+  function tkIcon(x, y, k = 1) {
+    const note = 'M1,-12 L5,-12 Q6,-6 11,-5 L11,-1 Q7,-1 5,-3 L5,5 A6,6 0 1 1 -1,-1 L-1,3 A2.4,2.4 0 1 0 1,5Z';
+    return `<g transform="translate(${x},${y}) scale(${k})"><path d="${note}" transform="translate(-1.2,-1.2)" fill="#25f4ee"/><path d="${note}" transform="translate(1.2,1.2)" fill="#fe2c55"/><path d="${note}" fill="#fff"/></g>`;
   }
+  // nút dọc bên phải màn hình video ngắn: tim, bình luận, chia sẻ
+  function tkRail(x, y, liked) {
+    const heart = `<path d="M${x},${y + 8} C${x - 14},${y - 2} ${x - 10},${y - 14} ${x},${y - 6} C${x + 10},${y - 14} ${x + 14},${y - 2} ${x},${y + 8}Z" fill="${liked ? '#fe2c55' : '#eeeae4'}"/>`;
+    const bubble = `<path d="M${x - 10},${y + 30} a10,8 0 1 1 6,7 l-6,3Z" fill="#eeeae4"/>`;
+    const share = `<path d="M${x - 9},${y + 76} Q${x - 6},${y + 64} ${x + 3},${y + 63} L${x + 3},${y + 58} L${x + 11},${y + 66} L${x + 3},${y + 74} L${x + 3},${y + 69} Q${x - 4},${y + 69} ${x - 9},${y + 76}Z" fill="#eeeae4"/>`;
+    const cnt = (yy, v) => txt(x, yy, v, { size: 8, w: 700, c: '#eeeae4' });
+    return heart + cnt(y + 18, '1.2M') + bubble + cnt(y + 52, '8.4K') + share + cnt(y + 88, 'Share');
+  }
+
   function phone(x, y, rot, lit, o = 1, w = 22, h = 38) {
     let s = `<g transform="translate(${x},${y}) rotate(${rot})" opacity="${o}">`;
     if (lit > 0) s += glow(0, 0, 70, 0.45 * lit, 'gC');
@@ -320,20 +330,32 @@
     const o = ramp(t, 2.2, 3.0);
     if (o <= 0) return s;
     const [fk, n] = flicks(t, 2.8, 0.9);
-    const off = n * 150;
+    const off = n * 440;
     s += `<g opacity="${o}">` + glow(640, 360, 380, 0.25, 'gC');
     s += `<rect x="510" y="110" width="260" height="500" rx="30" fill="#0e1014" ${st(W, 4)}/>`;
     s += `<clipPath id="scr"><rect x="522" y="140" width="236" height="440" rx="12"/></clipPath><g clip-path="url(#scr)">`;
     s += `<rect x="522" y="140" width="236" height="440" fill="#1b2027"/>`;
-    for (let i = -1; i < 9; i++) {
-      const idx = i + Math.floor(off / 150);
-      const y = 150 + i * 150 - (off % 150);
-      s += `<rect x="534" y="${y}" width="212" height="130" rx="10" fill="#2a313a"/>`;
-      s += `<rect x="546" y="${y + 12}" width="${80 + 60 * rnd(idx)}" height="10" rx="5" fill="#4a5562"/><rect x="546" y="${y + 30}" width="188" height="70" rx="6" fill="#36404b"/>`;
-      s += `<circle cx="${560 + 40 * rnd(idx + 3)}" cy="${y + 112}" r="6" fill="#4a5562"/>`;
-      s += ytIcon(640, y + 65, 1.25); // nút play YouTube giữa ảnh video
+    // feed video ngắn: mỗi video chiếm trọn màn hình, vuốt lên là sang video mới
+    for (let i = -1; i < 3; i++) {
+      const idx = i + Math.floor(off / 440);
+      const y = 140 + i * 440 - (off % 440);
+      const hue = Math.floor(360 * rnd(idx + 7));
+      s += `<rect x="522" y="${y}" width="236" height="440" fill="hsl(${hue},28%,16%)"/>`;
+      s += `<circle cx="${600 + 60 * rnd(idx + 1)}" cy="${y + 170 + 40 * rnd(idx + 2)}" r="${70 + 30 * rnd(idx + 4)}" fill="hsl(${(hue + 40) % 360},34%,30%)" opacity=".75"/>`;
+      // người trong clip đang nhảy (bóng màu, lắc theo nhịp)
+      const sw = Math.sin(t * 7 + idx) * 10, dx = 610 + 40 * rnd(idx + 5), dc = `hsl(${(hue + 180) % 360},30%,44%)`;
+      s += `<g transform="translate(${dx},${y + 330}) rotate(${sw * 0.6})"><rect x="-20" y="-100" width="40" height="80" rx="20" fill="${dc}"/><circle cx="${sw * 0.4}" cy="-122" r="20" fill="${dc}"/>` +
+        `<path d="M-14,-84 L${-40 + sw},${-130 - sw}" stroke="${dc}" stroke-width="9" stroke-linecap="round"/><path d="M14,-84 L${40 + sw},${-120 + sw}" stroke="${dc}" stroke-width="9" stroke-linecap="round"/>` +
+        `<path d="M-8,-26 L-16,20 M8,-26 L18,20" stroke="${dc}" stroke-width="10" stroke-linecap="round"/></g>`;
+      s += tkIcon(546, y + 120, 0.9) + txt(560, y + 124, '@user' + (100 + Math.floor(900 * rnd(idx))), { a: 'start', size: 9, w: 600, c: '#eeeae4', op: 0.7 });
+      s += `<circle cx="736" cy="${y + 228}" r="13" fill="#4a5562" stroke="#eeeae4" stroke-width="1.5"/><circle cx="736" cy="${y + 242}" r="5" fill="#fe2c55"/>`;
+      s += tkRail(736, y + 272, rnd(idx + 9) > 0.4);
+      s += `<rect x="534" y="${y + 384}" width="${90 + 70 * rnd(idx + 6)}" height="8" rx="4" fill="#eeeae4" opacity=".85"/><rect x="534" y="${y + 398}" width="${120 + 60 * rnd(idx + 8)}" height="6" rx="3" fill="#eeeae4" opacity=".55"/>`;
+      s += `<circle cx="736" cy="${y + 408}" r="11" fill="#14181e" stroke="#55534f" stroke-width="3"/>`;
     }
-    s += `<rect x="522" y="140" width="236" height="30" fill="#14181e"/>` + ytIcon(546, 155, 0.75) + txt(588, 161, 'YouTube', { a: 'start', size: 15, w: 700, c: '#e8e2da' });
+    s += txt(612, 162, 'Following', { size: 11, w: 600, c: '#eeeae4', op: 0.6 }) + txt(676, 162, 'For You', { size: 12, w: 800, c: '#fff' });
+    s += `<rect x="664" y="168" width="24" height="2" rx="1" fill="#fff"/>`;
+    s += `<rect x="522" y="566" width="${236 * (((t - 2.8) % 0.9 + 0.9) % 0.9) / 0.9}" height="2" fill="#eeeae4" opacity=".7"/>`;
     s += '</g>';
     // ngón cái
     const ty = 560 - fk * 120;

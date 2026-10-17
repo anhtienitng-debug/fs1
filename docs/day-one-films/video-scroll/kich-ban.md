@@ -2,6 +2,8 @@
 
 Kênh quốc tế · 2:30 · không lời dẫn.
 
+**Bản 9:** mở đầu đổi sang feed video ngắn kiểu TikTok: mỗi clip chiếm trọn màn hình, vuốt lên là sang clip mới; có tab "Following / For You", người trong clip nhảy, logo nốt nhạc TikTok + @user, cột tim, bình luận, chia sẻ bên phải, đĩa nhạc, chú thích và thanh tiến trình.
+
 **Bản 8:** icon YouTube trong feed lúc lướt; bước ngoặt gieo–gặt: tấm ảnh kỷ niệm (Spark cười giữa bạn bè, lửa to) treo mờ trên tường từ cảnh đầu → khi máy chết, đốm lửa cuối loé lên chiếu sáng tấm ảnh, camera đẩy cận vào ảnh, hộp nhạc → kẻ thù "plug it in" → úp máy → lửa hồi → FOCUS; cảnh kết đồi cỏ nhìn ra biển lúc bình minh, ba người ngồi như trong ảnh.
 
 **Bản 7:** dáng chạy theo video mẫu (thân gần thẳng, bước ngắn kiểu cắt kéo, tay gập nắm trước ngực, lửa sau lưng cạnh đầu, phố bình minh trôi về sau, vệt vàng trên đất); khi nằm, ngọn lửa bay trên đầu.
