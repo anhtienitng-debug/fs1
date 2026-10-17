@@ -2,9 +2,10 @@
 
 Kênh quốc tế · 2:30 · không lời dẫn.
 
-**Nhân vật (bản 2):**
-- **Spark** là bóng người trắng, kiểu nhân vật của kênh Last Soul nhưng đổi từ đen sang trắng. Không mặt, có ngọn lửa trong ngực.
-- **Cái bóng** cùng dáng người với Spark nhưng viền đỏ, ruột tối. Nó đứng sát Spark và ghé tai thì thầm. Chữ thì thầm cũng viền đỏ, kèm giọng thì thầm đọc từng câu.
+**Nhân vật (bản 3, đã chốt):**
+- **Spark** là người que trắng, nét đậm, to gấp 3 so với bản 1: camera phóng ×3, đầu cách mép trên khoảng 80px, bàn chân hơi lấn mép dưới. Có ngọn lửa trong ngực.
+- **Cái bóng** là người que cùng dáng, viền đỏ, ruột tối, mặt đỏ cười nhếch. Nó đứng sát Spark và ghé tai thì thầm. Chữ thì thầm viền đỏ, kèm giọng thì thầm đọc từng câu.
+- **Cảnh thử thách cuối:** camera lùi ra ×1.6 để thấy cái bóng khổng lồ, rồi đẩy vào lại ×3 khi lửa bùng.
 
 **Ẩn dụ chính:** mỗi lần lướt, một sợi lửa từ ngực Spark bị hút vào điện thoại. Ánh sáng điện thoại là màu lạnh, ngọn lửa là màu ấm.
 Câu chốt: *"The phone never stole your time. It stole your fire."*
@@ -32,7 +33,7 @@ Câu chốt: *"The phone never stole your time. It stole your fire."*
 
 `KOKORO_DIR=<thư mục model> bash dung-video.sh <thư mục tạm>` → `scroll-ban-thu.mp4`. Cần Node + Playwright (Chromium), Python 3 + numpy, ffmpeg. Muốn có giọng thì thầm thì cần thêm `pip install kokoro-onnx` và 2 file `kokoro.onnx`, `voices.bin` (bản model-files-v1.0).
 
-- `scene.js`: vẽ từng khung hình theo thời gian. Muốn sửa cảnh nào thì sửa hàm `scene(...)` tương ứng.
+- `scene.js`: vẽ từng khung hình theo thời gian. Muốn sửa cảnh nào thì sửa hàm `scene(...)` tương ứng. Khung hình của mỗi cảnh chỉnh bằng `cam` (`STAND(x)` = camera ×3 đặt tại x). Chữ giao diện bọc trong `ui()` để không bị phóng.
 - `render.js`: xuất ảnh hoặc video. Xem nhanh một khung hình: `node render.js stills <thư mục> 66.5`.
 - `am-thanh.py`: nhạc, hiệu ứng và giọng thì thầm (Kokoro `am_onyx`, đổi pha ngẫu nhiên để thành giọng thì thầm).
 - Lời thì thầm: danh sách `WH` trong `scene.js`, gồm thời điểm, câu và vị trí. Hình và tiếng cùng đọc từ danh sách này.
