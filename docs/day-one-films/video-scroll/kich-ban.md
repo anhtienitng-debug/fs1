@@ -2,6 +2,8 @@
 
 Kênh quốc tế · 2:30 · không lời dẫn.
 
+**Bản 7:** dáng chạy theo video mẫu (thân gần thẳng, bước ngắn kiểu cắt kéo, tay gập nắm trước ngực, lửa sau lưng cạnh đầu, phố bình minh trôi về sau, vệt vàng trên đất); khi nằm, ngọn lửa bay trên đầu.
+
 **Bản 6 (sửa theo 5 góp ý):** tay hai đoạn cố định (khuỷu tự tính, không kéo dài); mặt xoay theo đầu khi nằm; dấu chân vàng nằm yên trên đất và trôi về sau; ngồi bệt duỗi chân ngang; bước ngoặt có nguyên nhân (máy tắt → lửa tự hồi → chọn úp máy).
 
 **Bản 5 (áp dụng style bible, method):**
