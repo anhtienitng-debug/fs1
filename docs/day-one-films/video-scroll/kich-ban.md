@@ -2,6 +2,8 @@
 
 Kênh quốc tế · 2:30 · không lời dẫn.
 
+**Bản 6 (sửa theo 5 góp ý):** tay hai đoạn cố định (khuỷu tự tính, không kéo dài); mặt xoay theo đầu khi nằm; dấu chân vàng nằm yên trên đất và trôi về sau; ngồi bệt duỗi chân ngang; bước ngoặt có nguyên nhân (máy tắt → lửa tự hồi → chọn úp máy).
+
 **Bản 5 (áp dụng style bible, method):**
 - **Nhân vật:** kiểu hạt đậu kem như "LỬA", cao khoảng nửa khung (camera ×1.6, trước đó ×2.4 là phóng quá to). Tay chân dày hơn. Ngọn lửa bay trước ngực.
 - **Kẻ thù:** bản sao đen, viền đỏ `#e3302b` có quầng, mắt đỏ sáng. Lần đầu xuất hiện, nó mọc lên từ ánh điện thoại, không xuất hiện từ hư không.
@@ -27,7 +29,7 @@ Câu chốt: *"The phone never stole your time. It stole your fire."*
 |---|---|---|---|---|---|
 | 1. Mở đầu | 0:00–0:14 | Màn đen "11:47 PM" → cận cảnh điện thoại, ngón cái lướt feed, đốm lửa bay vào màn hình → Spark nằm trên giường lướt, sợi lửa bị hút đi | Bóng: "just one more", "it's not that late", "you can sleep later" | 0.55 | |
 | 2. Trượt dốc | 0:14–0:50 | Day 12 giường 2:14 AM · Day 45 bàn học, sách đóng · Day 88 bạn bè mờ dần · Day 140 vừa đi vừa lướt · Day 201 giường 3:12 AM · điện thoại sập nguồn, màn hình đen phản chiếu Spark với ngực chỉ còn tàn lửa | Bóng thì thầm 3–4 câu mỗi cảnh: "one more video", "you've earned this", "study tomorrow", "they're boring", "everyone does it", "you're too tired", "why even try?", "this is who you are"… | 0.45 → 0.05 | 2h10 → 9h14 |
-| 3. Bước ngoặt | 0:50–1:02 | Màn đen, một đốm tàn đập như nhịp tim | "The phone never stole your time." / "It stole your **fire**." | tàn | |
+| 3. Bước ngoặt | 0:50–1:02 | Điện thoại đã chết trong tay. Không còn sợi lửa bị hút nên FIRE % tự nhích 1→2→3%, có nhãn "+1%" nổi lên cạnh đốm lửa và tiếng tick. Spark ngẩng lên nhìn đốm lửa. Kẻ thù mọc từ màn hình đen: "plug it in". Spark đặt máy úp xuống mép giường, kẻ thù tan, FIRE nhảy 5→8→12→15%. Spark khum tay giữ lửa, đứng dậy | Không có câu. Chỉ có từ khoá **FOCUS** vàng bay vào góc thành bộ đếm `FOCUS · DAY` | 0.05 → 0.3 | |
 | 4. Montage | 1:02–1:52 | Day 1 cất điện thoại vào ngăn kéo, đặt tay lên ngực, lửa bùng lại · Day 4 đọc sách · Day 11 chạy lúc bình minh · Day 23 điện thoại rung "99+" nhưng không nhìn · Day 37 đi chơi với bạn · Day 60 vẽ tranh | Bóng: "just check once", "you'll be back", "you can't last a day" (rồi teo nhỏ, tan); Day 23: "it might be important" | 0.25 → 0.9 | 9h14 → 1h05 |
 | 5. Thử thách cuối | 1:52–2:10 | Điện thoại dưới sàn sáng lên, thông báo dồn dập, cái bóng khổng lồ trồi lên, lời thì thầm chồng chéo. Lửa chập chờn → Spark đứng thẳng, lửa bùng, cái bóng rung rồi tan, điện thoại úp xuống | 7 câu dồn dập: "you're missing out", "everyone's online", "just one", "you deserve it", "you'll fail again", "come back", "you need me" | 0.9 → 0.45 → 1.25 | |
 | 6. Kết | 2:10–2:30 | Bình minh trên đồi, Spark ngồi cạnh bạn, lửa cháy đều | "Your attention is your fire." / "Guard it." / **SCROLL** · Keep the fire. | 1.0 | |
