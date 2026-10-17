@@ -2,10 +2,23 @@
 
 Kênh quốc tế · 2:30 · không lời dẫn.
 
-**Nhân vật (bản 4, theo video mẫu "LỬA"):**
-- **Spark:** đầu tròn, thân viên nang màu kem, tay chân mảnh, viền nâu mỏng, mặt nhìn nghiêng (mắt chấm, lông mày gạch, miệng cong). Ngọn lửa bay lơ lửng trước ngực.
-- **Cái bóng:** cùng dáng nhưng đen tuyền, viền đỏ phát sáng, mắt gạch trắng. Chữ thì thầm màu hồng có quầng đỏ, kèm giọng thì thầm.
-- **Khung hình:** đồ vật nét vẽ tay, viền đen trên dưới, góc trái có thanh "FIRE %" màu cam, góc phải có "DAY". Camera ×2.4; ở thử thách cuối camera lùi ra ×1.4.
+**Bản 5 (áp dụng style bible, method):**
+- **Nhân vật:** kiểu hạt đậu kem như "LỬA", cao khoảng nửa khung (camera ×1.6, trước đó ×2.4 là phóng quá to). Tay chân dày hơn. Ngọn lửa bay trước ngực.
+- **Kẻ thù:** bản sao đen, viền đỏ `#e3302b` có quầng, mắt đỏ sáng. Lần đầu xuất hiện, nó mọc lên từ ánh điện thoại, không xuất hiện từ hư không.
+- **Lời thì thầm:** giảm một nửa ở đoạn đầu (21 câu còn 10). Chữ thường, nhỏ, run nhẹ, trôi lên, đặt cạnh đầu kẻ thù về phía lưng nó để không đè mặt, viền đỏ.
+- **Không câu dẫn chuyện:** bước ngoặt được diễn bằng hành động. Điện thoại chết, Spark đặt máy úp xuống, nắm tay, đứng dậy. Chỉ có từ khoá `MORE…` màu xám, sau đó `FOCUS` màu vàng bay vào góc phải và thành bộ đếm `FOCUS · DAY n`.
+- **HUD:** chữ font mono. Góc trái là `FIRE %` màu cam, góc phải là `DAY` xám rồi đổi thành `FOCUS · DAY` vàng. Có tiếng tick mỗi lần bộ đếm đổi.
+- **Màu vàng `#ffd23f`:** chỉ dùng cho FOCUS, dấu chân lúc chạy, vòng vỡ ở trận cuối, câu "Guard it." và tên phim.
+- **Trận cuối có nhịp:**
+  1. Đứng im, chỉ có nhịp tim.
+  2. Thì thầm dồn dập.
+  3. Dừng nghĩ, camera đẩy vào mặt.
+  4. Lao tới, có vệt tốc độ.
+  5. Bị đẩy lùi, camera rung.
+  6. Nhích dần, nhanh dần.
+  7. Lặng 1.8 giây, chỉ còn nhịp tim.
+  8. Vỡ: chớp trắng, rung mạnh, kẻ thù tan.
+- **Hoàn thiện:** cắt thẳng (mỗi cảnh hiện từ đen trong 0.1 giây), camera đẩy vào chậm 8%, nét rung vẽ lại mỗi 3 khung, grain, vignette, viền đen trên dưới. Âm thanh -15 LUFS, đỉnh -1.3 dBFS.
 
 **Ẩn dụ chính:** mỗi lần lướt, một sợi lửa từ ngực Spark bị hút vào điện thoại. Ánh sáng điện thoại là màu lạnh, ngọn lửa là màu ấm.
 Câu chốt: *"The phone never stole your time. It stole your fire."*

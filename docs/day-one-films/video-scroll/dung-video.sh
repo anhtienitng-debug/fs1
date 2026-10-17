@@ -19,6 +19,7 @@ else
 fi
 wait
 printf "file '%s'\n" part_0.mp4 part_38.mp4 part_76.mp4 part_114.mp4 > "$O/list.txt"
-ffmpeg -y -loglevel error -f concat -safe 0 -i "$O/list.txt" -i "$O/scroll.wav" -c:v copy \
-  -af "loudnorm=I=-15:TP=-1.5:LRA=11" -ar 48000 -c:a aac -b:a 192k -shortest -movflags +faststart scroll-ban-thu.mp4
+# nén lại hình (grain làm file to), chặn đỉnh âm dưới -1 dBTP sau khi nén AAC
+ffmpeg -y -loglevel error -f concat -safe 0 -i "$O/list.txt" -i "$O/scroll.wav" -c:v libx264 -preset slow -crf 25 -pix_fmt yuv420p \
+  -af "loudnorm=I=-14.5:TP=-3:LRA=11,alimiter=limit=0.8:level=false,aresample=48000" -c:a aac -b:a 192k -shortest -movflags +faststart scroll-ban-thu.mp4
 echo "xong: scroll-ban-thu.mp4"
