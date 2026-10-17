@@ -696,6 +696,8 @@
     `<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="77"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .06 0"/></filter>` +
     `<filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter></defs>`;
 
+  // bộ vẽ dùng chung cho ảnh kênh (avatar, banner, thumbnail…)
+  window.KIT = { fig, shadowFig, flame, glow, txt, stand, slump, standPhone, armsUp, sitGround, run, whisperPose, phone, memoryPhoto, DEFS, MONO, C: { W, BG, MUTED, ORANGE, CORE, RED, YEL, SKIN, COLD } };
   window.DURATION = DUR;
   window.WHISPERS = WH;
   const SHAKES = [[65.5, 0.25, 5], [125.4, 0.7, 16], [122.8, 0.3, 6]];
