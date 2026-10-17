@@ -171,13 +171,25 @@ add(112, kick(60, 30, 1.2), 0.4)
 for j in range(8):
     add(112.3 + 0.5 * j, ping(), 0.12, pan=0.5)
 add(112.5, buzz(1.2), 0.2, pan=0.5)
-add(116, whoosh(5.6), 0.10)
-add(121.6, whoosh(2.4), 0.35)
-add(124.0, kick(120, 40, 0.8), 0.7)
-add(124.0, noise(2.5, 5000, 1.8), 0.20)
-add(124.0, pad(["C3", "G3", "C4", "E4", "G4"], 6, 0.05, 2.5), 0.20)
-add(125.5, kick(80, 45, 0.25), 0.35)
-add(126.5, pad(["F3", "A3", "C4"], 4.5, 1, 2), 0.09)
+add(116, whoosh(5.0), 0.10)
+add(122.2, whoosh(0.6), 0.35)
+add(122.8, kick(90, 45, 0.3), 0.5)
+add(122.8, noise(0.25, 2500, 12), 0.25)
+add(124.2, whoosh(1.2), 0.30)
+add(125.4, kick(120, 40, 0.8), 0.75)
+add(125.4, noise(2.5, 5000, 1.8), 0.22)
+add(125.4, noise(0.12, 7000, 25), 0.3)  # tiếng nứt (lớp trung cho loa điện thoại)
+add(125.4, pad(["C3", "G3", "C4", "E4", "G4"], 6, 0.05, 2.5), 0.20)
+add(125.7, kick(80, 45, 0.25), 0.35)
+add(126.8, pad(["F3", "A3", "C4"], 4.5, 1, 2), 0.09)
+# nhịp tim khi đứng im và trong khoảng lặng trước cú vỡ
+for tb in [112.4, 113.3, 114.2, 115.1, 123.75, 124.35, 124.85]:
+    add(tb, kick(70, 38, 0.3), 0.28)
+    add(tb, noise(0.03, 3000, 80), 0.06)
+# tiếng tick khi bộ đếm đổi
+for tb in [14, 20, 26, 32, 38, 44, 66, 71, 79, 87, 95, 103]:
+    add(tb + 0.05, click(), 0.5)
+add(61.8, ping(), 0.18)  # FOCUS vào góc
 
 # ---------- E. 130–150: kết ----------
 prog_e = [["F2", "C3", "F3", "A3"], ["C3", "G3", "C4", "E4"], ["G2", "D3", "G3", "B3"], ["C3", "G3", "C4", "E4"]]
@@ -225,7 +237,7 @@ if len(sys.argv) >= 4:
 
     kk = Kokoro(f"{sys.argv[3]}/kokoro.onnx", f"{sys.argv[3]}/voices.bin")
     for item in json.load(open(sys.argv[2])):
-        t0, text, x = item[0], item[1], item[2]
+        t0, text, x = item[0], item[1], 400
         v, vsr = kk.create(text, voice="am_onyx", speed=0.82, lang="en-us")
         w = whisperize(np.asarray(v, dtype=float), vsr)
         w = resample(w, vsr, SR)
@@ -234,6 +246,15 @@ if len(sys.argv) >= 4:
         pan = float(np.clip((x - 640) / 640, -0.7, 0.7))
         add(t0 + 0.05, w, 0.30, pan=pan)
         add(t0 + 0.09, w, 0.10, pan=-pan)  # vọng nhẹ ở kênh đối diện
+
+# ---------- khoảng lặng trước cú vỡ ----------
+_t = np.arange(N) / SR
+_duck = 1 - 0.85 * np.clip((_t - 123.5) / 0.2, 0, 1) * np.clip((125.38 - _t) / 0.05, 0, 1)
+L *= _duck
+R *= _duck
+for tb in [123.75, 124.35, 124.85]:  # chỉ còn nhịp tim trong khoảng lặng
+    add(tb, kick(70, 38, 0.3), 0.32)
+    add(tb, noise(0.03, 3000, 80), 0.08)
 
 # ---------- hoàn thiện ----------
 def reverb(x):
