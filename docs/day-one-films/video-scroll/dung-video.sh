@@ -19,7 +19,8 @@ else
 fi
 wait
 printf "file '%s'\n" part_0.mp4 part_38.mp4 part_76.mp4 part_114.mp4 > "$O/list.txt"
-# nén lại hình (grain làm file to), chặn đỉnh âm dưới -1 dBTP sau khi nén AAC
-ffmpeg -y -loglevel error -f concat -safe 0 -i "$O/list.txt" -i "$O/scroll.wav" -c:v libx264 -preset slow -crf 25 -pix_fmt yuv420p \
-  -af "loudnorm=I=-14.5:TP=-3:LRA=11,alimiter=limit=0.72:level=false,aresample=48000" -c:a aac -b:a 192k -shortest -movflags +faststart scroll-ban-thu.mp4
+# chặn đỉnh ở 192 kHz trước khi nén AAC (nén AAC làm vọt đỉnh), rồi nén lại hình (grain làm file to)
+ffmpeg -y -loglevel error -i "$O/scroll.wav" -af "loudnorm=I=-14.5:TP=-3:LRA=11,aresample=192000,alimiter=limit=0.66:level=false:attack=1:release=60,aresample=48000" "$O/master.wav"
+ffmpeg -y -loglevel error -f concat -safe 0 -i "$O/list.txt" -i "$O/master.wav" -c:v libx264 -preset slow -crf 25 -pix_fmt yuv420p \
+  -c:a aac -b:a 192k -shortest -movflags +faststart scroll-ban-thu.mp4
 echo "xong: scroll-ban-thu.mp4"
