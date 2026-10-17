@@ -57,6 +57,10 @@
     }
     return s;
   }
+  // logo YouTube (màu đỏ của hãng, không phải đỏ kẻ thù) để người xem nhận ra ngay
+  function ytIcon(x, y, k = 1) {
+    return `<g transform="translate(${x},${y}) scale(${k})"><rect x="-16" y="-11" width="32" height="22" rx="7" fill="#ff0033"/><path d="M-5,-6 L7,0 L-5,6Z" fill="#fff"/></g>`;
+  }
   function phone(x, y, rot, lit, o = 1, w = 22, h = 38) {
     let s = `<g transform="translate(${x},${y}) rotate(${rot})" opacity="${o}">`;
     if (lit > 0) s += glow(0, 0, 70, 0.45 * lit, 'gC');
@@ -130,7 +134,7 @@
   }
   // vị trí ngọn lửa lơ lửng trước ngực (như video mẫu)
   function flamePos(J) {
-    const d = dirOf(J), ch = mix(J.neck, J.hip, 0.35);
+    const d = J.flameDir ?? dirOf(J), ch = mix(J.neck, J.hip, 0.35);
     if (Math.abs(J.hip[0] - J.neck[0]) > Math.abs(J.hip[1] - J.neck[1])) return [J.head[0] + 4, J.head[1] - 64]; // đang nằm: lửa trên đầu
     if (J.runner) return [J.head[0] - 46 * d, J.head[1] + 6]; // đang chạy: lửa sau lưng, cạnh đầu
     return [ch[0] + 50 * d, ch[1] - 34];
@@ -267,6 +271,15 @@
   function windowFrame(x, y) {
     return `<g filter="url(#wobble)"><rect x="${x}" y="${y}" width="150" height="110" fill="#0e1118" ${st('#6b6760', 2.5)}/>` + ln([x + 75, y], [x + 75, y + 110], '#6b6760', 2.5) + ln([x, y + 55], [x + 150, y + 55], '#6b6760', 2.5) + `<circle cx="${x + 112}" cy="${y + 22}" r="9" fill="#d9d4cc"/></g>`;
   }
+  // ảnh trên tường: Spark cười giữa hai người bạn, ngọn lửa to. light 0..1 = được chiếu sáng bao nhiêu
+  function memoryPhoto(x, y, w, h, light, t) {
+    const k = h / 300;
+    let inner = `<rect width="${w}" height="${h}" fill="#7a4a2a"/><rect width="${w}" height="${h * 0.62}" fill="#c47a3c"/><circle cx="${w * 0.78}" cy="${h * 0.5}" r="${h * 0.16}" fill="#ffd9a0"/>`;
+    inner += `<rect y="${h * 0.8}" width="${w}" height="${h * 0.2}" fill="#3d4a2a"/>`;
+    inner += `<g transform="translate(${w * 0.5},${h * 0.86}) scale(${k})">` + fig(stand(-78, 0, { look: 8 }), { c: '#cfc6b8', mood: 'happy' }) + fig(stand(78, 0, { look: -8 }), { c: '#b9b5ad', mood: 'happy' }) + fig(stand(0, 0, { look: 4 }), { flame: 1.0, t, mood: 'happy' }) + '</g>';
+    return `<g filter="url(#wobble)"><rect x="${x - 6}" y="${y - 6}" width="${w + 12}" height="${h + 12}" fill="#5a4030" stroke="#3a2a20" stroke-width="2"/></g>` +
+      `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${inner}<rect width="${w}" height="${h}" fill="#000" opacity="${0.85 * (1 - light)}"/></svg>`;
+  }
   function slippers(x, g) { return `<ellipse cx="${x}" cy="${g - 4}" rx="11" ry="5" fill="#3b5bd6"/><ellipse cx="${x + 26}" cy="${g - 4}" rx="11" ry="5" fill="#3b5bd6"/>`; }
   // camera: phóng to nhân vật ×3; chữ giao diện (ui) giữ nguyên cỡ trên màn hình
   let CAM = { x: 640, y: 360, k: 1 };
@@ -318,7 +331,9 @@
       s += `<rect x="534" y="${y}" width="212" height="130" rx="10" fill="#2a313a"/>`;
       s += `<rect x="546" y="${y + 12}" width="${80 + 60 * rnd(idx)}" height="10" rx="5" fill="#4a5562"/><rect x="546" y="${y + 30}" width="188" height="70" rx="6" fill="#36404b"/>`;
       s += `<circle cx="${560 + 40 * rnd(idx + 3)}" cy="${y + 112}" r="6" fill="#4a5562"/>`;
+      s += ytIcon(640, y + 65, 1.25); // nút play YouTube giữa ảnh video
     }
+    s += `<rect x="522" y="140" width="236" height="30" fill="#14181e"/>` + ytIcon(546, 155, 0.75) + txt(588, 161, 'YouTube', { a: 'start', size: 15, w: 700, c: '#e8e2da' });
     s += '</g>';
     // ngón cái
     const ty = 560 - fk * 120;
@@ -334,7 +349,7 @@
   // 2. Nằm trên giường lướt
   function bedScene(t, a, flameAmt, demonK, line, clockStr, period = 1.2) {
     const by = 470;
-    let s = ground(140, 1140, 540, 0.4) + bed(640, by);
+    let s = ground(140, 1140, 540, 0.4) + memoryPhoto(470, 318, 74, 56, 0.12, t) + bed(640, by);
     const J = fixArms(lieBed(660, by));
     const ph = J.rh, pp = [ph[0] + 6, ph[1] - 26];
     const [fk] = flicks(t, a + 0.6, period);
@@ -410,45 +425,53 @@
     return s;
   }, { fi: 0.15, fo: 0.5 });
 
-  // 4. Bước ngoặt: điện thoại đã tắt → không còn sợi lửa bị hút → FIRE % tự nhích 1→2→3 (tiếng tick) → Spark nhìn từ máy sang đốm lửa ·
-  // kẻ thù mọc từ màn hình đen: "plug it in" → Spark đặt máy úp xuống bên giường → FIRE nhảy 5→8→12 → khum tay giữ lửa → đứng dậy → FOCUS vàng bay vào góc.
-  const TURN_FIRE = t => t < 52.8 ? 1 : t < 53.8 ? 2 : t < 56.9 ? 3 : t < 57.4 ? 5 : t < 57.9 ? 8 : t < 58.6 ? 12 : 15;
+  // 4. Bước ngoặt (gieo → gặt): điện thoại chết, phòng tối hẳn · đốm lửa cuối loé lên, chiếu sáng tấm ảnh trên tường ·
+  // Spark quay lại nhìn, camera đẩy cận vào ảnh (mình cười giữa bạn bè, lửa to) · kẻ thù mọc từ màn hình đen: "plug it in" ·
+  // Spark nhìn máy, nhìn ảnh, úp máy xuống → lửa hồi dần (FIRE +%) → đứng dậy → FOCUS vàng bay vào góc.
+  const TURN_FIRE = t => t < 56.6 ? 1 : t < 57.2 ? 3 : t < 57.8 ? 6 : t < 58.5 ? 10 : 15;
+  const PHOTO = [400, 300, 120, 90];
   scene(50, 62, t => {
-    let s = ground(140, 1140, 560) + bed(560, 490);
+    let s = ground(140, 1140, 560);
+    const flare = Math.exp(-Math.pow((t - 52.4) / 0.45, 2)); // đốm lửa cuối loé lên
+    const light = Math.max(0.08, Math.min(1, ramp(t, 52.0, 52.8) * 0.95 + 0.05)) * (t > 55.2 ? lerp(1, 0.65, ramp(t, 55.2, 55.8)) : 1);
+    s += memoryPhoto(...PHOTO, light, t) + bed(560, 490);
     s += ui(hudRaw(201, '', 1, TURN_FIRE(t)));
     const up = ramp(t, 58.8, 59.8);
     let J = sitChair(640, 560, { hand: [700, 448], hand2: [706, 446], look: 8 });
     J.hip = [640, 466]; J.lk = [690, 462]; J.rk = [696, 466]; J.lf = [694, 560]; J.rf = [700, 560];
-    // nhìn máy (đầu cúi) → nhìn đốm lửa (ngẩng lên, quay sang)
-    const look = ramp(t, 53.0, 53.8);
-    J.head = mix([J.head[0], J.head[1] + 6], [J.head[0] + 4, J.head[1] - 4], look);
-    const down = ramp(t, 56.3, 56.9);
+    J.flameDir = 1;
+    // quay lại nhìn tấm ảnh (52.6–55.2 và 57.0–57.8)
+    const lookBack = (t > 52.6 && t < 55.2) || (t > 57.0 && t < 57.8);
+    if (lookBack) { J.look = -8; J.face = -1; J.head = [J.head[0] - 6, J.head[1] - 6]; }
+    const down = ramp(t, 56.0, 56.6);
     if (down > 0) { J.rh = mix(J.rh, [736, 476], down); J.re = mix(J.re, [714, 470], down); }
-    const cup = ramp(t, 57.9, 58.5);
+    const cup = ramp(t, 57.8, 58.4);
     if (cup > 0) { const fp0 = flamePos(J); J.lh = mix(J.lh, [fp0[0] - 6, fp0[1] + 14], cup); }
-    if (up > 0) { const B = stand(660, 560, { look: 10 }); const fpB = flamePos(B); B.lh = [fpB[0] - 6, fpB[1] + 14]; const A = J; J = {}; for (const k in B) J[k] = Array.isArray(B[k]) ? mix(A[k], B[k], up) : B[k]; }
+    if (up > 0) { const B = stand(660, 560, { look: 10 }); B.flameDir = 1; const fpB = flamePos(B); B.lh = [fpB[0] - 6, fpB[1] + 14]; const A = J; J = {}; for (const k in B) J[k] = Array.isArray(B[k]) ? mix(A[k], B[k], up) : B[k]; }
     fixArms(J);
-    // điện thoại: tắt, trong tay → úp xuống mép giường
-    if (t < 56.9) s += phone(J.rh[0] + 4, J.rh[1] - 14, 10, 0, 1);
+    if (t < 56.6) s += phone(J.rh[0] + 4, J.rh[1] - 14, 10, 0, 1);
     else s += `<rect x="726" y="474" width="34" height="8" rx="3" fill="#1b1e25"/>`;
-    // kẻ thù mọc từ màn hình đen, thì thầm, rồi tan khi máy bị úp
-    const born = ramp(t, 54.2, 55.4), gone = ramp(t, 56.9, 57.8);
+    // kẻ thù mọc từ màn hình đen
+    const born = ramp(t, 55.2, 56.0), gone = ramp(t, 56.6, 57.4);
     if (born > 0 && gone < 1) s = shadowFig(whisperPose(560, 560, 1), { k: 0.2 + 0.85 * born, op: born * (1 - gone), ax: lerp(706, 560, born), ay: lerp(440, 560, born) }) + s;
     const f = TURN_FIRE(t) / 100;
-    s += fig(J, { flame: 0.05 + f * 1.6, t, mood: t > 57.4 ? 'fierce' : (t > 53.4 ? 'neutral' : 'sad') });
+    s += fig(J, { flame: 0.05 + f * 1.6 + 0.3 * flare, t, mood: t > 57.0 ? 'fierce' : (t > 52.6 ? 'sad' : 'tired') });
     const fp = flamePos(J);
-    // tia nhỏ bung ra mỗi lần FIRE nhích
-    // nhãn +% nổi lên cạnh đốm lửa mỗi lần FIRE nhích: thấy rõ "máy tắt → lửa tự hồi"
-    for (const [tk, lb] of [[52.8, '+1%'], [53.8, '+1%'], [56.9, '+2%'], [57.4, '+3%'], [57.9, '+4%'], [58.6, '+3%']]) if (t > tk && t < tk + 1.1) {
+    s += glow(fp[0], fp[1], 80 + 260 * flare, 0.5 * flare); // ánh loé chiếu sang tường
+    for (const [tk, lb] of [[56.6, '+2%'], [57.2, '+3%'], [57.8, '+4%'], [58.5, '+5%']]) if (t > tk && t < tk + 1.1) {
       const q = (t - tk) / 1.1;
       s += `<text x="${fp[0] + 22}" y="${fp[1] - 24 - 26 * q}" fill="${ORANGE}" fill-opacity="${1 - q}" filter="url(#softGlow)" font-family="${MONO}" font-size="15" font-weight="700">${lb}</text>`;
     }
-    for (const tk of [52.8, 53.8, 56.9, 57.4, 57.9, 58.6]) if (t > tk && t < tk + 0.5) { const q = (t - tk) / 0.5; for (let i = 0; i < 6; i++) s += `<circle cx="${fp[0] + Math.cos(i) * 26 * q}" cy="${fp[1] - 10 + Math.sin(i * 1.7) * 26 * q}" r="${2.2 * (1 - q)}" fill="${CORE}"/>`; }
     const fly = ramp(t, 60.8, 61.8);
     const fx = lerp(560, 1150, fly), fy = lerp(160, 72, fly), fs = lerp(84, 22, fly);
     s += ui(`<text x="${fx}" y="${fy}" fill="${YEL}" fill-opacity="${fade(t, 59.6, 62.2, 0.4, 0.01)}" filter="url(#yelGlow)" font-family="Inter" font-size="${fs}" font-weight="900" letter-spacing="${lerp(12, 3, fly)}" text-anchor="middle">FOCUS</text>`);
     return s;
-  }, { cam: STAND(600) });
+  }, { cam: t => {
+    // đẩy cận vào tấm ảnh 53.0–55.0
+    const z = ramp(t, 52.9, 53.5) * (1 - ramp(t, 54.7, 55.2));
+    const base = STAND(600);
+    return { x: lerp(base.x, PHOTO[0] + PHOTO[2] / 2, z), y: lerp(base.y, PHOTO[1] + PHOTO[3] / 2, z), k: lerp(base.k, 4.6, z) };
+  } });
 
   // 5. Montage
   scene(62, 71, t => {
@@ -576,18 +599,30 @@
     return { x, y, k };
   } });
 
-  // 7. Kết
+  // 7. Kết: đồi cỏ nhìn ra biển lúc bình minh — dựng lại đúng tấm ảnh kỷ niệm (Spark giữa bạn bè, lửa to)
   scene(130, 144, t => {
-    const sun = ramp(t, 130, 138);
-    let s = `<defs><linearGradient id="dawn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${BG}"/><stop offset=".7" stop-color="#1a1209"/><stop offset="1" stop-color="#3a2410"/></linearGradient></defs>`;
-    s += ui(`<rect width="1280" height="720" fill="url(#dawn)" opacity="${0.4 + 0.6 * sun}"/>`);
-    s += `<circle cx="770" cy="${600 - 60 * sun}" r="40" fill="${CORE}" opacity="${0.55 * sun}"/>` + glow(770, 600 - 60 * sun, 150, 0.35 * sun);
-    s += `<path d="M-20,600 Q500,500 1300,600 L1300,720 L-20,720Z" fill="${BG}" ${st('#3a2a1a', 3)}/>`;
-    s += fig(sitGround(700, 554), { c: '#b9b5ad' });
-    s += fig(sitGround(545, 556), { flame: 1.0, t, mood: 'happy', blink: (t % 4) < 0.12 });
+    const sun = ramp(t, 130, 140);
+    let s = `<defs><linearGradient id="skyEnd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16142a"/><stop offset=".45" stop-color="#4a2c3c"/><stop offset=".8" stop-color="#c8703e"/><stop offset="1" stop-color="#f2b26a"/></linearGradient>` +
+      `<linearGradient id="seaEnd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a4050"/><stop offset="1" stop-color="#1c1a2c"/></linearGradient></defs>`;
+    s += `<rect x="-400" y="-200" width="2100" height="660" fill="url(#skyEnd)"/>`;
+    // mặt trời mọc trên đường chân trời biển
+    const sy = 460 - 46 * sun;
+    s += glow(930, sy, 420, 0.5) + `<circle cx="930" cy="${sy}" r="44" fill="#ffd9a0"/>`;
+    s += `<rect x="-400" y="458" width="2100" height="400" fill="url(#seaEnd)"/>`;
+    for (let i = 0; i < 9; i++) { const w = 70 - i * 6 + 10 * Math.sin(t * 2 + i); s += `<rect x="${930 - w / 2 + 8 * Math.sin(t * 1.3 + i * 2)}" y="${466 + i * 9}" width="${w}" height="3" rx="1.5" fill="#ffd9a0" opacity="${0.75 - i * 0.07}"/>`; }
+    // núi xa và chim
+    s += `<path d="M-400,460 L-120,380 L60,430 L220,370 L420,460Z" fill="#2c2034" opacity=".9"/>`;
+    for (let i = 0; i < 3; i++) { const bx = 700 + i * 46 + t * 14, by = 250 + i * 12 + 4 * Math.sin(t * 3 + i); s += `<path d="M${bx - 9},${by} q5,-6 9,0 q4,-6 9,0" fill="none" stroke="#2a1e24" stroke-width="2.4" stroke-linecap="round"/>`; }
+    // đồi cỏ phía trước
+    s += `<path d="M-400,600 Q120,520 520,548 Q760,566 1000,640 Q1200,700 1700,720 L1700,900 L-400,900Z" fill="#26321f"/>`;
+    s += `<path d="M-400,600 Q120,520 520,548 Q760,566 1000,640" fill="none" stroke="#3e5230" stroke-width="3"/>`;
+    for (let i = 0; i < 40; i++) { const gx = -200 + i * 32 + 10 * rnd(i), gy = 560 + 0.0006 * Math.pow(gx - 400, 2) - 12 + 30 * rnd(i + 5); const sw = 3 * Math.sin(t * 2 + i); s += `<path d="M${gx},${gy} q${2 + sw},-10 ${4 + sw},-16 M${gx + 5},${gy} q${-1 + sw},-8 ${-3 + sw},-12" fill="none" stroke="#3e5230" stroke-width="2" stroke-linecap="round"/>`; }
+    s += fig(sitGround(340, 552), { c: '#cfc6b8', mood: 'happy' });
+    s += fig(sitGround(680, 560), { c: '#b9b5ad', mood: 'happy' });
+    s += fig(sitGround(510, 549), { flame: 1.0, t, mood: 'happy', blink: (t % 4) < 0.12 });
     s += ui(txt(640, 120, 'Your attention is your fire.', { size: 44, w: 600, op: fade(t, 132.4, 138.6, 0.8, 0.6) }) + `<text x="640" y="120" fill="${YEL}" fill-opacity="${fade(t, 139.2, 143.6, 0.6, 0.6)}" filter="url(#yelGlow)" font-family="Inter" font-size="52" font-weight="800" text-anchor="middle">Guard it.</text>`);
     return s;
-  }, { fi: 0.8, fo: 0.8, cam: { x: 640, y: 556 - 250 / 1.6, k: 1.6 } });
+  }, { fo: 0.8, cam: { x: 640, y: 420, k: 1.05 } });
   scene(144, 150, t => {
     let s = `<text x="640" y="360" fill="${YEL}" fill-opacity="${fade(t, 144.6, 149.2, 0.8, 0.8)}" filter="url(#yelGlow)" font-family="Inter" font-size="92" font-weight="800" letter-spacing="22" text-anchor="middle">SCROLL</text>`;
     for (let i = 0; i < 4; i++) s += `<rect x="${560 + i * 44}" y="384" width="28" height="4" fill="${YEL}" opacity="${fade(t, 145.0 + i * 0.15, 149.2, 0.3, 0.8)}"/>`;
@@ -606,7 +641,7 @@
     [34.0, 'everyone does it'],
     [39.2, "you're too tired"], [41.8, 'why even try?'],
     [47.4, 'this is who you are', 2.3],
-    [55.0, 'plug it in', 1.8],
+    [55.4, 'plug it in', 1.8],
     [63.0, 'just check once'], [64.9, "you'll be back"], [66.6, "you can't last a day"],
     [89.0, 'it might be important'], [91.6, 'someone texted you'],
     [116.0, "you're missing out", 6.0], [117.0, "everyone's online", 5.0], [118.0, 'just one', 4.0],

@@ -190,10 +190,13 @@ for tb in [112.4, 113.3, 114.2, 115.1, 123.75, 124.35, 124.85]:
 for tb in [14, 20, 26, 32, 38, 44, 66, 71, 79, 87, 95, 103]:
     add(tb + 0.05, click(), 0.5)
 add(61.8, ping(), 0.18)  # FOCUS vào góc
-for tb in [52.8, 53.8, 56.9, 57.4, 57.9, 58.6]:  # FIRE % nhích ở bước ngoặt
+for tb in [56.6, 57.2, 57.8, 58.5]:  # FIRE % nhích ở bước ngoặt
     add(tb, click(), 0.55)
     add(tb, noise(0.3, 2500, 9), 0.06)
-add(56.9, kick(85, 50, 0.2), 0.3)  # đặt máy úp xuống
+add(56.6, kick(85, 50, 0.2), 0.3)  # đặt máy úp xuống
+add(52.3, noise(0.5, 3000, 6), 0.12)  # đốm lửa loé
+for i, nm in enumerate(["C5", "E5", "G5", "E5"]):  # hộp nhạc kỷ niệm khi nhìn tấm ảnh
+    add(53.0 + i * 0.45, piano(nm, 2.5), 0.09)
 
 # ---------- E. 130–150: kết ----------
 prog_e = [["F2", "C3", "F3", "A3"], ["C3", "G3", "C4", "E4"], ["G2", "D3", "G3", "B3"], ["C3", "G3", "C4", "E4"]]
