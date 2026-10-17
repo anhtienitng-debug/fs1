@@ -69,8 +69,26 @@
   const unitv = (p, q) => { const dx = q[0] - p[0], dy = q[1] - p[1], d = Math.hypot(dx, dy) || 1; return [dx / d, dy / d]; };
   const addv = (p, v, k) => [p[0] + v[0] * k, p[1] + v[1] * k];
   const dirOf = J => (J.face ?? (J.look ?? 1)) >= 0 ? 1 : -1;
+  // tay hai đoạn cố định (38 + 38): bàn tay xa quá thì kéo về, khuỷu tính lại, bẻ về phía khuỷu gợi ý
+  const ARM = 38;
+  function ikArm(s, h, hint) {
+    let d = Math.hypot(h[0] - s[0], h[1] - s[1]) || 1;
+    const u = [(h[0] - s[0]) / d, (h[1] - s[1]) / d];
+    if (d > 2 * ARM - 1) { d = 2 * ARM - 1; h = [s[0] + u[0] * d, s[1] + u[1] * d]; }
+    const a = d / 2, hh = Math.sqrt(Math.max(0, ARM * ARM - a * a)), b = [s[0] + u[0] * a, s[1] + u[1] * a], n = [-u[1], u[0]];
+    const e1 = [b[0] + n[0] * hh, b[1] + n[1] * hh], e2 = [b[0] - n[0] * hh, b[1] - n[1] * hh];
+    const e = Math.hypot(e1[0] - hint[0], e1[1] - hint[1]) <= Math.hypot(e2[0] - hint[0], e2[1] - hint[1]) ? e1 : e2;
+    return [e, h];
+  }
+  function fixArms(J) {
+    const u = unitv(J.neck, J.hip), sh = addv(J.neck, u, 22);
+    [J.le, J.lh] = ikArm(sh, J.lh, J.le);
+    [J.re, J.rh] = ikArm(sh, J.rh, J.re);
+    return J;
+  }
   // thân + tay chân; fill/line = màu ruột/viền, e = độ dày viền
   function bodyShapes(J, fill, line, e, legFill) {
+    fixArms(J);
     const u = unitv(J.neck, J.hip);
     const top = addv(J.neck, u, 12), bot = J.hip;
     const L = (p, q, w, c) => `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
@@ -91,6 +109,10 @@
   }
   // mặt nhìn nghiêng: mắt chấm, lông mày gạch, miệng cong
   function face(J, mood, c, blink) {
+    const ang = Math.atan2(J.head[0] - J.neck[0], -(J.head[1] - J.neck[1])) * 180 / Math.PI;
+    return `<g transform="rotate(${ang} ${J.head[0]} ${J.head[1]})">${faceUp(J, mood, c, blink)}</g>`;
+  }
+  function faceUp(J, mood, c, blink) {
     const d = dirOf(J), [x, y] = J.head, ex = x + 13 * d, ey = y - 2;
     const L = (p, q, w = 3.2) => `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
     let s = '';
@@ -127,8 +149,8 @@
   function shadowFig(J, o = {}) {
     const op = o.op ?? 1, k = o.k || 1, ax = o.ax ?? J.hip[0], ay = o.ay ?? Math.max(J.lf[1], J.rf[1]);
     const jit = o.jitter ? `translate(${Math.sin(o.jitter * 97.1 + J.head[1]) * o.jitter},${Math.cos(o.jitter * 53.7) * o.jitter * 0.6})` : '';
-    const d = dirOf(J), [x, y] = J.head;
-    const eyes = `<g filter="url(#redGlow)"><line x1="${x + 6 * d}" y1="${y - 14}" x2="${x + 20 * d}" y2="${y - 5}" stroke="#ff5a4f" stroke-width="4" stroke-linecap="round"/><circle cx="${x + 13 * d}" cy="${y + 4}" r="4.2" fill="#ff5a4f"/></g>`;
+    const d = dirOf(J), [x, y] = J.head, hang = Math.atan2(J.head[0] - J.neck[0], -(J.head[1] - J.neck[1])) * 180 / Math.PI;
+    const eyes = `<g filter="url(#redGlow)" transform="rotate(${hang} ${x} ${y})"><line x1="${x + 6 * d}" y1="${y - 14}" x2="${x + 20 * d}" y2="${y - 5}" stroke="#ff5a4f" stroke-width="4" stroke-linecap="round"/><circle cx="${x + 13 * d}" cy="${y + 4}" r="4.2" fill="#ff5a4f"/></g>`;
     const hx = ax + (x - ax) * k, hy = ay + (y - ay) * k;
     if (op > 0.3) ENEMY = { x: 640 + (hx - CAM.x) * CAM.k, y: 360 + (hy - CAM.y) * CAM.k, r: 31 * k * CAM.k, d };
     return `<g opacity="${op}" transform="${jit} translate(${ax},${ay}) scale(${k}) translate(${-ax},${-ay})">` +
@@ -204,11 +226,11 @@
     J.re = mix(J.re, [x + 34, g - 178], k); J.rh = mix(J.rh, [x + 56, g - 216], k);
     return J;
   }
-  function sitGround(x, g) {
+  function sitGround(x, g) { // ngồi bệt, nhìn nghiêng sang phải, hai chân duỗi ngang về phía trước
     return {
-      head: [x, g - 145], neck: [x, g - 108], hip: [x, g - 24],
-      le: [x - 24, g - 80], lh: [x - 32, g - 56], re: [x + 24, g - 80], rh: [x + 32, g - 56],
-      lk: [x - 32, g - 54], lf: [x - 42, g], rk: [x + 32, g - 54], rf: [x + 42, g], look: 0,
+      head: [x + 10, g - 150], neck: [x + 4, g - 112], hip: [x, g - 22],
+      le: [x + 18, g - 84], lh: [x + 46, g - 52], re: [x + 22, g - 82], rh: [x + 52, g - 50],
+      lk: [x + 48, g - 30], lf: [x + 96, g - 8], rk: [x + 52, g - 26], rf: [x + 102, g - 6], look: 1, face: 1,
     };
   }
   const ground = (x1, x2, g, o = 1) => ln([x1, g], [x2, g], '#2e2924', 2.2, o);
@@ -244,10 +266,10 @@
   let HUD_FOCUS = false;
   const FIRE_BY_DAY = { 12: 55, 45: 38, 88: 24, 140: 13, 201: 3, f1: 22, f4: 36, f11: 52, f23: 66, f37: 81, f60: 93 };
   const MONO = "'JetBrains Mono','DejaVu Sans Mono',monospace";
-  function hudRaw(day, screen, o = 1) {
+  function hudRaw(day, screen, o = 1, fireOverride) {
     let s = '';
     if (day) {
-      const focus = HUD_FOCUS, f = FIRE_BY_DAY[(focus ? 'f' : '') + day] ?? FIRE_BY_DAY[day] ?? 0, c = f > 8 ? ORANGE : '#7b7872';
+      const focus = HUD_FOCUS, f = fireOverride ?? FIRE_BY_DAY[(focus ? 'f' : '') + day] ?? FIRE_BY_DAY[day] ?? 0, c = f > 8 ? ORANGE : '#7b7872';
       s += `<text x="48" y="70" fill="${c}" fill-opacity="${o}" font-family="${MONO}" font-size="16" font-weight="700" letter-spacing="3" filter="url(#softGlow)">FIRE <tspan font-size="24" letter-spacing="0">${f}%</tspan></text>`;
       if (focus) s += `<text x="1232" y="72" fill="${YEL}" fill-opacity="${o}" filter="url(#yelGlow)" font-family="${MONO}" font-size="18" font-weight="700" letter-spacing="2" text-anchor="end">FOCUS · DAY <tspan font-size="24">${day}</tspan></text>`;
       else s += `<text x="1232" y="72" fill="#8d8a84" fill-opacity="${o}" font-family="${MONO}" font-size="18" font-weight="700" letter-spacing="3" text-anchor="end">DAY <tspan font-size="24" fill="#cfcbc2">${day}</tspan></text>`;
@@ -300,7 +322,7 @@
   function bedScene(t, a, flameAmt, demonK, line, clockStr, period = 1.2) {
     const by = 470;
     let s = ground(140, 1140, 540, 0.4) + bed(640, by);
-    const J = lieBed(660, by);
+    const J = fixArms(lieBed(660, by));
     const ph = J.rh, pp = [ph[0] + 6, ph[1] - 26];
     const [fk] = flicks(t, a + 0.6, period);
     s += phone(pp[0], pp[1], 160, 0.8 + 0.2 * fk);
@@ -375,28 +397,45 @@
     return s;
   }, { fi: 0.15, fo: 0.5 });
 
-  // 4. Bước ngoặt: điện thoại chết trong tay; nhìn tàn lửa; đặt máy úp xuống; nắm tay; đứng dậy. Từ khoá: "MORE…" xám → "FOCUS" vàng bay vào góc thành bộ đếm.
+  // 4. Bước ngoặt: điện thoại đã tắt → không còn sợi lửa bị hút → FIRE % tự nhích 1→2→3 (tiếng tick) → Spark nhìn từ máy sang đốm lửa ·
+  // kẻ thù mọc từ màn hình đen: "plug it in" → Spark đặt máy úp xuống bên giường → FIRE nhảy 5→8→12 → khum tay giữ lửa → đứng dậy → FOCUS vàng bay vào góc.
+  const TURN_FIRE = t => t < 52.8 ? 1 : t < 53.8 ? 2 : t < 56.9 ? 3 : t < 57.4 ? 5 : t < 57.9 ? 8 : t < 58.6 ? 12 : 15;
   scene(50, 62, t => {
     let s = ground(140, 1140, 560) + bed(560, 490);
-    const beat = Math.pow(Math.max(0, Math.sin((t - 50) * Math.PI / 0.9)), 8);
-    const up = ramp(t, 58.6, 59.6);
+    s += ui(hudRaw(201, '', 1, TURN_FIRE(t)));
+    const up = ramp(t, 58.8, 59.8);
     let J = sitChair(640, 560, { hand: [700, 448], hand2: [706, 446], look: 8 });
     J.hip = [640, 466]; J.lk = [690, 462]; J.rk = [696, 466]; J.lf = [694, 560]; J.rf = [700, 560];
-    if (t > 56.4) { const m = ramp(t, 56.4, 57.0); J.rh = mix(J.rh, [760, 470], m); J.lh = mix(J.lh, [684, 404], ramp(t, 57.4, 58.0)); J.le = mix(J.le, [676, 420], ramp(t, 57.4, 58.0)); }
-    if (up > 0) { const B = stand(660, 560, { look: 10 }); B.lh = [684, 404]; B.le = [676, 420]; const A = J; J = {}; for (const k in B) J[k] = Array.isArray(B[k]) ? mix(A[k], B[k], up) : B[k]; }
-    const lay = ramp(t, 56.4, 57.0);
-    s += lay < 1 ? phone(mix(J.rh, [760, 476], 0)[0] + 4, J.rh[1] - 14, 10, 0, 1) : `<rect x="744" y="${J.lf[1] - 4 - 0}" width="34" height="8" rx="3" fill="#1b1e25"/>`;
-    const ember = t < 59.6 ? 0.05 : lerp(0.05, 0.22, ramp(t, 59.6, 60.6));
-    s += fig(J, { flame: ember, t, mood: t > 57.4 ? 'fierce' : 'sad' });
+    // nhìn máy (đầu cúi) → nhìn đốm lửa (ngẩng lên, quay sang)
+    const look = ramp(t, 53.0, 53.8);
+    J.head = mix([J.head[0], J.head[1] + 6], [J.head[0] + 4, J.head[1] - 4], look);
+    const down = ramp(t, 56.3, 56.9);
+    if (down > 0) { J.rh = mix(J.rh, [736, 476], down); J.re = mix(J.re, [714, 470], down); }
+    const cup = ramp(t, 57.9, 58.5);
+    if (cup > 0) { const fp0 = flamePos(J); J.lh = mix(J.lh, [fp0[0] - 6, fp0[1] + 14], cup); }
+    if (up > 0) { const B = stand(660, 560, { look: 10 }); const fpB = flamePos(B); B.lh = [fpB[0] - 6, fpB[1] + 14]; const A = J; J = {}; for (const k in B) J[k] = Array.isArray(B[k]) ? mix(A[k], B[k], up) : B[k]; }
+    fixArms(J);
+    // điện thoại: tắt, trong tay → úp xuống mép giường
+    if (t < 56.9) s += phone(J.rh[0] + 4, J.rh[1] - 14, 10, 0, 1);
+    else s += `<rect x="726" y="474" width="34" height="8" rx="3" fill="#1b1e25"/>`;
+    // kẻ thù mọc từ màn hình đen, thì thầm, rồi tan khi máy bị úp
+    const born = ramp(t, 54.2, 55.4), gone = ramp(t, 56.9, 57.8);
+    if (born > 0 && gone < 1) s = shadowFig(whisperPose(560, 560, 1), { k: 0.2 + 0.85 * born, op: born * (1 - gone), ax: lerp(706, 560, born), ay: lerp(440, 560, born) }) + s;
+    const f = TURN_FIRE(t) / 100;
+    s += fig(J, { flame: 0.05 + f * 1.6, t, mood: t > 57.4 ? 'fierce' : (t > 53.4 ? 'neutral' : 'sad') });
     const fp = flamePos(J);
-    s += glow(fp[0], fp[1], 30 + 30 * beat, 0.35 * beat);
-    // từ khoá
-    s += ui(`<text x="560" y="150" fill="#8d8a84" fill-opacity="${fade(t, 51.6, 55.6, 0.5, 0.6)}" font-family="Inter" font-size="64" font-weight="800" letter-spacing="10" text-anchor="middle">MORE…</text>`);
+    // tia nhỏ bung ra mỗi lần FIRE nhích
+    // nhãn +% nổi lên cạnh đốm lửa mỗi lần FIRE nhích: thấy rõ "máy tắt → lửa tự hồi"
+    for (const [tk, lb] of [[52.8, '+1%'], [53.8, '+1%'], [56.9, '+2%'], [57.4, '+3%'], [57.9, '+4%'], [58.6, '+3%']]) if (t > tk && t < tk + 1.1) {
+      const q = (t - tk) / 1.1;
+      s += `<text x="${fp[0] + 22}" y="${fp[1] - 24 - 26 * q}" fill="${ORANGE}" fill-opacity="${1 - q}" filter="url(#softGlow)" font-family="${MONO}" font-size="15" font-weight="700">${lb}</text>`;
+    }
+    for (const tk of [52.8, 53.8, 56.9, 57.4, 57.9, 58.6]) if (t > tk && t < tk + 0.5) { const q = (t - tk) / 0.5; for (let i = 0; i < 6; i++) s += `<circle cx="${fp[0] + Math.cos(i) * 26 * q}" cy="${fp[1] - 10 + Math.sin(i * 1.7) * 26 * q}" r="${2.2 * (1 - q)}" fill="${CORE}"/>`; }
     const fly = ramp(t, 60.8, 61.8);
     const fx = lerp(560, 1150, fly), fy = lerp(160, 72, fly), fs = lerp(84, 22, fly);
-    s += ui(`<text x="${fx}" y="${fy}" fill="${YEL}" fill-opacity="${fade(t, 59.4, 62.2, 0.4, 0.01)}" filter="url(#yelGlow)" font-family="Inter" font-size="${fs}" font-weight="900" letter-spacing="${lerp(12, 3, fly)}" text-anchor="middle">FOCUS</text>`);
+    s += ui(`<text x="${fx}" y="${fy}" fill="${YEL}" fill-opacity="${fade(t, 59.6, 62.2, 0.4, 0.01)}" filter="url(#yelGlow)" font-family="Inter" font-size="${fs}" font-weight="900" letter-spacing="${lerp(12, 3, fly)}" text-anchor="middle">FOCUS</text>`);
     return s;
-  }, { cam: STAND(560) });
+  }, { cam: STAND(600) });
 
   // 5. Montage
   scene(62, 71, t => {
@@ -408,17 +447,19 @@
     s += ln([845 - 70 * dOpen, 457], [875 - 70 * dOpen, 457], '#999', 4);
     // Spark
     const k = ramp(t, 62.6, 64.6);
-    const J = stand(600, 560, { look: 8 });
-    J.re = mix([622, 448], [680, 448], k); J.rh = mix([628, 482], [750, 452], k);
-    if (t > 67.2) { const m = ramp(t, 67.2, 68.0); J.le = mix(J.le, [604, 452], m); J.lh = mix(J.lh, [598, 476], m); J.re = mix(J.re, [622, 448], ramp(t, 65.6, 66.4)); J.rh = mix(J.rh, [628, 482], ramp(t, 65.6, 66.4)); }
-    else if (t > 65.6) { const m = ramp(t, 65.6, 66.4); J.re = mix(J.re, [622, 448], m); J.rh = mix(J.rh, [628, 482], m); }
+    const J = stand(690, 560, { look: 8 });
+    const rest = [[712, 448], [718, 482]], reach = [[738, 462], [762, 456]];
+    J.re = mix(rest[0], reach[0], k); J.rh = mix(rest[1], reach[1], k);
+    if (t > 65.6) { const m = ramp(t, 65.6, 66.4); J.re = mix(reach[0], rest[0], m); J.rh = mix(reach[1], rest[1], m); }
+    if (t > 67.2) { const m = ramp(t, 67.2, 68.0); J.le = mix(J.le, [700, 452], m); J.lh = mix(J.lh, [690, 476], m); }
+    fixArms(J);
     const fl = t < 68 ? 0.05 : lerp(0.05, 0.28, ramp(t, 68, 69));
     if (t < 65.2) s += phone(J.rh[0] + 4, J.rh[1] - 18, 0, 0.5, 1 - ramp(t, 64.6, 65.0));
     s += fig(J, { flame: fl, t, mood: t > 68 ? 'fierce' : 'neutral' });
-    if (t > 68 && t < 69.5) { const k2 = ramp(t, 68, 69.5); for (let i = 0; i < 10; i++) s += `<circle cx="${600 + Math.cos(i) * 70 * k2}" cy="${484 + Math.sin(i * 1.3) * 70 * k2}" r="${3 * (1 - k2)}" fill="${CORE}"/>`; }
+    if (t > 68 && t < 69.5) { const k2 = ramp(t, 68, 69.5); for (let i = 0; i < 10; i++) s += `<circle cx="${690 + Math.cos(i) * 70 * k2}" cy="${484 + Math.sin(i * 1.3) * 70 * k2}" r="${3 * (1 - k2)}" fill="${CORE}"/>`; }
     s = shadowFig(whisperPose(905, 560, -1), { k: lerp(1, 0.6, ramp(t, 67.5, 69)), op: fade(t, 62.6, 69.2, 0.6, 1.2) }) + s;
     return s;
-  }, { cam: STAND(715) });
+  }, { cam: STAND(760) });
   scene(71, 79, t => {
     let s = hud(4, '6h 20m') + ground(140, 1140, 560) + chair(560, 560);
     s += `<path d="M700,250 L640,250 L560,420 L780,420Z" fill="${CORE}" opacity=".05"/>` + ln([700, 250], [700, 560], '#3a3a3a', 4) + `<path d="M660,250 L740,250 L726,226 L674,226Z" fill="#2a2a2c" ${st('#555', 3)}/>`;
@@ -434,7 +475,7 @@
     s += `<circle cx="740" cy="560" r="90" fill="${ORANGE}" opacity=".18"/><circle cx="740" cy="560" r="60" fill="${ORANGE}" opacity=".35"/>`;
     for (let i = 0; i < 9; i++) { const x = ((i * 170 - t * 360) % 1530 + 1530) % 1530 - 120; s += ln([x, 560], [x + 70, 560], '#3a3a3a', 3); }
     s += `<rect x="0" y="560" width="1280" height="160" fill="${BG}"/>` + ln([0, 560], [1280, 560], '#2a2a2a', 3);
-    for (let i = 0; i < 7; i++) s += `<ellipse cx="${560 - 30 - i * 46 + ((t * 120) % 46)}" cy="561" rx="10" ry="3.5" fill="${YEL}" opacity="${0.7 - i * 0.09}" filter="url(#yelGlow)"/>`;
+    for (let i = 0; i < 7; i++) s += `<ellipse cx="${536 - i * 92 - ((t * 360) % 92)}" cy="561" rx="10" ry="3.5" fill="${YEL}" opacity="${0.7 - i * 0.09}" filter="url(#yelGlow)"/>`;
     return s + fig(run(560, 560, t * 9), { flame: 0.5, t, mood: 'fierce' });
   }, { cam: STAND(600) });
   scene(87, 95, t => {
@@ -466,9 +507,12 @@
     const p = ramp(t, 103.5, 111);
     const strokes = [[735, 400, 780, 340], [760, 410, 830, 330], [790, 400, 875, 350], [740, 330, 875, 320], [745, 415, 870, 415]];
     strokes.forEach(([x1, y1, x2, y2], i) => { const k = clamp(p * strokes.length - i); if (k > 0) s += ln([x1, y1], [lerp(x1, x2, k), lerp(y1, y2, k)], i % 2 ? ORANGE : W, 4); });
-    const J = stand(600, 560, { look: 10 });
-    J.re = [640, 440]; J.rh = mix([700, 420], [lerp(735, 870, (Math.sin(t * 3) + 1) / 2), 380], 1);
-    return s + fig(J, { flame: 0.9, t, mood: 'fierce' });
+    const J = stand(660, 560, { look: 10 });
+    J.re = [690, 440]; J.rh = [lerp(712, 726, (Math.sin(t * 3) + 1) / 2), 400 + 18 * Math.sin(t * 2.1)];
+    fixArms(J);
+    const tip = [J.rh[0] + 30, J.rh[1] - 10];
+    s += fig(J, { flame: 0.9, t, mood: 'fierce' });
+    return s + ln(J.rh, tip, WOOD, 4) + `<circle cx="${tip[0]}" cy="${tip[1]}" r="4" fill="${ORANGE}"/>`;
   }, { cam: STAND(720) });
 
   // 6. Trận cuối: 112–116 đứng im, chỉ nhịp tim; kẻ thù mọc từ ánh điện thoại · 116–121 thì thầm dồn dập, lửa teo ·
@@ -512,8 +556,8 @@
     s += ui(`<rect width="1280" height="720" fill="url(#dawn)" opacity="${0.4 + 0.6 * sun}"/>`);
     s += `<circle cx="770" cy="${600 - 60 * sun}" r="40" fill="${CORE}" opacity="${0.55 * sun}"/>` + glow(770, 600 - 60 * sun, 150, 0.35 * sun);
     s += `<path d="M-20,600 Q500,500 1300,600 L1300,720 L-20,720Z" fill="${BG}" ${st('#3a2a1a', 3)}/>`;
-    s += fig(sitGround(585, 556), { flame: 1.0, t, mood: 'happy', blink: (t % 4) < 0.12 });
-    s += fig(sitGround(690, 553), { c: '#b9b5ad' });
+    s += fig(sitGround(700, 554), { c: '#b9b5ad' });
+    s += fig(sitGround(545, 556), { flame: 1.0, t, mood: 'happy', blink: (t % 4) < 0.12 });
     s += ui(txt(640, 120, 'Your attention is your fire.', { size: 44, w: 600, op: fade(t, 132.4, 138.6, 0.8, 0.6) }) + `<text x="640" y="120" fill="${YEL}" fill-opacity="${fade(t, 139.2, 143.6, 0.6, 0.6)}" filter="url(#yelGlow)" font-family="Inter" font-size="52" font-weight="800" text-anchor="middle">Guard it.</text>`);
     return s;
   }, { fi: 0.8, fo: 0.8, cam: { x: 640, y: 556 - 250 / 1.6, k: 1.6 } });
@@ -535,6 +579,7 @@
     [34.0, 'everyone does it'],
     [39.2, "you're too tired"], [41.8, 'why even try?'],
     [47.4, 'this is who you are', 2.3],
+    [55.0, 'plug it in', 1.8],
     [63.0, 'just check once'], [64.9, "you'll be back"], [66.6, "you can't last a day"],
     [89.0, 'it might be important'], [91.6, 'someone texted you'],
     [116.0, "you're missing out", 6.0], [117.0, "everyone's online", 5.0], [118.0, 'just one', 4.0],
