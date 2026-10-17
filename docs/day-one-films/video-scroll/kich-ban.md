@@ -2,10 +2,10 @@
 
 Kênh quốc tế · 2:30 · không lời dẫn.
 
-**Nhân vật (bản 3, đã chốt):**
-- **Spark** là người que trắng, nét đậm, to gấp 3 so với bản 1: camera phóng ×3, đầu cách mép trên khoảng 80px, bàn chân hơi lấn mép dưới. Có ngọn lửa trong ngực.
-- **Cái bóng** là người que cùng dáng, viền đỏ, ruột tối, mặt đỏ cười nhếch. Nó đứng sát Spark và ghé tai thì thầm. Chữ thì thầm viền đỏ, kèm giọng thì thầm đọc từng câu.
-- **Cảnh thử thách cuối:** camera lùi ra ×1.6 để thấy cái bóng khổng lồ, rồi đẩy vào lại ×3 khi lửa bùng.
+**Nhân vật (bản 4, theo video mẫu "LỬA"):**
+- **Spark:** đầu tròn, thân viên nang màu kem, tay chân mảnh, viền nâu mỏng, mặt nhìn nghiêng (mắt chấm, lông mày gạch, miệng cong). Ngọn lửa bay lơ lửng trước ngực.
+- **Cái bóng:** cùng dáng nhưng đen tuyền, viền đỏ phát sáng, mắt gạch trắng. Chữ thì thầm màu hồng có quầng đỏ, kèm giọng thì thầm.
+- **Khung hình:** đồ vật nét vẽ tay, viền đen trên dưới, góc trái có thanh "FIRE %" màu cam, góc phải có "DAY". Camera ×2.4; ở thử thách cuối camera lùi ra ×1.4.
 
 **Ẩn dụ chính:** mỗi lần lướt, một sợi lửa từ ngực Spark bị hút vào điện thoại. Ánh sáng điện thoại là màu lạnh, ngọn lửa là màu ấm.
 Câu chốt: *"The phone never stole your time. It stole your fire."*

@@ -1,6 +1,6 @@
 // SCROLL — vẽ khung hình tại thời điểm t (giây). Chạy trong trình duyệt: window.frame(t) → chuỗi SVG.
 (function () {
-  const W = '#f4f1ea', BG = '#0b0b0c', MUTED = '#8d8a84', GREY = '#55534f';
+  const W = '#f4f1ea', BG = '#0d0a09', MUTED = '#8d8a84', GREY = '#55534f';
   const ORANGE = '#ff8a1f', CORE = '#ffd166', EMBER = '#7a4a22', SMOKE = '#3a3a3a', COLD = '#bcd7ff';
   const DUR = 150;
 
@@ -64,42 +64,72 @@
     return s + '</g>';
   }
 
-  // ---------- người que nét đậm (×3 qua camera) ----------
-  const RED = '#e63946', DARK = '#140809', LW = 6;
-  function skeleton(J, c, w) {
-    const sh = mix(J.neck, J.hip, 0.15);
-    return ln(J.hip, J.neck, c, w) + pl([sh, J.le, J.lh], c, w) + pl([sh, J.re, J.rh], c, w) + pl([J.hip, J.lk, J.lf], c, w) + pl([J.hip, J.rk, J.rf], c, w);
-  }
-  function eyes(x, y, mood, c, blink) {
-    const w = LW * 0.8;
-    if (blink) return ln([x - 16, y + 3], [x - 5, y + 3], c, w) + ln([x + 5, y + 3], [x + 16, y + 3], c, w);
-    if (mood === 'tired') return ln([x - 16, y + 4], [x - 4, y + 6], c, w) + ln([x + 6, y + 6], [x + 18, y + 4], c, w);
-    if (mood === 'happy') return `<path d="M${x - 17},${y + 4} Q${x - 11},${y - 4} ${x - 5},${y + 4} M${x + 5},${y + 4} Q${x + 11},${y - 4} ${x + 17},${y + 4}" fill="none" ${st(c, w)}/>`;
-    let s = `<circle cx="${x - 11}" cy="${y + 2}" r="5" fill="${c}"/><circle cx="${x + 11}" cy="${y + 2}" r="5" fill="${c}"/>`;
-    if (mood === 'fierce' || mood === 'smirk') s += ln([x - 20, y - 12], [x - 5, y - 6], c, w) + ln([x + 20, y - 12], [x + 5, y - 6], c, w);
-    if (mood === 'smirk') s += `<path d="M${x - 10},${y + 16} Q${x + 2},${y + 22} ${x + 14},${y + 12}" fill="none" ${st(c, LW * 0.7)}/>`;
-    if (mood === 'sad') s += ln([x - 18, y - 7], [x - 5, y - 12], c, w) + ln([x + 18, y - 7], [x + 5, y - 12], c, w);
+  // ---------- nhân vật kiểu "LỬA": đầu tròn, thân viên nang màu kem, tay chân mảnh, mặt nhìn nghiêng ----------
+  const RED = '#e63946', SKIN = '#e9d6bd', SKIN_LINE = '#9a846b', LEG = '#efe6d8', INK = '#050405';
+  const unitv = (p, q) => { const dx = q[0] - p[0], dy = q[1] - p[1], d = Math.hypot(dx, dy) || 1; return [dx / d, dy / d]; };
+  const addv = (p, v, k) => [p[0] + v[0] * k, p[1] + v[1] * k];
+  const dirOf = J => (J.face ?? (J.look ?? 1)) >= 0 ? 1 : -1;
+  // thân + tay chân; fill/line = màu ruột/viền, e = độ dày viền
+  function bodyShapes(J, fill, line, e, legFill) {
+    const u = unitv(J.neck, J.hip);
+    const top = addv(J.neck, u, 12), bot = J.hip;
+    const L = (p, q, w, c) => `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+    const PL = (pts, w, c) => `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const sh = addv(J.neck, u, 22);
+    let s = '';
+    // chân (sau thân)
+    for (const [k, f] of [[J.lk, J.lf], [J.rk, J.rf]]) s += PL([bot, k, f], 9 + e, line) + PL([bot, k, f], 9, legFill);
+    // tay phía sau
+    s += PL([sh, J.re, J.rh], 9 + e, line) + PL([sh, J.re, J.rh], 9, fill);
+    // thân viên nang
+    s += L(top, bot, 46 + e, line) + L(top, bot, 46, fill);
+    // đầu
+    s += `<circle cx="${J.head[0]}" cy="${J.head[1]}" r="${31 + e / 2}" fill="${line}"/><circle cx="${J.head[0]}" cy="${J.head[1]}" r="31" fill="${fill}"/>`;
+    // tay phía trước
+    s += PL([sh, J.le, J.lh], 9 + e, line) + PL([sh, J.le, J.lh], 9, fill);
     return s;
   }
-  // nhân vật chính: người que trắng, ngọn lửa trong ngực
+  // mặt nhìn nghiêng: mắt chấm, lông mày gạch, miệng cong
+  function face(J, mood, c, blink) {
+    const d = dirOf(J), [x, y] = J.head, ex = x + 13 * d, ey = y - 2;
+    const L = (p, q, w = 3.2) => `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+    let s = '';
+    if (blink || mood === 'tired') s += L([ex - 5, ey + 1], [ex + 5, ey + 2]);
+    else if (mood === 'happy') s += `<path d="M${ex - 5},${ey + 2} Q${ex},${ey - 4} ${ex + 5},${ey + 2}" fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round"/>`;
+    else s += `<circle cx="${ex}" cy="${ey}" r="3.6" fill="${c}"/>`;
+    if (mood === 'fierce' || mood === 'smirk') s += L([ex - 9 * d, ey - 12], [ex + 7 * d, ey - 7]);
+    else if (mood === 'sad') s += L([ex - 8 * d, ey - 8], [ex + 7 * d, ey - 12]);
+    else if (mood === 'tired') s += L([ex - 8 * d, ey - 8], [ex + 7 * d, ey - 8]);
+    else s += L([ex - 7 * d, ey - 10], [ex + 6 * d, ey - 11]);
+    const mx = x + 9 * d, my = y + 13;
+    if (mood === 'happy' || mood === 'smirk') s += `<path d="M${mx - 5},${my} Q${mx},${my + 5} ${mx + 6 * d},${my - 1}" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/>`;
+    else if (mood === 'sad' || mood === 'tired') s += `<path d="M${mx - 5},${my + 3} Q${mx},${my - 1} ${mx + 5},${my + 3}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>`;
+    return s;
+  }
+  // vị trí ngọn lửa lơ lửng trước ngực (như video mẫu)
+  function flamePos(J) { const d = dirOf(J), ch = mix(J.neck, J.hip, 0.35); return [ch[0] + 50 * d, ch[1] - 34]; }
   function fig(J, o = {}) {
-    const c = o.c || W, op = o.op ?? 1;
+    const op = o.op ?? 1;
     let s = `<g opacity="${op}">`;
-    const ch = mix(J.neck, J.hip, 0.42);
-    if (o.flame !== undefined && o.flame > 0.1) s += glow(ch[0], ch[1] - 10, 60 + 110 * o.flame, 0.25 + 0.3 * o.flame);
-    s += skeleton(J, c, LW);
-    if (o.flame !== undefined) s += flame(ch[0], ch[1] + 22 * Math.max(0.5, o.flame), o.flame * 0.62, o.t || 0);
-    s += `<circle cx="${J.head[0]}" cy="${J.head[1]}" r="34" fill="${BG}" ${st(c, LW)}/>`;
-    s += eyes(J.head[0] + (J.look || 0), J.head[1], o.mood || 'neutral', c, o.blink);
+    const fp = flamePos(J);
+    if (o.flame !== undefined && o.flame > 0.05) s += glow(fp[0], fp[1] - 10, 90 + 220 * o.flame, 0.22 + 0.33 * o.flame);
+    const fill = o.c || SKIN;
+    s += bodyShapes(J, fill, SKIN_LINE, 3, o.c ? fill : LEG);
+    s += face(J, o.mood || 'neutral', '#2b231c', o.blink);
+    if (o.flame !== undefined) {
+      s += flame(fp[0], fp[1] + 18 * Math.max(0.6, o.flame), o.flame * 0.5, o.t || 0);
+      if (o.flame > 0.15) for (let i = 0; i < 3; i++) { const k = ((o.t || 0) * 0.7 + i / 3) % 1; s += `<circle cx="${fp[0] + 8 * Math.sin(i * 3 + k * 6)}" cy="${fp[1] - 40 * o.flame - 40 * k}" r="${1.6 * (1 - k)}" fill="${CORE}" opacity="${1 - k}"/>`; }
+    }
     return s + '</g>';
   }
-  // cái bóng: người que viền đỏ, ruột tối, mặt đỏ cười nhếch
+  // cái bóng: cùng dáng, đen tuyền, viền đỏ phát sáng, mắt gạch trắng
   function shadowFig(J, o = {}) {
     const op = o.op ?? 1, k = o.k || 1, ax = o.ax ?? J.hip[0], ay = o.ay ?? Math.max(J.lf[1], J.rf[1]);
     const jit = o.jitter ? `translate(${Math.sin(o.jitter * 97.1 + J.head[1]) * o.jitter},${Math.cos(o.jitter * 53.7) * o.jitter * 0.6})` : '';
+    const d = dirOf(J), [x, y] = J.head;
+    const eyes = `<line x1="${x + 6 * d}" y1="${y - 14}" x2="${x + 20 * d}" y2="${y - 4}" stroke="#e8e2da" stroke-width="4" stroke-linecap="round"/><circle cx="${x + 13 * d}" cy="${y + 5}" r="3.6" fill="#e8e2da"/>`;
     return `<g opacity="${op}" transform="${jit} translate(${ax},${ay}) scale(${k}) translate(${-ax},${-ay})">` +
-      skeleton(J, RED, LW + 6) + skeleton(J, DARK, LW) +
-      `<circle cx="${J.head[0]}" cy="${J.head[1]}" r="34" fill="${DARK}" ${st(RED, LW)}/>` + eyes(J.head[0] + (J.look || 0) * 4, J.head[1], o.mood || 'smirk', RED) + '</g>';
+      `<g filter="url(#redGlow)">${bodyShapes(J, RED, RED, 5, RED)}</g>` + bodyShapes(J, INK, RED, 2.5, INK) + eyes + '</g>';
   }
   function whisperPose(x, g, dir = 1) {
     return {
@@ -109,8 +139,8 @@
     };
   }
   // chữ thì thầm: viền đỏ
-  const redText = (x, y, s, op, size = 38) =>
-    `<text x="${x}" y="${y}" fill="none" stroke="${RED}" stroke-width="1.8" stroke-opacity="${op}" font-family="Inter" font-size="${size}" font-weight="900" font-style="italic" text-anchor="middle" letter-spacing="1">${s}</text>`;
+  const redText = (x, y, s, op, size = 32) =>
+    `<text x="${x}" y="${y}" fill="#ffc2c9" fill-opacity="${op}" stroke="${RED}" stroke-width="1" stroke-opacity="${op}" filter="url(#redGlow)" font-family="Inter" font-size="${size}" font-weight="600" text-anchor="middle">${s}</text>`;
   // các tư thế: trả về khớp
   function stand(x, g, o = {}) {
     const lean = o.lean || 0;
@@ -178,35 +208,45 @@
       lk: [x - 32, g - 54], lf: [x - 42, g], rk: [x + 32, g - 54], rf: [x + 42, g], look: 0,
     };
   }
-  const ground = (x1, x2, g, o = 1) => ln([x1, g], [x2, g], '#2a2a2a', 3, o);
-
-  // ---------- đạo cụ ----------
+  const ground = (x1, x2, g, o = 1) => ln([x1, g], [x2, g], '#2e2924', 2.2, o);
+  // ---------- đạo cụ kiểu vẽ tay ----------
+  const WOOD = '#8a6a48', FRAME = '#a9998a';
   function bed(x, y) {
-    return `<rect x="${x - 190}" y="${y - 6}" width="380" height="40" rx="6" fill="#121214" ${st('#3a3a3a', 3)}/>` +
-      ln([x - 190, y + 34], [x - 190, y + 70], '#3a3a3a', 3) + ln([x + 190, y + 34], [x + 190, y + 70], '#3a3a3a', 3) +
-      `<rect x="${x - 196}" y="${y - 70}" width="12" height="140" rx="4" fill="#121214" ${st('#3a3a3a', 3)}/>` +
-      `<ellipse cx="${x - 140}" cy="${y - 14}" rx="40" ry="12" fill="#18181a" ${st('#3a3a3a', 3)}/>`;
+    return `<g filter="url(#wobble)">` + ln([x - 196, y + 34], [x - 196, y + 70], FRAME, 2.5) + ln([x + 190, y + 34], [x + 190, y + 70], FRAME, 2.5) +
+      `<path d="M${x - 198},${y + 12} L${x - 198},${y - 80} L${x - 190},${y - 92} L${x - 182},${y - 80} L${x - 182},${y + 12}" fill="none" ${st(FRAME, 2.5)}/>` +
+      `<rect x="${x - 190}" y="${y + 18}" width="380" height="14" rx="6" fill="#2a2833"/>` +
+      `<rect x="${x - 190}" y="${y - 8}" width="380" height="30" rx="10" fill="#3b3948"/>` +
+      `<ellipse cx="${x - 132}" cy="${y - 14}" rx="44" ry="13" fill="#e6dccd" ${st('#b9ab98', 1.5)}/></g>`;
   }
   function desk(x, g) {
-    return ln([x - 120, g - 130], [x + 140, g - 130], '#5a5a5a', 5) + ln([x - 100, g - 130], [x - 100, g], '#3a3a3a', 4) + ln([x + 120, g - 130], [x + 120, g], '#3a3a3a', 4);
+    return `<g filter="url(#wobble)">` + ln([x - 124, g - 130], [x + 144, g - 130], WOOD, 6) + ln([x - 104, g - 128], [x - 104, g], WOOD, 3) + ln([x + 124, g - 128], [x + 124, g], WOOD, 3) + '</g>';
   }
-  function chair(x, g) { return ln([x - 26, g - 90], [x + 26, g - 90], '#3a3a3a', 4) + ln([x - 22, g - 90], [x - 22, g], '#3a3a3a', 4) + ln([x + 22, g - 90], [x + 22, g], '#3a3a3a', 4) + ln([x - 26, g - 90], [x - 30, g - 190], '#3a3a3a', 4); }
+  function chair(x, g) { return `<g filter="url(#wobble)">` + ln([x - 26, g - 90], [x + 26, g - 90], WOOD, 4) + ln([x - 22, g - 90], [x - 22, g], WOOD, 3) + ln([x + 22, g - 90], [x + 22, g], WOOD, 3) + ln([x - 26, g - 90], [x - 30, g - 190], WOOD, 3) + '</g>'; }
   function books(x, y, open = 0) {
-    if (open) return `<path d="M${x - 46},${y} L${x},${y + 6} L${x + 46},${y} L${x + 46},${y - 34} L${x},${y - 28} L${x - 46},${y - 34}Z" fill="${W}" fill-opacity=".92"/>` + ln([x, y + 6], [x, y - 28], '#bbb', 2);
-    return `<rect x="${x - 40}" y="${y - 14}" width="80" height="14" fill="#2a2a2c" ${st('#555', 2)}/><rect x="${x - 34}" y="${y - 28}" width="70" height="14" fill="#2a2a2c" ${st('#555', 2)}/><rect x="${x - 38}" y="${y - 42}" width="76" height="14" fill="#2a2a2c" ${st('#555', 2)}/>`;
+    if (open) return `<path d="M${x - 40},${y} L${x},${y + 6} L${x + 40},${y} L${x + 40},${y - 30} L${x},${y - 24} L${x - 40},${y - 30}Z" fill="#f2e8d6" stroke="#b9ab98" stroke-width="1.5"/>` + ln([x, y + 6], [x, y - 24], '#b9ab98', 1.5);
+    return `<g filter="url(#wobble)"><rect x="${x - 40}" y="${y - 14}" width="80" height="14" rx="2" fill="#6b4e3a"/><rect x="${x - 34}" y="${y - 28}" width="70" height="14" rx="2" fill="#4c5a6b"/><rect x="${x - 38}" y="${y - 42}" width="76" height="14" rx="2" fill="#7a6a4a"/></g>`;
   }
+  function windowFrame(x, y) {
+    return `<g filter="url(#wobble)"><rect x="${x}" y="${y}" width="150" height="110" fill="#0e1118" ${st('#6b6760', 2.5)}/>` + ln([x + 75, y], [x + 75, y + 110], '#6b6760', 2.5) + ln([x, y + 55], [x + 150, y + 55], '#6b6760', 2.5) + `<circle cx="${x + 112}" cy="${y + 22}" r="9" fill="#d9d4cc"/></g>`;
+  }
+  function slippers(x, g) { return `<ellipse cx="${x}" cy="${g - 4}" rx="11" ry="5" fill="#3b5bd6"/><ellipse cx="${x + 26}" cy="${g - 4}" rx="11" ry="5" fill="#3b5bd6"/>`; }
   // camera: phóng to nhân vật ×3; chữ giao diện (ui) giữ nguyên cỡ trên màn hình
   let CAM = { x: 640, y: 360, k: 1 };
-  const STAND = (x, k = 3) => ({ x, y: 560 - 408 / k, k }); // đầu cách mép trên ~80px, bàn chân hơi lấn mép dưới
+  const STAND = (x, k = 2.4) => ({ x, y: 560 - 280 / k, k }); // bàn chân ở y≈640 trên màn hình, trên viền đen dưới
   const ui = s => CAM.k === 1 ? s : `<g transform="translate(${CAM.x},${CAM.y}) scale(${1 / CAM.k}) translate(-640,-360)">${s}</g>`;
   function clock(x, y, s) { return ui(txt(x, y, s, { size: 22, c: '#6f6c66', w: 600, ls: 3 })); }
   function hud(day, screen, o = 1) {
     return ui(hudRaw(day, screen, o));
   }
+  const FIRE_BY_DAY = { 12: 55, 45: 38, 88: 24, 140: 13, 201: 3, 1: 20, 4: 36, 11: 52, 23: 66, 37: 81, 60: 93 };
   function hudRaw(day, screen, o = 1) {
     let s = '';
-    if (day) s += txt(56, 66, `DAY ${day}`, { a: 'start', size: 22, w: 800, c: ORANGE, ls: 5, op: o });
-    if (screen) s += txt(1224, 66, `SCREEN TIME  ${screen}`, { a: 'end', size: 18, w: 600, c: '#7b7872', ls: 3, op: o });
+    if (day) {
+      const f = FIRE_BY_DAY[day] ?? 0, c = f > 8 ? ORANGE : '#7b7872';
+      s += `<text x="48" y="70" fill="${c}" fill-opacity="${o}" font-family="Inter" font-size="17" font-weight="800" letter-spacing="3" filter="url(#softGlow)">FIRE <tspan font-size="24" letter-spacing="0">${f}%</tspan></text>`;
+      s += `<text x="1180" y="70" fill="#8d8a84" fill-opacity="${o}" font-family="Inter" font-size="17" font-weight="800" letter-spacing="3" text-anchor="end">DAY</text><text x="1232" y="72" fill="#cfcbc2" fill-opacity="${o}" font-family="Inter" font-size="26" font-weight="700" text-anchor="end">${day}</text>`;
+    }
+    if (screen) s += `<text x="1232" y="98" fill="#6f6c66" fill-opacity="${o}" font-family="Inter" font-size="13" font-weight="600" letter-spacing="2" text-anchor="end">SCREEN TIME ${screen}</text>`;
     return s;
   }
   // nhấp lướt: trả về [đang-lướt 0..1, số lần đã lướt]
@@ -259,23 +299,21 @@
     const [fk] = flicks(t, a + 0.6, period);
     s += phone(pp[0], pp[1], 160, 0.8 + 0.2 * fk);
     s += fig(J, { flame: flameAmt, t, mood: 'tired' });
-    const ch = mix(J.neck, J.hip, 0.42);
-    s += thread([ch[0], ch[1] - 6], pp, t, 0.25 + 0.75 * fk);
+    s += thread(flamePos(J), pp, t, 0.25 + 0.75 * fk);
     if (clockStr) s += clock(1080, 140, clockStr);
     if (demonK) s = shadowFig(whisperPose(410, 540, 1), { k: demonK, op: ramp(t, a + 0.3, a + 1.3) }) + s;
     return s;
   }
-  scene(7, 14, t => bedScene(t, 7, 0.55, 0.8), { cam: { x: 570, y: 400, k: 3 } });
+  scene(7, 14, t => bedScene(t, 7, 0.55, 0.8), { cam: { x: 570, y: 387, k: 2.4 } });
 
   // 3. Trượt dốc
-  scene(14, 20, t => hud(12, '2h 10m') + bedScene(t, 14, 0.45, 0.9, '', '2:14 AM', 1.0), { fi: 0.15, fo: 0.15, cam: { x: 570, y: 400, k: 3 } });
+  scene(14, 20, t => hud(12, '2h 10m') + bedScene(t, 14, 0.45, 0.9, '', '2:14 AM', 1.0), { fi: 0.15, fo: 0.15, cam: { x: 570, y: 387, k: 2.4 } });
   scene(20, 26, t => {
     let s = hud(45, '3h 48m') + ground(140, 1140, 560) + desk(760, 560) + chair(560, 560) + books(700, 430) + books(820, 430);
     const J = sitChair(560, 560, { hand: [610, 470], hand2: [616, 468], look: 10 });
-    J.head = [596, 368]; J.neck = [578, 396];
     const [fk] = flicks(t, 20.5, 1.0);
     s += phone(616, 448, 10, 0.8 + 0.2 * fk) + fig(J, { flame: 0.35, t, mood: 'tired' });
-    s += thread(mix(J.neck, J.hip, 0.42), [616, 448], t, 0.3 + 0.7 * fk);
+    s += thread(flamePos(J), [616, 448], t, 0.3 + 0.7 * fk);
     return shadowFig(whisperPose(440, 560, 1), { k: 1.0, op: ramp(t, 20.4, 21.4) }) + s;
   }, { fi: 0.15, fo: 0.15, cam: STAND(540) });
   scene(26, 32, t => {
@@ -289,7 +327,7 @@
     const J = standPhone(632, 560);
     const [fk] = flicks(t, 26.6, 1.1);
     s += phone(682, 432, 15, 0.8 + 0.2 * fk) + fig(J, { flame: 0.25, t, mood: 'tired' });
-    return s + thread(mix(J.neck, J.hip, 0.42), [682, 432], t, 0.3 + 0.7 * fk);
+    return s + thread(flamePos(J), [682, 432], t, 0.3 + 0.7 * fk);
   }, { fi: 0.15, fo: 0.15, cam: STAND(600) });
   scene(32, 38, t => {
     let s = hud(140, '6h 31m');
@@ -298,11 +336,11 @@
     const J = walk(620, 560, t * 6, { phone: true });
     const [fk] = flicks(t, 32.5, 1.0);
     s += phone(668, 430, 15, 0.8 + 0.2 * fk) + fig(J, { flame: 0.16, t, mood: 'tired' });
-    s += thread(mix(J.neck, J.hip, 0.42), [668, 430], t, 0.3 + 0.7 * fk);
+    s += thread(flamePos(J), [668, 430], t, 0.3 + 0.7 * fk);
     const D = walk(745, 560, t * 6 + 0.4); D.head = [D.head[0] - 22, D.head[1] + 6]; D.neck = [D.neck[0] - 10, D.neck[1]]; D.face = -1;
     return shadowFig(D, { k: 0.95, op: ramp(t, 32.4, 33.4) }) + s;
   }, { fi: 0.15, fo: 0.15, cam: STAND(660) });
-  scene(38, 44, t => hud(201, '8h 57m') + bedScene(t, 38, 0.06, 1.1, '', '3:12 AM', 0.9), { fi: 0.15, fo: 0.15, cam: { x: 570, y: 400, k: 3 } });
+  scene(38, 44, t => hud(201, '8h 57m') + bedScene(t, 38, 0.06, 1.1, '', '3:12 AM', 0.9), { fi: 0.15, fo: 0.15, cam: { x: 570, y: 387, k: 2.4 } });
   // điện thoại sập nguồn, màn hình đen phản chiếu
   scene(44, 50, t => {
     let s = hud(201, '9h 14m');
@@ -362,7 +400,6 @@
     let s = hud(4, '6h 20m') + ground(140, 1140, 560) + chair(560, 560);
     s += `<path d="M700,250 L640,250 L560,420 L780,420Z" fill="${CORE}" opacity=".05"/>` + ln([700, 250], [700, 560], '#3a3a3a', 4) + `<path d="M660,250 L740,250 L726,226 L674,226Z" fill="#2a2a2c" ${st('#555', 3)}/>`;
     const J = sitChair(560, 560, { hand: [620, 440], hand2: [636, 438], look: 8 });
-    J.head = [588, 360]; J.neck = [574, 392];
     s += fig(J, { flame: 0.36, t, mood: 'neutral', blink: (t % 3.3) < 0.12 });
     s += books(628, 440, 1);
     const flip = ((t - 71) % 3) / 3;
@@ -436,7 +473,7 @@
     if (wave > 0 && wave < 1) s += `<circle cx="520" cy="470" r="${80 + 900 * wave}" fill="none" ${st(ORANGE, 6, 0.6 * (1 - wave))}/>`;
     s += fig(J, { flame: fl, t, mood: t > 121.4 ? 'fierce' : 'sad' });
     return s;
-  }, { cam: t => { const w = ramp(t, 113, 117.5) * (1 - ramp(t, 125.5, 128.5)), k = 3 - 1.4 * w; return { x: lerp(560, 645, w), y: 560 - lerp(408, 340, w) / k, k }; } });
+  }, { cam: t => { const w = ramp(t, 113, 117.5) * (1 - ramp(t, 125.5, 128.5)), k = 2.4 - 1.0 * w; return { x: lerp(560, 645, w), y: 560 - 280 / k, k }; } });
 
   // 7. Kết
   scene(130, 144, t => {
@@ -449,7 +486,7 @@
     s += fig(sitGround(690, 553), { c: '#b9b5ad' });
     s += ui(txt(640, 120, 'Your attention is your fire.', { size: 44, w: 600, op: fade(t, 132.4, 138.6, 0.8, 0.6) }) + txt(640, 120, 'Guard it.', { size: 52, w: 700, c: ORANGE, op: fade(t, 139.2, 143.6, 0.6, 0.6) }));
     return s;
-  }, { fi: 0.8, fo: 0.8, cam: { x: 640, y: 556 - 408 / 3, k: 3 } });
+  }, { fi: 0.8, fo: 0.8, cam: { x: 640, y: 556 - 280 / 2.4, k: 2.4 } });
   scene(144, 150, t => {
     let s = txt(640, 360, 'SCROLL', { size: 92, w: 800, ls: 22, op: fade(t, 144.6, 149.2, 0.8, 0.8) });
     s += txt(640, 410, 'an animated short film', { size: 22, c: MUTED, ls: 6, op: fade(t, 145.4, 149.2, 0.8, 0.8) });
@@ -467,11 +504,11 @@
     [26.7, "they're boring", 640, 70], [28.4, "you're not missing anything", 640, 70], [30.1, 'check your feed', 640, 70],
     [32.7, "it's only five minutes", 210, 330], [34.4, 'everyone does it', 200, 400], [36.1, 'relax', 200, 470],
     [38.6, "you'll start tomorrow", 950, 160], [40.1, "you're too tired", 950, 230], [41.6, 'nothing will change', 950, 300], [43.0, 'why even try?', 950, 370],
-    [47.4, 'this is who you are', 640, 700, 2.4],
+    [47.4, 'this is who you are', 640, 655, 2.4],
     [62.8, 'just check once', 860, 130], [64.4, "you'll be back", 860, 195], [66.0, "you can't last a day", 860, 260],
     [88.9, 'it might be important', 1010, 230], [91.4, 'someone texted you', 1010, 290],
     [115.6, "you're missing out", 300, 100, 7.0], [116.5, "everyone's online", 380, 160, 6.1], [117.3, 'just one', 260, 215, 5.3],
-    [118.1, 'you deserve it', 400, 270, 4.5], [118.9, "you'll fail again", 300, 325, 3.7], [119.6, 'come back', 470, 52, 3.0], [120.3, 'you need me', 200, 380, 2.3],
+    [118.1, 'you deserve it', 400, 270, 4.5], [118.9, "you'll fail again", 300, 325, 3.7], [119.6, 'come back', 190, 440, 3.0], [120.3, 'you need me', 330, 495, 2.3],
   ];
   function whispers(t) {
     let s = '';
@@ -484,7 +521,11 @@
   }
 
   const DEFS = `<defs><radialGradient id="gO"><stop offset="0" stop-color="${ORANGE}" stop-opacity=".9"/><stop offset="1" stop-color="${ORANGE}" stop-opacity="0"/></radialGradient>` +
-    `<radialGradient id="gC"><stop offset="0" stop-color="${COLD}" stop-opacity=".7"/><stop offset="1" stop-color="${COLD}" stop-opacity="0"/></radialGradient></defs>`;
+    `<radialGradient id="gC"><stop offset="0" stop-color="${COLD}" stop-opacity=".7"/><stop offset="1" stop-color="${COLD}" stop-opacity="0"/></radialGradient>` +
+    `<radialGradient id="vig" cx=".5" cy=".5" r=".72"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></radialGradient>` +
+    `<filter id="redGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>` +
+    `<filter id="softGlow" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>` +
+    `<filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter></defs>`;
 
   window.DURATION = DUR;
   window.WHISPERS = WH;
@@ -497,6 +538,7 @@
       body += `<g opacity="${o}"><g transform="translate(640,360) scale(${CAM.k}) translate(${-CAM.x},${-CAM.y})">${sc.fn(t)}</g></g>`;
     }
     body += whispers(t);
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1280 720">${DEFS}<rect width="1280" height="720" fill="${BG}"/>${body}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1280 720">${DEFS}<rect width="1280" height="720" fill="${BG}"/>${body}` +
+      `<rect width="1280" height="720" fill="url(#vig)"/><rect width="1280" height="36" fill="#000"/><rect y="684" width="1280" height="36" fill="#000"/></svg>`;
   };
 })();
