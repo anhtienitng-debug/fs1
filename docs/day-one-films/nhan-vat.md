@@ -1,4 +1,6 @@
-# Phương án nhân vật chính (bản nháp để duyệt)
+# Phương án nhân vật chính
+
+> Đã chốt: **VN1 Bảo** và **INT1 Ember**. Xem `thiet-ke-nhan-vat.md`.
 
 Nguyên tắc chung cho cả hai kênh:
 
