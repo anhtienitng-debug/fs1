@@ -129,7 +129,12 @@
     return s;
   }
   // vị trí ngọn lửa lơ lửng trước ngực (như video mẫu)
-  function flamePos(J) { const d = dirOf(J), ch = mix(J.neck, J.hip, 0.35); return [ch[0] + 50 * d, ch[1] - 34]; }
+  function flamePos(J) {
+    const d = dirOf(J), ch = mix(J.neck, J.hip, 0.35);
+    if (Math.abs(J.hip[0] - J.neck[0]) > Math.abs(J.hip[1] - J.neck[1])) return [J.head[0] + 4, J.head[1] - 64]; // đang nằm: lửa trên đầu
+    if (J.runner) return [J.head[0] - 46 * d, J.head[1] + 6]; // đang chạy: lửa sau lưng, cạnh đầu
+    return [ch[0] + 50 * d, ch[1] - 34];
+  }
   function fig(J, o = {}) {
     const op = o.op ?? 1;
     let s = `<g opacity="${op}">`;
@@ -213,11 +218,19 @@
     return J;
   }
   function run(x, g, ph) {
-    const a = Math.sin(ph), b = Math.cos(ph), up = Math.abs(b) * 8;
+    const a = Math.sin(ph), c = Math.cos(ph), up = Math.abs(a) * 5;
+    const step = (sg) => { // một chân: sg = +1/-1 lệch pha
+      const p = sg * a, lift = Math.max(0, sg * c) * 14;
+      const foot = [x + 22 * p, g - lift], knee = [x + 8 + 14 * p + (lift > 0 ? 8 : 0), g - 38 - up * 0.5 - lift * 0.4];
+      return [knee, foot];
+    };
+    const [lk, lf] = step(1), [rk, rf] = step(-1);
     return {
-      head: [x + 26, g - 192 - up], neck: [x + 16, g - 154 - up], hip: [x, g - 74 - up],
-      le: [x + 6 - 30 * a, g - 120 - up], lh: [x + 20 - 50 * a, g - 140 - up + 10 * a], re: [x + 6 + 30 * a, g - 120 - up], rh: [x + 20 + 50 * a, g - 140 - up - 10 * a],
-      lk: [x + 34 * a, g - 40 - up], lf: [x + 40 * a - 10, g - Math.max(0, b) * 22], rk: [x - 34 * a, g - 40 - up], rf: [x - 40 * a - 10, g - Math.max(0, -b) * 22], look: 10,
+      head: [x + 9, g - 196 - up], neck: [x + 6, g - 158 - up], hip: [x, g - 72 - up],
+      // tay gần camera: gập khuỷu, nắm tay trước ngực, đánh ngược pha chân
+      le: [x + 10 - 10 * a, g - 112 - up], lh: [x + 30 - 12 * a, g - 128 - up + 6 * a],
+      re: [x + 6 + 10 * a, g - 112 - up], rh: [x + 24 + 12 * a, g - 126 - up - 6 * a],
+      lk, lf, rk, rf, look: 10, face: 1, runner: true,
     };
   }
   function armsUp(x, g, k = 1) {
@@ -472,11 +485,25 @@
   }, { cam: STAND(610) });
   scene(79, 87, t => {
     let s = hud(11, '4h 05m');
-    s += `<circle cx="740" cy="560" r="90" fill="${ORANGE}" opacity=".18"/><circle cx="740" cy="560" r="60" fill="${ORANGE}" opacity=".35"/>`;
-    for (let i = 0; i < 9; i++) { const x = ((i * 170 - t * 360) % 1530 + 1530) % 1530 - 120; s += ln([x, 560], [x + 70, 560], '#3a3a3a', 3); }
-    s += `<rect x="0" y="560" width="1280" height="160" fill="${BG}"/>` + ln([0, 560], [1280, 560], '#2a2a2a', 3);
-    for (let i = 0; i < 7; i++) s += `<ellipse cx="${536 - i * 92 - ((t * 360) % 92)}" cy="561" rx="10" ry="3.5" fill="${YEL}" opacity="${0.7 - i * 0.09}" filter="url(#yelGlow)"/>`;
-    return s + fig(run(560, 560, t * 9), { flame: 0.5, t, mood: 'fierce' });
+    s += `<defs><linearGradient id="dawnRun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1210"/><stop offset=".75" stop-color="#5a3420"/><stop offset="1" stop-color="#8a5228"/></linearGradient></defs>`;
+    s += `<rect x="-200" y="100" width="1700" height="460" fill="url(#dawnRun)"/>`;
+    // nhà xa (chậm), nhà gần (nhanh) — trôi sang trái
+    const row = (speed, base, hgt, col, win, seed) => {
+      let r = '';
+      for (let i = 0; i < 14; i++) {
+        const w = 70 + 40 * rnd(i + seed), h = hgt * (0.55 + 0.45 * rnd(i * 3 + seed));
+        const x = (((i * 120 - t * speed) % 1680) + 1680) % 1680 - 300;
+        r += `<rect x="${x}" y="${base - h}" width="${w}" height="${h}" fill="${col}" stroke="#2a201b" stroke-width="2"/>`;
+        for (let j = 0; j < 4; j++) if (rnd(i * 7 + j + seed) > 0.45) r += `<rect x="${x + 12 + (j % 2) * (w / 2 - 6)}" y="${base - h + 18 + Math.floor(j / 2) * 34}" width="${w / 2 - 22}" height="14" fill="${win}" opacity=".85"/>`;
+      }
+      return r;
+    };
+    s += row(40, 560, 300, '#2b2320', '#d6a25c', 11) + row(110, 560, 210, '#221b19', '#e8b468', 37);
+    s += `<rect x="-200" y="560" width="1700" height="160" fill="#14100e"/>` + ln([-200, 560], [1500, 560], '#3a2c22', 3);
+    // vệt vàng kéo theo sau bước chạy
+    s += `<rect x="-200" y="557" width="${200 + 548}" height="5" rx="2.5" fill="${YEL}" opacity=".85" filter="url(#yelGlow)"/>`;
+    for (let i = 0; i < 8; i++) { const x = 548 - (((t * 110) + i * 70) % 560); s += `<ellipse cx="${x}" cy="559" rx="12" ry="3.5" fill="${YEL}" opacity="${0.5 * (1 - (548 - x) / 560)}" filter="url(#yelGlow)"/>`; }
+    return s + fig(run(560, 560, t * 10), { flame: 0.5, t, mood: 'happy' });
   }, { cam: STAND(600) });
   scene(87, 95, t => {
     let s = hud(23, '2h 40m') + ground(140, 1140, 560) + desk(760, 560) + chair(560, 560);
