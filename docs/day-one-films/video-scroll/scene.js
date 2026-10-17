@@ -64,32 +64,64 @@
     return s + '</g>';
   }
 
-  // ---------- người que ----------
-  function fig(J, o = {}) {
-    const c = o.c || W, op = o.op ?? 1;
-    const sh = mix(J.neck, J.hip, 0.15);
-    let s = `<g opacity="${op}">`;
-    s += ln(J.hip, J.neck, c);
-    s += pl([sh, J.le, J.lh], c) + pl([sh, J.re, J.rh], c);
-    s += pl([J.hip, J.lk, J.lf], c) + pl([J.hip, J.rk, J.rf], c);
-    if (o.flame !== undefined) {
-      const ch = mix(J.neck, J.hip, 0.42);
-      if (o.flame > 0.1) s += glow(ch[0], ch[1] - 10, 60 + 110 * o.flame, 0.25 + 0.3 * o.flame);
-      s += flame(ch[0], ch[1] + 22 * Math.max(0.5, o.flame), o.flame * 0.62, o.t || 0);
-    }
-    s += `<circle cx="${J.head[0]}" cy="${J.head[1]}" r="34" fill="${BG}" ${st(c)}/>`;
-    s += eyes(J.head[0] + (J.look || 0), J.head[1], o.mood || 'neutral', c, o.blink);
-    return s + '</g>';
-  }
-  function eyes(x, y, mood, c, blink) {
-    if (blink) return ln([x - 16, y + 3], [x - 5, y + 3], c, 4) + ln([x + 5, y + 3], [x + 16, y + 3], c, 4);
-    if (mood === 'tired') return ln([x - 16, y + 4], [x - 4, y + 6], c, 4) + ln([x + 6, y + 6], [x + 18, y + 4], c, 4);
-    if (mood === 'happy') return `<path d="M${x - 17},${y + 4} Q${x - 11},${y - 4} ${x - 5},${y + 4} M${x + 5},${y + 4} Q${x + 11},${y - 4} ${x + 17},${y + 4}" fill="none" ${st(c, 4)}/>`;
-    let s = `<circle cx="${x - 11}" cy="${y + 2}" r="4.5" fill="${c}"/><circle cx="${x + 11}" cy="${y + 2}" r="4.5" fill="${c}"/>`;
-    if (mood === 'fierce') s += ln([x - 19, y - 12], [x - 5, y - 7], c, 4) + ln([x + 19, y - 12], [x + 5, y - 7], c, 4);
-    if (mood === 'sad') s += ln([x - 18, y - 7], [x - 5, y - 12], c, 3.5) + ln([x + 18, y - 7], [x + 5, y - 12], c, 3.5);
+  // ---------- nhân vật dạng bóng người (silhouette) ----------
+  const RED = '#e63946', SHADOW_FILL = '#120a0b';
+  const unit = (p, q) => { const dx = q[0] - p[0], dy = q[1] - p[1], d = Math.hypot(dx, dy) || 1; return [dx / d, dy / d]; };
+  const add2 = (p, v, k) => [p[0] + v[0] * k, p[1] + v[1] * k];
+  const dist = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1]);
+  // vẽ thân người bằng các khối cùng màu; e = độ dày thêm (dùng để tạo viền)
+  function bodyParts(J, c, e = 0) {
+    const u = unit(J.neck, J.hip), n = [-u[1], u[0]];
+    const S = add2(J.neck, u, 12);
+    const sA = add2(S, n, 23), sB = add2(S, n, -23);
+    const hA = add2(J.hip, n, 15), hB = add2(J.hip, n, -15);
+    const waist = add2(mix(S, J.hip, 0.62), n, 0);
+    const wA = add2(waist, n, 15), wB = add2(waist, n, -15);
+    // tay/chân chọn vai/hông gần khớp hơn để không bắt chéo
+    const [shL, shR] = dist(sA, J.le) <= dist(sB, J.le) ? [sA, sB] : [sB, sA];
+    const [hpL, hpR] = dist(hA, J.lk) <= dist(hB, J.lk) ? [hA, hB] : [hB, hA];
+    const lw = (p, q, w) => `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${c}" stroke-width="${w + e}" stroke-linecap="round"/>`;
+    let s = '';
+    s += lw(hpL, J.lk, 22) + lw(J.lk, J.lf, 16) + lw(hpR, J.rk, 22) + lw(J.rk, J.rf, 16);
+    const fd = J.face || (J.look >= 0 ? 1 : -1);
+    s += lw(J.lf, [J.lf[0] + 13 * fd, J.lf[1]], 10) + lw(J.rf, [J.rf[0] + 13 * fd, J.rf[1]], 10);
+    s += `<path d="M${sA[0]},${sA[1]} L${sB[0]},${sB[1]} L${wB[0]},${wB[1]} L${hB[0]},${hB[1]} L${hA[0]},${hA[1]} L${wA[0]},${wA[1]}Z" fill="${c}" stroke="${c}" stroke-width="${12 + e}" stroke-linejoin="round"/>`;
+    s += lw(shL, J.le, 15) + lw(J.le, J.lh, 12) + lw(shR, J.re, 15) + lw(J.re, J.rh, 12);
+    s += `<circle cx="${J.lh[0]}" cy="${J.lh[1]}" r="${7 + e / 2}" fill="${c}"/><circle cx="${J.rh[0]}" cy="${J.rh[1]}" r="${7 + e / 2}" fill="${c}"/>`;
+    s += lw(J.neck, add2(J.neck, unit(J.neck, J.head), 22), 14);
+    const ang = Math.atan2(J.head[0] - J.neck[0], -(J.head[1] - J.neck[1])) * 180 / Math.PI;
+    s += `<ellipse cx="${J.head[0]}" cy="${J.head[1]}" rx="${21 + e / 2}" ry="${26 + e / 2}" fill="${c}" transform="rotate(${ang} ${J.head[0]} ${J.head[1]})"/>`;
     return s;
   }
+  // nhân vật chính: bóng người trắng, ngọn lửa trong ngực
+  function fig(J, o = {}) {
+    const op = o.op ?? 1;
+    let s = `<g opacity="${op}">` + bodyParts(J, o.c || W);
+    if (o.flame !== undefined) {
+      const ch = mix(J.neck, J.hip, 0.36);
+      if (o.flame > 0.1) s = glow(ch[0], ch[1] - 10, 60 + 110 * o.flame, 0.25 + 0.3 * o.flame) + s;
+      if (o.flame <= 0.09) s += `<circle cx="${ch[0]}" cy="${ch[1]}" r="9" fill="#2a2522"/>`;
+      s += flame(ch[0], ch[1] + 22 * Math.max(0.5, o.flame), o.flame * 0.62, o.t || 0);
+    }
+    return s + '</g>';
+  }
+  // cái bóng: cùng hình người, viền đỏ, ruột tối
+  function shadowFig(J, o = {}) {
+    const op = o.op ?? 1, k = o.k || 1, ax = o.ax ?? J.hip[0], ay = o.ay ?? Math.max(J.lf[1], J.rf[1]);
+    const jit = o.jitter ? `translate(${Math.sin(o.jitter * 97.1 + J.head[1]) * o.jitter},${Math.cos(o.jitter * 53.7) * o.jitter * 0.6})` : '';
+    return `<g opacity="${op}" transform="${jit} translate(${ax},${ay}) scale(${k}) translate(${-ax},${-ay})">` +
+      bodyParts(J, RED, 7) + bodyParts(J, SHADOW_FILL, 0) + '</g>';
+  }
+  function whisperPose(x, g, dir = 1) {
+    return {
+      head: [x + 24 * dir, g - 190], neck: [x + 12 * dir, g - 156], hip: [x, g - 72],
+      le: [x + 30 * dir, g - 122], lh: [x + 44 * dir, g - 168], re: [x - 6 * dir, g - 112], rh: [x - 4 * dir, g - 80],
+      lk: [x - 6 * dir, g - 36], lf: [x - 16 * dir, g], rk: [x + 12 * dir, g - 36], rf: [x + 20 * dir, g], look: dir, face: dir,
+    };
+  }
+  // chữ thì thầm: viền đỏ
+  const redText = (x, y, s, op, size = 30) =>
+    `<text x="${x}" y="${y}" fill="none" stroke="${RED}" stroke-width="1.5" stroke-opacity="${op}" font-family="Inter" font-size="${size}" font-weight="800" font-style="italic" text-anchor="middle" letter-spacing="1">${s}</text>`;
   // các tư thế: trả về khớp
   function stand(x, g, o = {}) {
     const lean = o.lean || 0;
@@ -234,13 +266,13 @@
     const ch = mix(J.neck, J.hip, 0.42);
     s += thread([ch[0], ch[1] - 6], pp, t, 0.25 + 0.75 * fk);
     if (clockStr) s += clock(1080, 140, clockStr);
-    if (demonK) s += smoke(380, 420, demonK, t, ramp(t, a + 0.4, a + 1.4)) + whisper(380, 420 - 120 * demonK - 18, line, fade(t, a + 1.2, a + 5.6, 0.5, 0.5));
+    if (demonK) s = shadowFig(whisperPose(410, 540, 1), { k: demonK, op: ramp(t, a + 0.3, a + 1.3) }) + s;
     return s;
   }
-  scene(7, 14, t => bedScene(t, 7, 0.55, 0) + txt(640, 170, 'Just one more.', { size: 40, op: fade(t, 9.5, 13.6) }));
+  scene(7, 14, t => bedScene(t, 7, 0.55, 0.8));
 
   // 3. Trượt dốc
-  scene(14, 20, t => hud(12, '2h 10m') + bedScene(t, 14, 0.45, 0.4, 'one more video', '2:14 AM', 1.0), { fi: 0.15, fo: 0.15 });
+  scene(14, 20, t => hud(12, '2h 10m') + bedScene(t, 14, 0.45, 0.9, '', '2:14 AM', 1.0), { fi: 0.15, fo: 0.15 });
   scene(20, 26, t => {
     let s = hud(45, '3h 48m') + ground(140, 1140, 560) + desk(760, 560) + chair(560, 560) + books(700, 430) + books(820, 430);
     const J = sitChair(560, 560, { hand: [610, 470], hand2: [616, 468], look: 10 });
@@ -248,7 +280,7 @@
     const [fk] = flicks(t, 20.5, 1.0);
     s += phone(616, 448, 10, 0.8 + 0.2 * fk) + fig(J, { flame: 0.35, t, mood: 'tired' });
     s += thread(mix(J.neck, J.hip, 0.42), [616, 448], t, 0.3 + 0.7 * fk);
-    return s + smoke(360, 360, 0.55, t, ramp(t, 20.6, 21.6)) + whisper(360, 280, 'you deserve a break', fade(t, 21.4, 25.6, 0.5, 0.5));
+    return shadowFig(whisperPose(440, 560, 1), { k: 1.0, op: ramp(t, 20.4, 21.4) }) + s;
   }, { fi: 0.15, fo: 0.15 });
   scene(26, 32, t => {
     let s = hud(88, '5h 02m') + ground(140, 1140, 560) + ln([400, 470], [880, 470], '#5a5a5a', 5) + ln([440, 470], [440, 560], '#3a3a3a', 4) + ln([840, 470], [840, 560], '#3a3a3a', 4);
@@ -256,7 +288,8 @@
     const L = stand(330, 560, { look: 8 }), R = stand(950, 560, { look: -8 });
     const wave = Math.sin(t * 5) * 14;
     L.re = [356, 430 + wave]; L.rh = [384, 410 + wave]; R.le = [924, 428 - wave]; R.lh = [896, 412 - wave];
-    s += fig(L, { op: fo, mood: 'happy' }) + fig(R, { op: fo, mood: 'happy' });
+    s += fig(L, { op: fo, c: '#b9b5ad' }) + fig(R, { op: fo, c: '#b9b5ad' });
+    s += shadowFig(whisperPose(520, 560, 1), { k: 1.05, op: ramp(t, 26.4, 27.4) });
     const J = standPhone(632, 560);
     const [fk] = flicks(t, 26.6, 1.1);
     s += phone(682, 432, 15, 0.8 + 0.2 * fk) + fig(J, { flame: 0.25, t, mood: 'tired' });
@@ -270,9 +303,10 @@
     const [fk] = flicks(t, 32.5, 1.0);
     s += phone(668, 430, 15, 0.8 + 0.2 * fk) + fig(J, { flame: 0.16, t, mood: 'tired' });
     s += thread(mix(J.neck, J.hip, 0.42), [668, 430], t, 0.3 + 0.7 * fk);
-    return s + smoke(820, 300, 0.75, t, ramp(t, 32.5, 33.5)) + whisper(820, 190, "it's only 5 minutes", fade(t, 33.2, 37.6, 0.5, 0.5));
+    const D = walk(790, 560, t * 6 + 0.4); D.head = [D.head[0] - 22, D.head[1] + 6]; D.neck = [D.neck[0] - 10, D.neck[1]]; D.face = -1;
+    return shadowFig(D, { k: 1.15, op: ramp(t, 32.4, 33.4) }) + s;
   }, { fi: 0.15, fo: 0.15 });
-  scene(38, 44, t => hud(201, '8h 57m') + bedScene(t, 38, 0.06, 1.1, "you'll start tomorrow", '3:12 AM', 0.9), { fi: 0.15, fo: 0.15 });
+  scene(38, 44, t => hud(201, '8h 57m') + bedScene(t, 38, 0.06, 1.35, '', '3:12 AM', 0.9), { fi: 0.15, fo: 0.15 });
   // điện thoại sập nguồn, màn hình đen phản chiếu
   scene(44, 50, t => {
     let s = hud(201, '9h 14m');
@@ -289,7 +323,7 @@
       const r = ramp(t, 46.6, 48.2);
       s += `<g opacity="${0.55 * r}">`;
       const J = slump(632, 600);
-      s += fig(J, { c: '#8a8a8a', mood: 'tired', flame: 0.05, t });
+      s += shadowFig(whisperPose(540, 600, 1), { k: 1.1, op: 0.9 }) + fig(J, { c: '#8a8a8a', flame: 0.05, t });
       s += '</g>';
       const beat = Math.pow(Math.max(0, Math.sin((t - 46) * Math.PI / 0.9)), 8);
       s += glow(642, 486, 40 + 30 * beat, 0.25 * r * beat);
@@ -325,7 +359,7 @@
     if (t < 65.2) s += phone(J.rh[0] + 4, J.rh[1] - 18, 0, 0.5, 1 - ramp(t, 64.6, 65.0));
     s += fig(J, { flame: fl, t, mood: t > 68 ? 'fierce' : 'neutral' });
     if (t > 68 && t < 69.5) { const k2 = ramp(t, 68, 69.5); for (let i = 0; i < 10; i++) s += `<circle cx="${600 + Math.cos(i) * 70 * k2}" cy="${484 + Math.sin(i * 1.3) * 70 * k2}" r="${3 * (1 - k2)}" fill="${CORE}"/>`; }
-    s += smoke(900, 330, 0.5, t, fade(t, 62.6, 67.4, 0.6, 1.0)) + whisper(900, 250, 'just check once', fade(t, 63.0, 66.6, 0.5, 0.6));
+    s = shadowFig(whisperPose(1040, 560, -1), { k: lerp(1, 0.6, ramp(t, 67.5, 69)), op: fade(t, 62.6, 69.2, 0.6, 1.2) }) + s;
     return s;
   });
   scene(71, 79, t => {
@@ -353,6 +387,7 @@
     s += phone(860 + jx, 418, 90, buzz ? 1 : 0.3, 1, 22, 40);
     if (t > 88.5) s += `<rect x="868" y="392" width="40" height="20" rx="10" fill="#d0d0d0"/>` + txt(888, 407, '99+', { size: 13, c: BG, w: 800 });
     const J = sitChair(560, 560, { hand: [650 + Math.sin(t * 9) * 8, 428], hand2: [640, 430], look: 10 });
+    s = shadowFig(whisperPose(1000, 560, -1), { k: 0.75, op: 0.85 * fade(t, 88.4, 93.6, 0.6, 1.4) }) + s;
     s += `<rect x="610" y="424" width="90" height="6" fill="${W}" opacity=".85"/>`;
     s += fig(J, { flame: 0.62, t, mood: 'fierce' });
     return s;
@@ -362,7 +397,7 @@
     const L = stand(420, 556, { look: 8 }), R = stand(860, 556, { look: -8 });
     const wave = Math.sin(t * 4) * 16;
     L.re = [446, 426 + wave]; L.rh = [476, 400 + wave]; R.le = [834, 424 - wave]; R.lh = [806, 404 - wave];
-    s += fig(L, { mood: 'happy' }) + fig(R, { mood: 'happy' });
+    s += fig(L, { c: '#b9b5ad' }) + fig(R, { c: '#b9b5ad' });
     const J = stand(640, 548);
     J.le = [612, 440]; J.lh = [596, 410 + Math.sin(t * 4 + 1) * 10];
     return s + fig(J, { flame: 0.78, t, mood: 'happy' });
@@ -384,7 +419,8 @@
     let s = ground(140, 1140, 560);
     const big = ramp(t, 113, 118) * (1 - ramp(t, 124.2, 126.5));
     const dOff = t > 125.5;
-    s += smoke(900, 520, 0.3 + 2.0 * big, t, big > 0.02 ? 1 : 0);
+    const hit = ramp(t, 123.8, 126.4);
+    if (big > 0.02) s += shadowFig(whisperPose(900, 560, -1), { k: 0.3 + 1.9 * ramp(t, 113, 118), op: 1 - hit, jitter: hit > 0 ? 18 * hit : 0, ax: 900, ay: 560 });
     if (!dOff) s += phone(900, 548, 90, 1, 1, 26, 48);
     else s += `<rect x="876" y="535" width="48" height="26" rx="5" fill="#141416" ${st(W, 2.5)}/>`;
     // thông báo
@@ -393,8 +429,6 @@
       const k = clamp((t - tp) / 0.4), fadeO = 1 - ramp(t, 121, 122.5);
       s += `<rect x="${960 + (i % 2) * 40}" y="${500 - i * 34 - 10 * k}" width="${130}" height="26" rx="13" fill="#2a2f36" opacity="${k * fadeO}"/><circle cx="${978 + (i % 2) * 40}" cy="${513 - i * 34 - 10 * k}" r="6" fill="#59626e" opacity="${k * fadeO}"/>`;
     }
-    const ws = [["you're missing out", 640, 170], ["everyone's online", 700, 230], ['just one', 610, 290], ['you deserve it', 690, 350]];
-    ws.forEach(([w, x, y], i) => s += whisper(x, y, w, fade(t, 116 + i * 0.9, 122.6, 0.5, 0.6)));
     // Spark
     let fl = 0.9; fl = lerp(fl, 0.42, ramp(t, 116, 121)); fl = lerp(fl, 1.25, ramp(t, 121.6, 124));
     const straight = ramp(t, 121, 122.4);
@@ -405,7 +439,6 @@
     const wave = ramp(t, 123.6, 126.5);
     if (wave > 0 && wave < 1) s += `<circle cx="380" cy="470" r="${80 + 900 * wave}" fill="none" ${st(ORANGE, 6, 0.6 * (1 - wave))}/>`;
     s += fig(J, { flame: fl, t, mood: t > 121.4 ? 'fierce' : 'sad' });
-    if (t > 126) s += smoke(900, 520, 0.25, t, fade(t, 126, 128.5, 0.01, 2.4)) ;
     return s;
   });
 
@@ -417,7 +450,7 @@
     s += `<circle cx="900" cy="${640 - 120 * sun}" r="70" fill="${CORE}" opacity="${0.55 * sun}"/>` + glow(900, 640 - 120 * sun, 260, 0.35 * sun);
     s += `<path d="M-20,600 Q500,500 1300,600 L1300,720 L-20,720Z" fill="${BG}" ${st('#3a2a1a', 3)}/>`;
     s += fig(sitGround(540, 556), { flame: 1.0, t, mood: 'happy', blink: (t % 4) < 0.12 });
-    s += fig(sitGround(690, 552), { mood: 'happy' });
+    s += fig(sitGround(690, 552), { c: '#b9b5ad' });
     s += txt(640, 150, 'Your attention is your fire.', { size: 44, w: 600, op: fade(t, 132.4, 138.6, 0.8, 0.6) });
     s += txt(640, 150, 'Guard it.', { size: 52, w: 700, c: ORANGE, op: fade(t, 139.2, 143.6, 0.6, 0.6) });
     return s;
@@ -429,10 +462,37 @@
     return s;
   }, { fi: 0.6, fo: 0.01 });
 
+
+  // ---------- lời thì thầm của cái bóng: [giây bắt đầu, câu, x, y, thời lượng] ----------
+  const WH = [
+    [3.6, 'just one more', 930, 210],
+    [8.0, 'just one more', 400, 250], [9.9, "it's not that late", 460, 200], [11.8, 'you can sleep later', 420, 300],
+    [14.7, 'one more video', 400, 250], [16.4, "you've earned this", 470, 200], [18.1, 'five more minutes', 410, 300],
+    [20.7, 'you deserve a break', 420, 250], [22.4, 'study tomorrow', 360, 200], [24.1, "it's too hard anyway", 430, 300],
+    [26.7, "they're boring", 520, 250], [28.4, "you're not missing anything", 560, 200], [30.1, 'check your feed', 500, 300],
+    [32.7, "it's only five minutes", 860, 230], [34.4, 'everyone does it', 900, 180], [36.1, 'relax', 840, 290],
+    [38.6, "you'll start tomorrow", 400, 230], [40.1, "you're too tired", 470, 175], [41.6, 'nothing will change', 380, 290], [43.0, 'why even try?', 470, 130],
+    [47.4, 'this is who you are', 640, 700, 2.4],
+    [62.8, 'just check once', 1000, 250], [64.4, "you'll be back", 1060, 200], [66.0, "you can't last a day", 990, 300],
+    [88.9, 'it might be important', 1010, 300], [91.4, 'someone texted you', 1040, 250],
+    [115.6, "you're missing out", 620, 140, 7.0], [116.5, "everyone's online", 560, 205, 6.1], [117.3, 'just one', 690, 265, 5.3],
+    [118.1, 'you deserve it', 580, 325, 4.5], [118.9, "you'll fail again", 690, 385, 3.7], [119.6, 'come back', 560, 80, 3.0], [120.3, 'you need me', 640, 445, 2.3],
+  ];
+  function whispers(t) {
+    let s = '';
+    for (const [a, w, x, y, d = 1.9] of WH) {
+      if (t < a - 0.1 || t > a + d + 0.6) continue;
+      const o = fade(t, a, a + d, 0.25, 0.5);
+      s += redText(x, y - 8 * clamp((t - a) / (d + 0.5)), w, o);
+    }
+    return s;
+  }
+
   const DEFS = `<defs><radialGradient id="gO"><stop offset="0" stop-color="${ORANGE}" stop-opacity=".9"/><stop offset="1" stop-color="${ORANGE}" stop-opacity="0"/></radialGradient>` +
     `<radialGradient id="gC"><stop offset="0" stop-color="${COLD}" stop-opacity=".7"/><stop offset="1" stop-color="${COLD}" stop-opacity="0"/></radialGradient></defs>`;
 
   window.DURATION = DUR;
+  window.WHISPERS = WH;
   window.frame = function (t) {
     let body = '';
     for (const sc of S) {
@@ -440,6 +500,7 @@
       const o = Math.min(clamp((t - sc.a) / sc.fi), clamp((sc.b - t) / sc.fo));
       body += `<g opacity="${o}">${sc.fn(t)}</g>`;
     }
+    body += whispers(t);
     return `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1280 720">${DEFS}<rect width="1280" height="720" fill="${BG}"/>${body}</svg>`;
   };
 })();

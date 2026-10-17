@@ -1,5 +1,6 @@
 // Xuất khung hình của scene.js.
 //   node render.js stills <thư mục> t1 t2 ...      → ảnh PNG tại các thời điểm
+//   node render.js whispers <file.json>                → danh sách lời thì thầm (cho am-thanh.py)
 //   node render.js video <file.mp4> <từ giây> <đến giây> [fps]  → đoạn video (không tiếng)
 const { chromium } = require('playwright');
 const { spawn } = require('child_process');
@@ -13,7 +14,9 @@ const path = require('path');
   await page.addScriptTag({ path: path.join(__dirname, 'scene.js') });
   const draw = t => page.evaluate(t => { document.getElementById('v').innerHTML = window.frame(t); }, t);
 
-  if (mode === 'stills') {
+  if (mode === 'whispers') {
+    require('fs').writeFileSync(out, JSON.stringify(await page.evaluate(() => window.WHISPERS)));
+  } else if (mode === 'stills') {
     for (const t of rest.map(Number)) {
       await draw(t);
       await page.screenshot({ path: path.join(out, `t${String(t).padStart(6, '0')}.png`) });

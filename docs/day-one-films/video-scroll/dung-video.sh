@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Dựng lại SCROLL: 4 luồng hình song song + nhạc, rồi ghép. Chạy: bash dung-video.sh <thư mục tạm>
+# Dựng lại SCROLL: 4 luồng hình song song + nhạc + giọng thì thầm, rồi ghép.
+# Chạy: KOKORO_DIR=<thư mục có kokoro.onnx, voices.bin> bash dung-video.sh <thư mục tạm>
+# Không có KOKORO_DIR thì video không có giọng thì thầm (chỉ nhạc và hiệu ứng).
 set -euo pipefail
 cd "$(dirname "$0")"
 O="${1:?cần thư mục tạm}"
@@ -9,7 +11,12 @@ for seg in "0 38" "38 76" "76 114" "114 150"; do
   set -- $seg
   node render.js video "$O/part_$1.mp4" "$1" "$2" 24 &
 done
-python3 am-thanh.py "$O/scroll.wav"
+node render.js whispers "$O/whispers.json"
+if [ -n "${KOKORO_DIR:-}" ]; then
+  python3 am-thanh.py "$O/scroll.wav" "$O/whispers.json" "$KOKORO_DIR"
+else
+  python3 am-thanh.py "$O/scroll.wav"
+fi
 wait
 printf "file '%s'\n" part_0.mp4 part_38.mp4 part_76.mp4 part_114.mp4 > "$O/list.txt"
 ffmpeg -y -loglevel error -f concat -safe 0 -i "$O/list.txt" -i "$O/scroll.wav" -c:v copy \

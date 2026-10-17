@@ -1,6 +1,8 @@
-"""Nhạc nền + hiệu ứng cho SCROLL, tổng hợp bằng numpy. Mốc thời gian khớp scene.js.
+"""Nhạc nền + hiệu ứng + giọng thì thầm cho SCROLL. Mốc thời gian khớp scene.js.
 
-Chạy: python3 am-thanh.py <file.wav>
+Chạy: python3 am-thanh.py <file.wav> [whispers.json <thư mục model Kokoro>]
+  whispers.json lấy từ `node render.js whispers whispers.json`;
+  model Kokoro: kokoro.onnx + voices.bin (github.com/thewh1teagle/kokoro-onnx, bản model-files-v1.0).
 """
 import sys
 import wave
@@ -190,6 +192,48 @@ add(144.6, piano("C3", 6), 0.12)
 add(144.6, piano("G3", 6), 0.09)
 add(144.6, piano("E4", 6), 0.08)
 add(146.0, piano("C5", 4), 0.07)
+
+
+# ---------- giọng thì thầm của cái bóng ----------
+def whisperize(x, sr):
+    """Giữ đường bao phổ của giọng nói, thay pha bằng pha ngẫu nhiên → giọng thì thầm."""
+    n, hop = 1024, 256
+    win = np.hanning(n)
+    x = np.concatenate([np.zeros(n), x, np.zeros(n)])
+    frames = 1 + (len(x) - n) // hop
+    out = np.zeros(len(x))
+    norm = np.zeros(len(x))
+    for i in range(frames):
+        seg = x[i * hop:i * hop + n] * win
+        mag = np.abs(np.fft.rfft(seg))
+        ph = np.exp(2j * np.pi * rng.random(len(mag)))
+        y = np.fft.irfft(mag * ph, n) * win
+        out[i * hop:i * hop + n] += y
+        norm[i * hop:i * hop + n] += win ** 2
+    out = out / np.maximum(norm, 1e-3)
+    return out[n:-n]
+
+
+def resample(x, sr_in, sr_out):
+    t_out = np.arange(int(len(x) * sr_out / sr_in)) / sr_out
+    return np.interp(t_out, np.arange(len(x)) / sr_in, x)
+
+
+if len(sys.argv) >= 4:
+    import json
+    from kokoro_onnx import Kokoro
+
+    kk = Kokoro(f"{sys.argv[3]}/kokoro.onnx", f"{sys.argv[3]}/voices.bin")
+    for item in json.load(open(sys.argv[2])):
+        t0, text, x = item[0], item[1], item[2]
+        v, vsr = kk.create(text, voice="am_onyx", speed=0.82, lang="en-us")
+        w = whisperize(np.asarray(v, dtype=float), vsr)
+        w = resample(w, vsr, SR)
+        w = w - lowpass(w, 180)  # bỏ phần trầm ù
+        w = w / (np.max(np.abs(w)) + 1e-9)
+        pan = float(np.clip((x - 640) / 640, -0.7, 0.7))
+        add(t0 + 0.05, w, 0.30, pan=pan)
+        add(t0 + 0.09, w, 0.10, pan=-pan)  # vọng nhẹ ở kênh đối diện
 
 # ---------- hoàn thiện ----------
 def reverb(x):
