@@ -10,6 +10,16 @@
    - thanh trượt, ghế, dốc có mép kim loại và đổ bóng.
 3. Nhân vật hiển thị nhỏ đi 20% (thu camera, giữ nguyên đường mặt đất).
 
+**v3:**
+1. Sau cú té, kẻ thù thì thầm "i told you.". Không có tiếng cười (anh bỏ).
+2. Thêm hồi tưởng 6 giây ở 1:13 để nói rõ lý do thôi so với người khác:
+   - Đèn bật, Spark thấy các vạch trên khung cửa.
+   - Ký ức màu ấm: bé Spark đứng áp khung cửa, mẹ (búi tóc) kẻ vạch 7.
+   - Bé nhìn xuống vạch cũ của mình rồi giơ tay reo.
+   - Các vạch 8, 9, 10 nối nhau, bé lớn dần qua từng vạch. Bé chưa từng so với đứa trẻ nào, chỉ so với vạch hôm trước.
+   - Quay về hiện tại: Spark đứng dậy, cao hơn vạch 12, giành thước dây và quay nó vào khung cửa.
+   - Phim dài 2:47, bản đăng 2:53.
+
 
 Kênh Keep The Fire · phim 04 · dự kiến 2:40 · không lời dẫn.
 

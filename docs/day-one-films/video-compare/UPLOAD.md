@@ -1,6 +1,6 @@
 # COMPARE: bộ đăng YouTube
 
-File tải lên: `COMPARE-dang-youtube.mp4` (phim 2:41 đã nối sẵn 6 giây màn hình kết thúc, tổng 2:47).
+File tải lên: `COMPARE-dang-youtube.mp4` (phim 2:47 đã nối sẵn 6 giây màn hình kết thúc, tổng 2:53).
 
 **Tiêu đề:**
 ```
@@ -45,7 +45,7 @@ What did you do today that yesterday-you couldn't? 👇
 
 **Danh sách phát:** Battles Inside (All Films), Mind & Courage.
 
-**Màn hình kết thúc:** dùng mẫu như các phim trước. Mọi phần tử bắt đầu ở 2:41.
+**Màn hình kết thúc:** dùng mẫu như các phim trước. Mọi phần tử bắt đầu ở 2:47.
 - Trái: PERFECT.
 - Phải: "Video phù hợp nhất với người xem".
 - Giữa: nút đăng ký.

@@ -2,7 +2,7 @@
 (function () {
   const W = '#f4f1ea', BG = '#0d0a09', MUTED = '#8d8a84', GREY = '#55534f';
   const ORANGE = '#ff8a1f', CORE = '#ffd166', EMBER = '#7a4a22', SMOKE = '#3a3a3a', COLD = '#bcd7ff';
-  const DUR = 161;
+  const DUR = 167; // 161 giây phim gốc + 6 giây hồi tưởng chèn ở 73.2
 
   // ---------- tiện ích ----------
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -837,7 +837,40 @@
     return s;
   }, { fo: 0.01 });
 
-  // ---------- lời thì thầm: [giây, câu, thời lượng] ----------
+
+  // ================= 5b. Hồi tưởng (chèn 73.2–79.2, thời gian thật) =================
+  // Lý do thôi so với người khác: hồi nhỏ, mỗi lần mẹ kẻ vạch, bé chỉ so với vạch cũ của chính mình — và lớn lên từng chút.
+  const FLASH_A = 73.2, FLASH_LEN = 6;
+  const MARKS = [[7, 434, 73.6], [8, 418, 76.0], [9, 404, 76.7], [10, 390, 77.4]];
+  function flashback(t) {
+    let s = hallway(t, { lit: 1 }) + glow(600, 400, 340, 0.35);
+    const shown = MARKS.filter(([, , ts]) => t > ts + 0.55); // số hiện sau khi tay mẹ rút về
+    s += doorFrame(560, { kids: 0 });
+    [[5, 470], [6, 452]].concat(shown.map(([a, y]) => [a, y])).forEach(([a, y]) => { s += ln([546, y], [560, y], GRAPH, 2.4) + `<text x="542" y="${y + 4}" fill="#e8dcc0" font-family="Inter" font-size="11" font-weight="700" text-anchor="end">${a}</text>`; });
+    // bé lớn dần qua từng vạch: chiều cao đỉnh đầu ≈ vạch hiện tại
+    const step = t < 75.6 ? 0 : t < 76.3 ? 1 : t < 77.0 ? 2 : 3, k = [0.62, 0.66, 0.70, 0.74][step];
+    const cheer = (t > 74.6 && t < 75.6) || (t > 76.2 && t < 76.5) || (t > 76.9 && t < 77.2) || (t > 77.6 && t < 78.2);
+    const C = cheer ? armsUp(590, 560, 1) : stand(590, 560, { look: 10 });
+    if (!cheer && t > 74.2 && t < 74.6) { C.head = [C.head[0] - 4, C.head[1] + 10]; } // nhìn xuống vạch cũ của mình
+    s += `<g transform="translate(590,560) scale(${k}) translate(-590,-560)">` + fig(C, { c: '#efe2cf', flame: 0.5, t, mood: 'happy' }) + '</g>';
+    // mẹ (búi tóc) kẻ vạch trên đầu bé
+    const M = stand(486, 560, { look: 10 }); // mẹ đứng phía ngoài cột trái, tay không che mặt bé
+    const mk = MARKS.slice().reverse().find(([, , ts]) => t > ts - 0.4) || MARKS[0];
+    const drawing = MARKS.some(([, , ts]) => t > ts - 0.3 && t < ts + 0.5);
+    if (drawing) { M.lh = [546, mk[1] + 2]; M.le = [516, mk[1] + 22]; }
+    else { M.lh = [506, 482]; M.le = [500, 456]; }
+    fixArms(M);
+    s += `<circle cx="${M.head[0] - 22}" cy="${M.head[1] - 14}" r="13" fill="#6a4a36"/>` + fig(M, { c: '#e2d2bc', mood: 'happy' });
+    if (drawing) s += ln(M.lh, [M.lh[0] - 14, M.lh[1] - 8], '#e8b04a', 4) + handDot(M.lh, '#e2d2bc');
+    // mũi tên nhỏ: từ vạch cũ lên vạch mới
+    if (shown.length) { const [a, y] = shown[shown.length - 1], py = a === 7 ? 452 : MARKS.find(m => m[0] === a - 1)[1]; s += `<path d="M572,${py} q12,${(y - py) / 2} 0,${y - py + 4}" fill="none" stroke="#e8dcc0" stroke-width="1.6" stroke-dasharray="3 3" marker-end="none" opacity=".8"/>`; }
+    // lớp ký ức: tông ấm, mép tối mềm
+    const io = Math.min(clamp((t - FLASH_A) / 0.5), clamp((FLASH_A + FLASH_LEN - t) / 0.6));
+    s += `<rect x="-600" y="-400" width="2600" height="1400" fill="#c88a4a" opacity=".16"/>`;
+    return { s, io };
+  }
+
+  // ---------- lời thì thầm: [giây, câu, thời lượng] (thời gian thật) ----------
   const WH = [
     [6.6, 'look at them.', 2.3],
     [17.9, 'they started younger', 2.2],
@@ -883,15 +916,23 @@
   // bộ vẽ dùng chung cho thumbnail
   window.KIT = { fig, shadowFig, flame, glow, txt, stand, slump, sitChair, whisperPose, cap, skateboard, rider, riderPose, park, tape, doorFrame, hallway, kidFig, sitGround, flip, DEFS, MONO, C: { W, BG, MUTED, ORANGE, CORE, RED, YEL, SKIN, COLD } };
   window.DURATION = DUR;
+  for (const w of WH) if (w[0] >= FLASH_A) w[0] += FLASH_LEN;
   window.WHISPERS = WH;
   const SHAKES = [[49.4, 0.4, 9], [130.6, 0.7, 16]];
-  window.frame = function (t) {
+  window.frame = function (T) {
+    const FB = T >= FLASH_A && T < FLASH_A + FLASH_LEN, t = T >= FLASH_A + FLASH_LEN ? T - FLASH_LEN : T; // t = thời gian phim gốc
     let body = '';
     ENEMY = null;
     CLIPN = 0;
-    const seed = Math.floor(t * 8) % 9; // nét rung vẽ lại mỗi 3 khung
+    const seed = Math.floor(T * 8) % 9; // nét rung vẽ lại mỗi 3 khung
     const defs = DEFS.replace('seed="4"', `seed="${seed + 1}"`).replace('seed="77"', `seed="${seed + 30}"`);
-    for (const sc of S) {
+    if (FB) {
+      const { s: fs, io } = flashback(T);
+      CAM = { x: 560, y: 432, k: 2.4 * (1 + 0.06 * clamp((T - FLASH_A) / FLASH_LEN)) };
+      body += `<g opacity="${io}"><g transform="translate(640,360) scale(${CAM.k}) translate(${-CAM.x},${-CAM.y})">${fs}</g></g>` +
+        `<rect width="1280" height="720" fill="url(#vig)" opacity="${0.9 * io}"/>`;
+    }
+    for (const sc of FB ? [] : S) {
       if (t < sc.a || t >= sc.b) continue;
       const o = Math.min(clamp((t - sc.a) / sc.fi), clamp((sc.b - t) / sc.fo));
       const c0 = typeof sc.cam === 'function' ? sc.cam(t) : (sc.cam || { x: 640, y: 360, k: 1 });
@@ -903,7 +944,7 @@
       CAM = { x: c0.x + sx / (c0.k * ZOOM * push), y: cy + sy / (c0.k * ZOOM * push), k: c0.k * ZOOM * push };
       body += `<g opacity="${o}"><g transform="translate(640,360) scale(${CAM.k}) translate(${-CAM.x},${-CAM.y})">${sc.fn(t)}</g></g>`;
     }
-    body += whispers(t);
+    body += whispers(T);
     return `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1280 720">${defs}<rect width="1280" height="720" fill="${BG}"/>${body}<rect width="1280" height="720" filter="url(#grain)" opacity=".5"/>` +
       `<rect width="1280" height="720" fill="url(#vig)"/><rect width="1280" height="36" fill="#000"/><rect y="684" width="1280" height="36" fill="#000"/></svg>`;
   };

@@ -10,7 +10,7 @@ import wave
 import numpy as np
 
 SR = 44100
-DUR = 161.0
+DUR = 167.0  # 161 giây phim gốc + 6 giây hồi tưởng chèn ở 73.2
 N = int(SR * DUR)
 L = np.zeros(N)
 R = np.zeros(N)
@@ -23,7 +23,12 @@ def note_hz(name):
     return 440.0 * 2 ** ((names[pitch] + 12 * (octave + 1) - 69) / 12)
 
 
+SHIFT = True  # mốc theo phim gốc: từ 73.2 trở đi dời +6 giây cho đoạn hồi tưởng
+
+
 def add(t0, sig, vol=1.0, pan=0.0):
+    if SHIFT and t0 >= 73.2:
+        t0 += 6.0
     i = int(t0 * SR)
     if i >= N:
         return
@@ -260,6 +265,18 @@ add(84.0, pad(PADS["C"], 3, 0.3, 2), 0.12)
 add(84.0, piano("C4", 3), 0.14)
 tick(84.4)
 
+# ---------- 5b. hồi tưởng 73.2–79.2 (thời gian thật): hộp nhạc ấm, tiếng bút chì mẹ kẻ vạch, bé reo ----------
+SHIFT = False
+add(73.2, pad(PADS["C"], 6.2, 0.6, 1.2), 0.16)
+for i, nm in enumerate(["C5", "E5", "G5", "C6", "G5", "E5", "D5", "G5", "C5", "E5"]):
+    add(73.4 + i * 0.55, piano(nm, 2.0), 0.11, pan=0.2 * np.sin(i))
+for ts in (73.6, 76.0, 76.7, 77.4):
+    add(ts - 0.2, noise(0.4, 6000, 6), 0.12)  # bút chì kẻ vạch
+    add(ts + 0.55, click(), 0.4)  # số vạch hiện
+for ts in (74.6, 76.2, 76.9, 77.6):
+    add(ts, noise(0.25, 3000, 10), 0.06, pan=0.2)  # bé reo khẽ
+SHIFT = True
+
 # ---------- 6. 86–118 montage giọng trưởng: tiếng bánh lăn làm nhịp, mỗi vạch một tiếng tick ----------
 for tb in (86, 92.4, 98.8, 105.2, 111.6, 115.8, 116.1, 116.4, 116.7, 117.0):
     tick(tb)
@@ -330,7 +347,8 @@ add(155.6, piano("C4", 5), 0.14)
 add(156.0, piano("G4", 5), 0.1)
 add(157.0, piano("C5", 4), 0.09)
 
-# ---------- giọng thì thầm của cái bóng ----------
+# ---------- giọng thì thầm của cái bóng (thời gian thật, không dời) ----------
+SHIFT = False
 def whisperize(x, sr):
     """Giữ đường bao phổ của giọng nói, thay pha bằng pha ngẫu nhiên → giọng thì thầm."""
     n, hop = 1024, 256
@@ -371,24 +389,12 @@ if len(sys.argv) >= 4:
         add(t0 + 0.05, w, 0.30, pan=pan)
         add(t0 + 0.09, w, 0.10, pan=-pan)  # vọng nhẹ ở kênh đối diện
 
-# ---------- tiếng cười giễu của kẻ thù sau cú té (53.9) ----------
-if len(sys.argv) >= 4:
-    v, vsr = kk.create("heh. heh heh heh.", voice="am_onyx", speed=0.95, lang="en-us")
-    v = np.asarray(v, dtype=float)
-    dry = resample(v - lowpass(v, 120), vsr, SR)
-    dry = dry / (np.max(np.abs(dry)) + 1e-9)
-    wet = resample(whisperize(v, vsr), vsr, SR)
-    wet = wet / (np.max(np.abs(wet)) + 1e-9)
-    add(53.9, lowpass(dry, 3500), 0.16, pan=0.3)  # lớp giọng thật, trầm, giễu
-    add(53.9, wet, 0.26, pan=0.3)  # lớp thì thầm
-    add(53.95, wet, 0.08, pan=-0.3)  # vọng
-
 # ---------- khoảng lặng trước cú vỡ ----------
 _t = np.arange(N) / SR
-_duck = 1 - 0.85 * np.clip((_t - 128.6) / 0.15, 0, 1) * np.clip((129.98 - _t) / 0.05, 0, 1)
+_duck = 1 - 0.85 * np.clip((_t - 134.6) / 0.15, 0, 1) * np.clip((135.98 - _t) / 0.05, 0, 1)
 L *= _duck
 R *= _duck
-for tb in [128.8, 129.4]:  # chỉ còn nhịp tim
+for tb in [134.8, 135.4]:  # chỉ còn nhịp tim
     add(tb, kick(70, 38, 0.3), 0.32)
     add(tb, noise(0.03, 3000, 80), 0.08)
 

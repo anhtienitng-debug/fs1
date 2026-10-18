@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 O="${1:?cần thư mục tạm}"
 mkdir -p "$O"
 export NODE_PATH="${NODE_PATH:-$(npm root -g)}"
-for seg in "0 40" "40 80" "80 120" "120 161"; do
+for seg in "0 40" "40 80" "80 120" "120 167"; do
   set -- $seg
   node render.js video "$O/part_$1.mp4" "$1" "$2" 24 &
 done
