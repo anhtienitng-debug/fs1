@@ -35,10 +35,15 @@ Spark waited 30 days and missed the night.
 What's the one thing you keep saying "tomorrow" to? 👇
 ```
 
-**Thumbnail:**
-- Bản chính là **A** "MAYBE TOMORROW." (Spark ôm đàn, kẻ thù viết "tomorrow" lên lịch).
-- Bản thử là **B** "TOMORROW → TODAY." (trước và sau).
-- Khi kênh đủ điều kiện, bật Thử nghiệm và so sánh.
+**Thumbnail** (thư mục `anh/`, vẽ lại bằng `node ve-thumbnail.js anh`):
+
+| Bản | Nội dung | Dùng khi |
+|---|---|---|
+| **A "MAYBE TOMORROW."** | Spark ôm đàn, mặt buồn. Kẻ thù viết "tomorrow" lên tờ lịch NOV 29. Ánh sáng từ đốm lửa | **Bản chính.** Nói ra nỗi đau, không lộ kết |
+| C "NOT TOMORROW." | Mặt Spark quyết tâm, lửa bùng, kẻ thù chắn lối với thân đầy vết nứt vàng | Bản thử với A trong "Thử nghiệm và so sánh" |
+| B "TOMORROW → TODAY." | Trước và sau: mưa và sân khấu | Dự phòng. Bản này lộ kết phim nên để sau |
+
+Theo style bible, thumbnail không được lộ twist. Vì vậy chọn A làm bản chính và thử với C.
 
 **Danh sách phát:** Battles Inside (All Films), Discipline.
 
