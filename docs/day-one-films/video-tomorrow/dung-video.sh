@@ -20,7 +20,7 @@ fi
 wait
 printf "file '%s'\n" part_0.mp4 part_41.mp4 part_82.mp4 part_124.mp4 > "$O/list.txt"
 # chặn đỉnh ở 192 kHz trước khi nén AAC (nén AAC làm vọt đỉnh), rồi nén lại hình (grain làm file to)
-ffmpeg -y -loglevel error -i "$O/tomorrow.wav" -af "loudnorm=I=-14.5:TP=-3:LRA=11,aresample=192000,alimiter=limit=0.66:level=false:attack=1:release=60,aresample=48000" "$O/master.wav"
+ffmpeg -y -loglevel error -i "$O/tomorrow.wav" -af "loudnorm=I=-14.5:TP=-3:LRA=11,aresample=192000,alimiter=limit=0.56:level=false:attack=1:release=60,aresample=48000" "$O/master.wav"
 ffmpeg -y -loglevel error -f concat -safe 0 -i "$O/list.txt" -i "$O/master.wav" -c:v libx264 -preset slow -crf 25 -pix_fmt yuv420p \
   -c:a aac -b:a 192k -shortest -movflags +faststart tomorrow-v2.mp4
 echo "xong: tomorrow-v2.mp4"
