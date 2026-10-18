@@ -844,6 +844,7 @@
     [21.6, "you're so far behind", 2.2],
     [32.0, 'why bother'],
     [44.4, "everyone's watching", 2.0],
+    [51.6, 'i told you.', 2.2],
     [60.4, "you'll never catch up.", 2.6],
     [75.0, 'look at them.', 1.8],
     [93.6, 'look at them', 1.6],

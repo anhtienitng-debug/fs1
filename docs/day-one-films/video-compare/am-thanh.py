@@ -371,6 +371,18 @@ if len(sys.argv) >= 4:
         add(t0 + 0.05, w, 0.30, pan=pan)
         add(t0 + 0.09, w, 0.10, pan=-pan)  # vọng nhẹ ở kênh đối diện
 
+# ---------- tiếng cười giễu của kẻ thù sau cú té (53.9) ----------
+if len(sys.argv) >= 4:
+    v, vsr = kk.create("heh. heh heh heh.", voice="am_onyx", speed=0.95, lang="en-us")
+    v = np.asarray(v, dtype=float)
+    dry = resample(v - lowpass(v, 120), vsr, SR)
+    dry = dry / (np.max(np.abs(dry)) + 1e-9)
+    wet = resample(whisperize(v, vsr), vsr, SR)
+    wet = wet / (np.max(np.abs(wet)) + 1e-9)
+    add(53.9, lowpass(dry, 3500), 0.16, pan=0.3)  # lớp giọng thật, trầm, giễu
+    add(53.9, wet, 0.26, pan=0.3)  # lớp thì thầm
+    add(53.95, wet, 0.08, pan=-0.3)  # vọng
+
 # ---------- khoảng lặng trước cú vỡ ----------
 _t = np.arange(N) / SR
 _duck = 1 - 0.85 * np.clip((_t - 128.6) / 0.15, 0, 1) * np.clip((129.98 - _t) / 0.05, 0, 1)
