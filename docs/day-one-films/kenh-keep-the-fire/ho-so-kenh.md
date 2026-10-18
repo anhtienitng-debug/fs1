@@ -54,6 +54,7 @@ Vẽ lại toàn bộ ảnh: `node ve-kenh.js <thư mục ra> [endvideo]`. Scrip
 
 - `end-screen-6s.mp4`: 6 giây, Spark ngồi trên đồi nhìn biển, lửa lay, có chữ "Keep the fire." và nhạc nền ấm nhỏ dần. Gắn vào cuối mọi phim. YouTube cho màn hình kết thúc dài 5–20 giây, nên 6 giây vẫn đủ để đặt video và nút đăng ký.
 - `SCROLL-dang-youtube.mp4`: phim SCROLL 2:30 nối với 6 giây màn hình kết thúc, tổng 2:36. **Đây là file để tải lên.**
+- **Quy ước (anh chốt):** mỗi phim chỉ xuất **một file duy nhất đã nối sẵn 6 giây kết**, đặt tên `<TÊN>-dang-youtube.mp4`. Không xuất bản phim không có kết. Script `dung-video.sh` của mỗi phim tự nối màn hình kết thúc.
 - Khi đăng, vào Màn hình kết thúc rồi chọn mẫu "1 video + 1 video + đăng ký", đặt theo `end-screen-vi-tri.png`:
   - trái: "Video phù hợp nhất với người xem";
   - phải: "Video tải lên gần đây nhất";
@@ -121,12 +122,14 @@ Câu hỏi về số giờ dùng điện thoại dễ khiến người xem trả
 
 ## 7. Lộ trình 12 phim đầu
 
+**Đây là danh sách câu chuyện của kênh.** ✅ là phim đã làm xong. Kế hoạch chi tiết (pitch, bảng cảnh) của từng phim nằm trong `story.md` ở thư mục của phim đó. Phim tiếp theo chọn trong các dòng chưa có ✅.
+
 Mỗi phim theo công thức 6 nhịp trong `../ke-hoach-trien-khai.md`. Kẻ thù luôn là bản sao đen viền đỏ, mỗi phim thêm một chi tiết riêng cho kẻ thù.
 
 | # | Tiêu đề | Kẻ thù thì thầm | Ẩn dụ lửa | Danh sách phát |
 |---|---|---|---|---|
-| 1 | SCROLL ✅ | "just one more" | Sợi lửa bị hút vào điện thoại | Phone & Focus |
-| 2 | TOMORROW | "start tomorrow" | Lửa cháy nhưng bị nhốt trong lồng lịch | Discipline |
+| 1 | SCROLL ✅ `video-scroll/` | "just one more" | Sợi lửa bị hút vào điện thoại | Phone & Focus |
+| 2 | TOMORROW ✅ `video-tomorrow/` | "tomorrow." | Lịch tường: mỗi tờ kẻ thù viết "tomorrow" và nhốt một đốm lửa. Lỡ buổi open mic, rồi TOMORROW thành TODAY | Discipline |
 | 3 | COMPARE | "look at them" | Lửa của người khác trên màn hình to hơn, lửa mình co lại | Mind & Courage |
 | 4 | SNOOZE | "five more minutes" | Báo thức 5:00, mỗi lần bấm hoãn lửa nhỏ đi | Discipline |
 | 5 | FEAR | "what if you fail" | Lửa bị bóng tối nuốt mỗi khi định giơ tay | Mind & Courage |
@@ -134,7 +137,7 @@ Mỗi phim theo công thức 6 nhịp trong `../ke-hoach-trien-khai.md`. Kẻ th
 | 7 | QUIT | "it's too hard" | Lửa lúc tập gym, dừng ở rep cuối | Discipline |
 | 8 | ALONE | "nobody cares" | Lửa giữa đám đông, ai cũng cúi đầu nhìn điện thoại | Mind & Courage |
 | 9 | BINGE | "next episode" | Đếm ngược autoplay hút lửa | Phone & Focus |
-| 10 | PERFECT | "not good enough" | Bức tranh bị xoá đi xoá lại, lửa run | Mind & Courage |
+| 10 | PERFECT ✅ `video-perfect/` (làm thứ 3) | "not good enough." | Con chim bị tẩy 312 lần, `FINISHED 0`. Ném cục tẩy, PERFECT thành DONE, ký tên vào tranh | Mind & Courage |
 | 11 | RESTART | "you already failed" | Bộ đếm về Day 1 lần thứ ba, vẫn đứng dậy | Discipline |
 | 12 | 365 | (im lặng) | Tổng kết một năm của Spark, kẻ thù chỉ còn bằng ngón tay | Battles Inside |
 

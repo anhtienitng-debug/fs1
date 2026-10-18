@@ -22,5 +22,8 @@ printf "file '%s'\n" part_0.mp4 part_40.mp4 part_80.mp4 part_120.mp4 > "$O/list.
 # chặn đỉnh ở 192 kHz trước khi nén AAC (nén AAC làm vọt đỉnh), rồi nén lại hình (grain làm file to)
 ffmpeg -y -loglevel error -i "$O/perfect.wav" -af "loudnorm=I=-14.5:TP=-3:LRA=11,aresample=192000,alimiter=limit=0.56:level=false:attack=1:release=60,aresample=48000" "$O/master.wav"
 ffmpeg -y -loglevel error -f concat -safe 0 -i "$O/list.txt" -i "$O/master.wav" -c:v libx264 -preset slow -crf 25 -pix_fmt yuv420p \
-  -c:a aac -b:a 192k -shortest -movflags +faststart perfect-v1.mp4
-echo "xong: perfect-v1.mp4"
+  -c:a aac -b:a 192k -shortest -movflags +faststart "$O/phim.mp4"
+# nối 6 giây màn hình kết thúc → một file duy nhất để đăng
+ffmpeg -y -loglevel error -i "$O/phim.mp4" -i ../kenh-keep-the-fire/end-screen-6s.mp4 -filter_complex "[0:v]fps=24,format=yuv420p[v0];[1:v]fps=24,format=yuv420p[v1];[0:a]aresample=48000[a0];[1:a]aresample=48000[a1];[v0][a0][v1][a1]concat=n=2:v=1:a=1[v][a]" \
+  -map "[v]" -map "[a]" -c:v libx264 -preset slow -crf 25 -c:a aac -b:a 192k -movflags +faststart PERFECT-dang-youtube.mp4
+echo "xong: PERFECT-dang-youtube.mp4"
