@@ -39,16 +39,19 @@ const ART = () => {
     },
     // 3. Banner 2560×1440. Vùng an toàn mọi thiết bị: 1546×423 ở giữa (x 507–2053, y 508–931)
     banner() {
-      const w = 2560, h = 1440, hz = 760;
-      let s = dawn(w, h, hz, 1280);
-      // đồi cỏ phía trước
-      s += `<path d="M0,960 Q700,820 1280,860 Q1900,900 2560,820 L2560,1440 L0,1440Z" fill="#1f2a1a"/><path d="M0,960 Q700,820 1280,860 Q1900,900 2560,820" fill="none" stroke="#3e5230" stroke-width="5"/>`;
+      const w = 2560, h = 1440, hz = 900;
+      // mặt trời lệch sang phải, chân trời thấp: khối chữ nằm gọn trên nền trời, không bị mặt trời hay vệt sáng trên biển cắt ngang
+      let s = dawn(w, h, hz, 1720);
+      s += `<path d="M0,960 Q700,900 1280,930 Q1900,960 2560,900 L2560,1440 L0,1440Z" fill="#1f2a1a"/><path d="M0,960 Q700,900 1280,930 Q1900,960 2560,900" fill="none" stroke="#3e5230" stroke-width="5"/>`;
       // Spark (trái) — lửa to; cái bóng (phải) — mờ, lùi xa
-      s += at(600, 930, 1.9, K.fig(K.stand(0, 0, { look: 8 }), { flame: 1.0, t: T, mood: 'happy' }));
-      s += `<g opacity=".55">` + at(1990, 930, 1.6, K.shadowFig(K.whisperPose(0, 0, -1))) + '</g>';
-      s += big(1300, 690, 'KEEP THE FIRE', { size: 112, ls: 8, c: YEL, f: 'yelGlow' });
-      s += big(1300, 760, 'wordless animated films about the war inside you', { size: 36, w: 500, c: '#eee4d6', ls: 2 });
-      s += big(1300, 820, 'NEW FILM EVERY WEEK', { size: 28, w: 700, c: ORANGE, ls: 10 });
+      s += at(600, 940, 1.9, K.fig(K.stand(0, 0, { look: 8 }), { flame: 1.0, t: T, mood: 'happy' }));
+      s += `<g opacity=".6">` + at(1990, 935, 1.6, K.shadowFig(K.whisperPose(0, 0, -1))) + '</g>';
+      // nền tối mềm sau chữ để chữ luôn nổi trên trời cam
+      s += `<defs><radialGradient id="txtBg"><stop offset="0" stop-color="#0d0a09" stop-opacity=".72"/><stop offset=".7" stop-color="#0d0a09" stop-opacity=".45"/><stop offset="1" stop-color="#0d0a09" stop-opacity="0"/></radialGradient></defs>`;
+      s += `<ellipse cx="1300" cy="715" rx="700" ry="190" fill="url(#txtBg)"/>`;
+      s += big(1300, 700, 'KEEP THE FIRE', { size: 120, ls: 8, c: YEL, f: 'yelGlow', stroke: '#1a0f0c', sw: 10 });
+      s += big(1300, 775, 'wordless animated films about the war inside you', { size: 38, w: 600, c: '#fbf3e6', ls: 1, stroke: '#1a0f0c', sw: 7 });
+      s += big(1300, 835, 'NEW FILM EVERY WEEK', { size: 28, w: 800, c: CORE, ls: 10, stroke: '#1a0f0c', sw: 6 });
       return { w, h, svg: svg(w, h, `0 0 ${w} ${h}`, s + grain(w, h) + vig(w, h)) };
     },
     // 4a. Thumbnail SCROLL — cái bóng thì thầm sau lưng Spark đang cắm mặt vào điện thoại
