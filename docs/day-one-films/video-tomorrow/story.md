@@ -1,4 +1,12 @@
-# TOMORROW | An Animated Short Film: kế hoạch (chờ DUYỆT 1 + 2)
+# TOMORROW | An Animated Short Film: kế hoạch (đã DUYỆT 1 + 2, chọn C)
+
+**v2 (sửa theo DUYỆT 3):**
+1. Trận cuối không còn lao qua bóng, bị đẩy lùi rồi nhích dần (lặp lại SCROLL).
+   - Kẻ thù tan vào bóng tối rồi trồi lên chắn lối ra sân khấu.
+   - Spark nhắm mắt, ngón tay tự bấm các thế hợp âm đã tập.
+   - Spark bước đều từng bước. Mỗi bước là một ngày đã luyện (DAY 1, 6, 13, 24, 38) sáng vàng dưới chân, kèm đúng hợp âm đó, và làm bóng nứt thêm một vết.
+   - Lặng một nhịp, rồi bước cuối DAY 45 làm bóng vỡ.
+2. Màn hình kết thúc rút còn 6 giây.
 
 Kênh Keep The Fire · phim 02 · dự kiến 2:42 · không lời dẫn.
 
@@ -44,7 +52,7 @@ Góc này tránh trùng phim cũ:
 | 8 | Phần thưởng | 140–152 | Spark chơi đàn trên sân khấu nhỏ, đúng **giai điệu nhạc nền** của phim. Ember ngồi hàng đầu, khán giả gật gù, lửa bùng. | FIRE 100% | |
 | 9 | Tấm gương + tên phim | 152–162 | Lịch trên tường, tờ của ngày mai để trống. Thẻ kết: *"Tomorrow is where dreams wait."* rồi **"Today is where they live."** (vàng). Sau đó hiện **TOMORROW**, *Keep the fire.* | | |
 
-Tổng: 162 giây = 2:42, sau đó nối màn hình kết thúc 20 giây.
+Tổng thực tế khi dựng: 165 giây = 2:45, sau đó nối màn hình kết thúc 6 giây.
 
 **Âm thanh**
 - 0–72 giây: piano giọng thứ, tiếng tờ lịch xé là nhịp phách.

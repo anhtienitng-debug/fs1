@@ -110,12 +110,12 @@ const ART = () => {
     await page.screenshot({ path: path.join(OUT, file), omitBackground: a.tr, clip: { x: 0, y: 0, width: a.w, height: a.h } });
     console.log(file);
   }
-  // khung hình cho video màn hình kết thúc 20 s (lửa lay, nháy mắt) → ffmpeg ghép
+  // khung hình cho video màn hình kết thúc 6 s (lửa lay, nháy mắt) → ffmpeg ghép
   if (process.argv[3] === 'endvideo') {
     const dir = path.join(OUT, 'end-frames');
     fs.mkdirSync(dir, { recursive: true });
     await page.setViewportSize({ width: 1920, height: 1080 });
-    for (let i = 0; i < 20 * 24; i++) {
+    for (let i = 0; i < 6 * 24; i++) {
       await page.evaluate(t => { document.getElementById('v').innerHTML = window.ART.endScreen(false, t).svg; }, i / 24);
       await page.screenshot({ path: path.join(dir, `f${String(i).padStart(4, '0')}.jpg`), type: 'jpeg', quality: 92 });
     }

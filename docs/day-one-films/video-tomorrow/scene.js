@@ -733,35 +733,65 @@
   }, { cam: STAND(760) });
 
   // ================= 7. Trận cuối (118–132): hậu trường JAN 15 =================
-  const XB = t => { let x = 540; x = lerp(x, 600, ramp(t, 127.2, 127.8)); x = lerp(x, 560, ramp(t, 127.8, 128.6)); x = lerp(x, 760, Math.pow(clamp((t - 129.3) / 2.5), 1.8)); return x; };
+  // Không lao qua bóng. Kẻ thù chắn lối ra sân khấu; Spark nhắm mắt, ngón tay tự bấm hợp âm đã tập;
+  // rồi bước đều từng bước — mỗi bước là một ngày đã luyện (DAY 1, 6, 13, 24, 38) sáng lên dưới chân và làm bóng nứt thêm;
+  // lặng một nhịp, bước cuối DAY 45 → bóng vỡ.
+  const STEPS = [[127.4, 1], [128.2, 6], [129.0, 13], [129.8, 24], [130.6, 38], [131.3, 45]]; // bước 30 px: 520 → 700
+  const stepsDone = t => STEPS.reduce((n, [ts]) => n + ramp(t, ts, ts + 0.45), 0);
+  const XB = t => 520 + 30 * stepsDone(t);
+  const CRACKS = [
+    [[0, -150], [-14, -120], [6, -96], [-8, -70]], [[18, -60], [4, -30], [22, -6], [10, 24]], [[-20, -10], [-4, 14], [-24, 40], [-10, 70]],
+    [[30, -200], [10, -176], [26, -150]], [[-30, -186], [-10, -160], [-26, -130], [-6, -110]], [[0, 40], [16, 70], [0, 100], [14, 130]],
+  ];
   scene(118, 132, t => {
     let s = `<rect x="-400" y="-300" width="2200" height="860" fill="#0c0a10"/>` + ground(-400, 1800, 560, 0.8);
     // màn sân khấu + ánh đèn từ phải
-    s += `<rect x="780" y="120" width="60" height="440" fill="#2a1830"/>` + `<path d="M840,120 L1500,120 L1500,560 L840,560Z" fill="#f0d8a8" opacity=".22"/>` + glow(1100, 360, 420, 0.4);
-    s += txt(660, 230, 'JAN 15', { size: 16, c: '#6a6460', w: 700, ls: 3 });
-    const grow = ramp(t, 121.5, 124), broke = t >= 131.8, shatter = ramp(t, 131.8, 133);
-    const x = XB(t);
-    // bóng Spark trên tường do đèn sân khấu → kẻ thù mọc từ đó
-    s += `<g opacity="${0.5 * (1 - grow)}">` + `<g transform="translate(${x - 160},560) scale(1.3,1.15) translate(${-(x - 160)},-560)">` + bodyShapes(stand(x - 160, 560), '#000', '#000', 0, '#000') + '</g></g>';
-    if (t < 133) s += shadowFig(whisperPose(390, 560, 1), { k: 0.9 + 0.8 * grow, op: (broke ? 1 - shatter : 1) * ramp(t, 121.4, 122.2), jitter: broke ? 30 * (1 - shatter) : (t > 127.8 && t < 128.6 ? 4 : 0), ax: 400, ay: 560 });
-    let fl = 0.95; fl = lerp(fl, 0.4, ramp(t, 122, 126)); fl = lerp(fl, 0.6, ramp(t, 126.2, 127.2)); fl = lerp(fl, 0.42, ramp(t, 127.8, 128.4)); fl = lerp(fl, 1.3, ramp(t, 129.6, 131.8));
-    const tremble = t < 126 ? Math.sin(t * 40) * 2 : 0;
-    let J = stand(x, 560, { look: 10 });
-    if (t > 127.2 && t < 127.8 || t > 129.3 && !broke) J = walk(x, 560, t * (t > 129.3 ? 9 : 7));
-    if (t > 127.8 && t < 128.6) J = stand(x, 560, { lean: -10, look: 10 });
+    s += `<rect x="800" y="120" width="60" height="440" fill="#2a1830"/>` + `<path d="M860,120 L1500,120 L1500,560 L860,560Z" fill="#f0d8a8" opacity=".22"/>` + glow(1120, 360, 420, 0.4);
+    s += txt(640, 230, 'JAN 15', { size: 16, c: '#6a6460', w: 700, ls: 3 });
+    const rise = ramp(t, 121.5, 123), broke = t >= 131.8, shatter = ramp(t, 131.8, 133);
+    const x = XB(t), n = stepsDone(t);
+    // bóng Spark trên tường do đèn sân khấu → kẻ thù mọc từ đó rồi ra chắn lối đi
+    s += `<g opacity="${0.5 * (1 - rise)}">` + `<g transform="translate(${x - 150},560) scale(1.3,1.15) translate(${-(x - 150)},-560)">` + bodyShapes(stand(x - 150, 560), '#000', '#000', 0, '#000') + '</g></g>';
+    // tan vào bóng tối rồi trồi lên lại trước ánh đèn (không trượt xuyên qua Spark)
+    const front = t >= 123.3, ex = front ? 830 : 380, edir = front ? -1 : 1;
+    const ek = front ? lerp(0.3, 1.5, ramp(t, 123.4, 124.2)) : lerp(0.9, 1.5, rise);
+    const eop = front ? ramp(t, 123.4, 123.9) : 1 - ramp(t, 122.9, 123.3);
+    const shake = STEPS.some(([ts]) => t > ts + 0.35 && t < ts + 0.6) ? 4 : 0;
+    if (t < 133) {
+      s += shadowFig(whisperPose(ex, 560, edir), { k: ek, op: eop * (broke ? 1 - shatter : 1) * ramp(t, 121.4, 122.2), jitter: broke ? 30 * (1 - shatter) : shake, ax: ex, ay: 560 });
+      // vết nứt vàng trên thân bóng, thêm một vết mỗi bước
+      for (let i = 0; i < Math.min(CRACKS.length, Math.floor(n + 0.05)); i++) {
+        const pts = CRACKS[i].map(([dx, dy]) => [ex + dx * ek * 0.8, 560 + (dy - 180) * ek * 0.55 + 80 * ek * 0.55].join(',')).join(' ');
+        s += `<polyline points="${pts}" fill="none" stroke="${YEL}" stroke-width="${3 + i * 0.4}" stroke-linecap="round" stroke-linejoin="round" filter="url(#yelGlow)" opacity="${broke ? 1 - shatter : 0.9}"/>`;
+      }
+    }
+    // những ngày đã luyện tập sáng lên dưới chân
+    STEPS.forEach(([ts, day], i) => {
+      const o = ramp(t, ts + 0.35, ts + 0.55); if (o <= 0) return;
+      const fx = 520 + 30 * (i + 1) + 18;
+      s += `<ellipse cx="${fx}" cy="561" rx="15" ry="4" fill="${YEL}" opacity="${0.8 * o}" filter="url(#yelGlow)"/>`;
+      s += `<text x="${fx}" y="${582 + (i % 2) * 14}" fill="${YEL}" fill-opacity="${o}" font-family="${MONO}" font-size="10" font-weight="700" text-anchor="middle">DAY ${day}</text>`;
+    });
+    let fl = 0.95; fl = lerp(fl, 0.4, ramp(t, 122, 125.6)); fl = lerp(fl, 0.55, ramp(t, 125.8, 127.2)); fl += 0.16 * n;
+    const tremble = t < 125.8 ? Math.sin(t * 40) * 2 : 0;
+    const walking = STEPS.some(([ts]) => t > ts && t < ts + 0.45);
+    let J = walking ? walk(x, 560, Math.PI * n) : stand(x, 560, { look: 10 });
     J.lh = [J.hip[0] + 28 + tremble, 451]; J.le = [J.hip[0] + 22, 480];
+    // nhắm mắt, ngón tay tự bấm các thế hợp âm đã tập
+    const practice = t > 125.8 && t < 127.3;
+    if (practice) J.lh = [J.hip[0] + 28, 451 - 8 * (Math.floor((t - 125.8) * 3) % 3)];
     fixArms(J);
     const gp = [J.lh[0] + 12, J.lh[1] + 70];
-    s += guitar(gp[0], gp[1], -100) + fig(J, { flame: fl, t, mood: t > 126.2 ? 'fierce' : 'sad' }) + handDot(J.lh) + frontArm(J);
-    if (t > 127.2 && t < 127.8 || t > 130.6 && t < 131.8) for (let i = 0; i < 5; i++) s += ln([x - 60 - i * 6, 420 + i * 22], [x - 140 - i * 10, 420 + i * 22], '#cfc6b8', 2, 0.5);
-    if (broke) { const w = shatter; s += `<circle cx="${x + 40}" cy="440" r="${60 + 1100 * w}" fill="none" ${st(YEL, 8, 0.7 * (1 - w))}/>`; }
+    const mood = practice ? 'tired' : t > 127.3 ? 'fierce' : 'sad';
+    s += guitar(gp[0], gp[1], -100) + fig(J, { flame: fl, t, mood }) + handDot(J.lh) + frontArm(J);
+    if (broke) { const w = shatter; s += `<circle cx="${x + 60}" cy="440" r="${60 + 1100 * w}" fill="none" ${st(YEL, 8, 0.7 * (1 - w))}/>`; for (let i = 0; i < 14; i++) { const a = i * 0.45; s += `<rect x="${ex + Math.cos(a) * 260 * w}" y="${430 + Math.sin(a) * 200 * w + 120 * w * w}" width="${14 * (1 - w)}" height="${10 * (1 - w)}" fill="${INK}" stroke="${RED}" stroke-width="1.5" transform="rotate(${200 * w * (i % 2 ? 1 : -1)} ${ex} 430)"/>`; } }
     if (t > 131.8 && t < 132) s += ui(`<rect width="1280" height="720" fill="#fff" opacity=".85"/>`);
     return s;
   }, { fo: 0.01, cam: t => {
-    const face = ramp(t, 126, 126.6) * (1 - ramp(t, 127.1, 127.3));
-    let k = 1.6 - 0.35 * ramp(t, 121.5, 124) * (1 - ramp(t, 125.6, 126)) + 1.0 * face, x = lerp(lerp(560, 600, ramp(t, 121.5, 124)), XB(t) + 10, face), y = 560 - 250 / k;
-    if (face > 0) y = lerp(y, 380, face);
-    if (t > 127.2) { k = 1.5; x = XB(t); y = 560 - 250 / k; }
+    const wide = ramp(t, 121.5, 124) * (1 - ramp(t, 125.6, 126)), face = ramp(t, 125.8, 126.4) * (1 - ramp(t, 127.1, 127.4));
+    let k = 1.6 - 0.35 * wide, x = lerp(560, 640, wide), y = 560 - 250 / k;
+    if (face > 0) { k = lerp(k, 2.6, face); x = lerp(x, XB(t) + 20, face); y = lerp(560 - 250 / k, 400, face); }
+    if (t > 127.4) { k = 1.45; x = lerp(XB(t), 830, 0.4); y = 560 - 250 / k; }
     return { x, y, k };
   } });
 
@@ -852,7 +882,7 @@
   window.KIT = { fig, shadowFig, flame, glow, txt, stand, slump, sitChair, whisperPose, playing, guitar, calendar, poster, pile, rain, cap, DEFS, MONO, C: { W, BG, MUTED, ORANGE, CORE, RED, YEL, SKIN, COLD } };
   window.DURATION = DUR;
   window.WHISPERS = WH;
-  const SHAKES = [[54.5, 0.3, 6], [127.8, 0.3, 6], [131.8, 0.7, 16]];
+  const SHAKES = [[54.5, 0.3, 6], [131.8, 0.7, 16]];
   window.frame = function (t) {
     let body = '';
     ENEMY = null;

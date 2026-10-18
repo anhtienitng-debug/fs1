@@ -52,8 +52,8 @@ Vẽ lại toàn bộ ảnh: `node ve-kenh.js <thư mục ra> [endvideo]`. Scrip
 
 ## 3. Màn hình kết thúc và bản đăng
 
-- `end-screen-20s.mp4`: 20 giây, Spark ngồi trên đồi nhìn biển, lửa lay, có chữ "Keep the fire." và nhạc nền ấm nhỏ dần. Gắn vào cuối mọi phim.
-- `SCROLL-dang-youtube.mp4`: phim SCROLL 2:30 nối với 20 giây màn hình kết thúc, tổng 2:50. **Đây là file để tải lên.**
+- `end-screen-6s.mp4`: 6 giây, Spark ngồi trên đồi nhìn biển, lửa lay, có chữ "Keep the fire." và nhạc nền ấm nhỏ dần. Gắn vào cuối mọi phim. YouTube cho màn hình kết thúc dài 5–20 giây, nên 6 giây vẫn đủ để đặt video và nút đăng ký.
+- `SCROLL-dang-youtube.mp4`: phim SCROLL 2:30 nối với 6 giây màn hình kết thúc, tổng 2:36. **Đây là file để tải lên.**
 - Khi đăng, vào Màn hình kết thúc rồi chọn mẫu "1 video + 1 video + đăng ký", đặt theo `end-screen-vi-tri.png`:
   - trái: "Video phù hợp nhất với người xem";
   - phải: "Video tải lên gần đây nhất";

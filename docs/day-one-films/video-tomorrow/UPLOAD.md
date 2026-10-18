@@ -1,6 +1,6 @@
 # TOMORROW: bộ đăng YouTube
 
-File tải lên: `TOMORROW-dang-youtube.mp4` (phim 2:45, nối 20 giây màn hình kết thúc, tổng 3:05).
+File tải lên: `TOMORROW-dang-youtube.mp4` (phim 2:45, nối 6 giây màn hình kết thúc, tổng 2:51).
 
 **Tiêu đề:**
 ```

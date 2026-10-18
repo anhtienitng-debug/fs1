@@ -260,14 +260,19 @@ for k in range(16):
 
 # ---------- 7. 118–132 trận cuối ----------
 add(118, pad(["A1", "E2", "B2"], 14, 0.8, 1.5), 0.11)
-for tb in np.arange(118.3, 126, 0.9):
+for tb in np.arange(118.3, 125.8, 0.9):
     add(tb, kick(70, 38, 0.3), 0.26)
     add(tb, noise(0.03, 3000, 80), 0.06)
 add(121.5, whoosh(2.5), 0.18)
-add(127.2, whoosh(0.6), 0.32)
-add(127.8, kick(90, 45, 0.3), 0.5)
-add(127.8, noise(0.25, 2500, 12), 0.25)
-add(129.3, whoosh(2.4), 0.28)
+# nhắm mắt, ngón tay bấm thế hợp âm (tiếng dây lách cách rất nhỏ)
+for k in range(5):
+    add(125.9 + k * 0.33, noise(0.03, 7000, 90), 0.07, pan=0.2)
+# mỗi bước = một ngày đã tập: hợp âm + bước chân + tiếng nứt của bóng
+for (ts, ch) in [(127.4, "C"), (128.2, "G"), (129.0, "Am"), (129.8, "F"), (130.6, "C")]:
+    add(ts + 0.4, strum(CH[ch], dur=1.6, bright=0.6), 0.42)
+    add(ts + 0.4, kick(80, 50, 0.15), 0.25)
+    add(ts + 0.42, noise(0.12, 7000, 25), 0.18, pan=0.4)
+    add(ts + 0.4, pad(PADS[ch], 1.2, 0.05, 0.8), 0.06)
 add(131.8, kick(120, 40, 0.8), 0.75)
 add(131.8, noise(2.5, 5000, 1.8), 0.22)
 add(131.8, noise(0.12, 7000, 25), 0.3)
@@ -346,10 +351,10 @@ if len(sys.argv) >= 4:
 
 # ---------- khoảng lặng trước cú vỡ ----------
 _t = np.arange(N) / SR
-_duck = 1 - 0.85 * np.clip((_t - 130.2) / 0.2, 0, 1) * np.clip((131.78 - _t) / 0.05, 0, 1)
+_duck = 1 - 0.85 * np.clip((_t - 131.15) / 0.15, 0, 1) * np.clip((131.78 - _t) / 0.05, 0, 1)
 L *= _duck
 R *= _duck
-for tb in [130.4, 130.95, 131.4]:  # chỉ còn nhịp tim
+for tb in [131.25, 131.6]:  # chỉ còn nhịp tim
     add(tb, kick(70, 38, 0.3), 0.32)
     add(tb, noise(0.03, 3000, 80), 0.08)
 
