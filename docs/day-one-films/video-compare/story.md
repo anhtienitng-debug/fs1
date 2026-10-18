@@ -1,4 +1,15 @@
-# COMPARE | An Animated Short Film: kế hoạch (chờ DUYỆT 1 + 2)
+# COMPARE | An Animated Short Film: kế hoạch (đã DUYỆT 1 + 2, chọn A)
+
+**v2 (sửa theo DUYỆT 3):**
+1. Tay chân là đường cong mềm đi qua khuỷu và gối, không còn gãy khúc. Khuỷu luôn bẻ một hướng cố định, nên khi tay chuyển động nhanh không bị lật.
+2. Nền công viên trượt ván làm chi tiết:
+   - bầu trời có mây, mặt trời;
+   - phố xa có cửa sổ sáng đèn, hàng cây, hàng rào lưới;
+   - tường graffiti "SK8", cột đèn;
+   - sàn bê tông có khe và vết nứt;
+   - thanh trượt, ghế, dốc có mép kim loại và đổ bóng.
+3. Nhân vật hiển thị nhỏ đi 20% (thu camera, giữ nguyên đường mặt đất).
+
 
 Kênh Keep The Fire · phim 04 · dự kiến 2:40 · không lời dẫn.
 

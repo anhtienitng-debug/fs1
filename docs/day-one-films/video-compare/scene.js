@@ -91,7 +91,8 @@
     if (d > 2 * ARM - 1) { d = 2 * ARM - 1; h = [s[0] + u[0] * d, s[1] + u[1] * d]; }
     const a = d / 2, hh = Math.sqrt(Math.max(0, ARM * ARM - a * a)), b = [s[0] + u[0] * a, s[1] + u[1] * a], n = [-u[1], u[0]];
     const e1 = [b[0] + n[0] * hh, b[1] + n[1] * hh], e2 = [b[0] - n[0] * hh, b[1] - n[1] * hh];
-    const e = Math.hypot(e1[0] - hint[0], e1[1] - hint[1]) <= Math.hypot(e2[0] - hint[0], e2[1] - hint[1]) ? e1 : e2;
+    // tay giơ cao: theo khuỷu gợi ý; còn lại khuỷu luôn bẻ xuống dưới → chuyển động nhanh không bị lật khuỷu
+    const e = h[1] < s[1] - 20 ? (Math.hypot(e1[0] - hint[0], e1[1] - hint[1]) <= Math.hypot(e2[0] - hint[0], e2[1] - hint[1]) ? e1 : e2) : (e1[1] >= e2[1] ? e1 : e2);
     return [e, h];
   }
   function fixArms(J) {
@@ -101,12 +102,17 @@
     return J;
   }
   // thân + tay chân; fill/line = màu ruột/viền, e = độ dày viền
+  // tay/chân: đường cong bậc hai đi đúng qua khớp giữa (khuỷu/gối) → mềm, không gãy khúc
+  function limb([a, m, b], w, c) {
+    const C = [2 * m[0] - (a[0] + b[0]) / 2, 2 * m[1] - (a[1] + b[1]) / 2];
+    return `<path d="M${a[0]},${a[1]} Q${C[0]},${C[1]} ${b[0]},${b[1]}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+  }
   function bodyShapes(J, fill, line, e, legFill) {
     fixArms(J);
     const u = unitv(J.neck, J.hip);
     const top = addv(J.neck, u, 12), bot = J.hip;
     const L = (p, q, w, c) => `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
-    const PL = (pts, w, c) => `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const PL = (pts, w, c) => limb(pts, w, c);
     const sh = addv(J.neck, u, 22);
     let s = '';
     // chân (sau thân)
@@ -343,8 +349,8 @@
   const gpt = (cx, cy, ang, lx, k = 1) => [cx + Math.cos(ang * Math.PI / 180) * lx * k, cy + Math.sin(ang * Math.PI / 180) * lx * k];
   // tay trước vẽ lại đè lên đạo cụ; chấm bàn tay sau đè lên cần đàn
   function frontArm(J, fill = SKIN) {
-    const u = unitv(J.neck, J.hip), sh = addv(J.neck, u, 22), pts = [sh, J.le, J.lh].map(p => p.join(',')).join(' ');
-    return `<polyline points="${pts}" fill="none" stroke="${SKIN_LINE}" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><polyline points="${pts}" fill="none" stroke="${fill}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const u = unitv(J.neck, J.hip), sh = addv(J.neck, u, 22);
+    return limb([sh, J.le, J.lh], 15, SKIN_LINE) + limb([sh, J.le, J.lh], 12, fill);
   }
   const handDot = (p, fill = SKIN) => `<circle cx="${p[0]}" cy="${p[1]}" r="7.5" fill="${fill}" stroke="${SKIN_LINE}" stroke-width="2"/>`;
   const bandage = p => `<rect x="${p[0] - 6}" y="${p[1] - 4}" width="12" height="7" rx="2" fill="#f4efe4" stroke="#b9ab98" stroke-width="1" transform="rotate(-20 ${p[0]} ${p[1]})"/>`;
@@ -444,7 +450,8 @@
     return `<g transform="rotate(${ang} ${x} ${y})">` + skateboard(x, y) + fig(J, { flame: o.flame, t: o.t, mood: o.mood, c: o.c, blink: o.blink }) + (o.extra ? o.extra(J) : '') + '</g>';
   }
   // dốc nhảy (kicker): chân dốc x0, đỉnh x1 cao h
-  const kicker = (x0, x1, h, g = 560) => `<path d="M${x0},${g} Q${(x0 + x1) / 2 + 10},${g - h * 0.25} ${x1},${g - h} L${x1 + 10},${g - h} L${x1 + 10},${g}Z" fill="${CONC}" stroke="${CONC2}" stroke-width="3"/>` + ln([x1, g - h], [x1 + 12, g - h], '#8a8a96', 4);
+  const kicker = (x0, x1, h, g = 560) => `<ellipse cx="${(x0 + x1) / 2 + 10}" cy="${g + 4}" rx="${(x1 - x0) / 2 + 30}" ry="6" fill="#000" opacity=".3"/>` +
+    `<path d="M${x0},${g} Q${(x0 + x1) / 2 + 10},${g - h * 0.25} ${x1},${g - h} L${x1 + 14},${g - h} L${x1 + 14},${g}Z" fill="url(#rampP)" stroke="${CONC2}" stroke-width="3"/>` + `<rect x="${x1}" y="${g - h}" width="14" height="${h}" fill="#34343c"/>` + ln([x1 - 4, g - h], [x1 + 14, g - h], '#c8c8d4', 4);
   // quỹ đạo người bay qua dốc lớn (x0 780 → đỉnh 860 cao 70 → đáp 1150)
   let KX = 780, FX0 = 580; // vị trí dốc lớn · điểm người trượt bắt đầu hiện
   function flyPath(u) {
@@ -462,14 +469,46 @@
     return s;
   }
   const FLY_FLAME = (t, i, n = 3, sp = 0.22) => { const [x, y, a] = flyPath((t * sp + i / n + 0.15) % 1); const J = riderPose(x, y); return [x + (flamePos(J)[0] - x), flamePos(J)[1]]; };
+  // ---------- công viên trượt ván (nền chi tiết) ----------
   function park(t, o = {}) {
-    let s = `<defs><linearGradient id="skyP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${o.dawn ? '#2a2a44' : '#2a1a2e'}"/><stop offset=".7" stop-color="${o.dawn ? '#c88a6a' : '#b8603a'}"/><stop offset="1" stop-color="${o.dawn ? '#f0c890' : '#f0a860'}"/></linearGradient></defs>`;
-    s += `<rect x="-400" y="-200" width="2200" height="770" fill="url(#skyP)"/>` + glow(o.dawn ? 300 : 1000, 480, 300, 0.4);
-    for (let i = 0; i < 12; i++) { const bx = -200 + i * 150, bh = 60 + 90 * rnd(i + 11); s += `<rect x="${bx}" y="${560 - bh}" width="120" height="${bh}" fill="#2a1e26" opacity=".7"/>`; }
-    s += `<rect x="-400" y="560" width="2200" height="300" fill="#2c2c32"/>` + ln([-400, 560], [1800, 560], '#55555e', 3);
-    for (let i = 0; i < 10; i++) s += ln([-200 + i * 180, 600], [-120 + i * 180, 600], '#3a3a42', 2);
+    const dawn = !!o.dawn;
+    let s = `<defs><linearGradient id="skyP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${dawn ? '#232848' : '#241630'}"/><stop offset=".55" stop-color="${dawn ? '#8a6a7a' : '#9a4a3a'}"/><stop offset=".85" stop-color="${dawn ? '#e0a880' : '#e8904a'}"/><stop offset="1" stop-color="${dawn ? '#f4cc98' : '#f4b468'}"/></linearGradient>` +
+      `<linearGradient id="concP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3840"/><stop offset="1" stop-color="#232228"/></linearGradient>` +
+      `<linearGradient id="rampP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a6a74"/><stop offset="1" stop-color="#44444c"/></linearGradient></defs>`;
+    s += `<rect x="-600" y="-400" width="2600" height="980" fill="url(#skyP)"/>`;
+    const sx = dawn ? 180 : 1040;
+    s += glow(sx, 470, 380, 0.5) + `<circle cx="${sx}" cy="470" r="46" fill="${dawn ? '#ffe2b0' : '#ffd29a'}" opacity=".95"/>`;
+    // mây trôi chậm
+    for (let i = 0; i < 6; i++) { const cx = ((i * 330 + t * 6) % 2200) - 500, cy = 80 + 60 * rnd(i + 2); s += `<g opacity=".35" fill="${dawn ? '#f0c8b0' : '#f0a070'}"><ellipse cx="${cx}" cy="${cy}" rx="${90 + 40 * rnd(i)}" ry="16"/><ellipse cx="${cx + 50}" cy="${cy - 10}" rx="60" ry="14"/></g>`; }
+    // phố xa: nhà cao, cửa sổ sáng đèn
+    for (let i = 0; i < 16; i++) {
+      const bx = -520 + i * 150 + 30 * rnd(i), bw = 90 + 50 * rnd(i + 4), bh = 110 + 170 * rnd(i + 11);
+      s += `<rect x="${bx}" y="${470 - bh}" width="${bw}" height="${bh + 20}" fill="#2a1c2a" opacity=".85"/>`;
+      for (let r = 0; r < Math.floor(bh / 26); r++) for (let c = 0; c < Math.floor(bw / 22); c++) if (rnd(i * 97 + r * 13 + c) > 0.62) s += `<rect x="${bx + 8 + c * 22}" y="${470 - bh + 12 + r * 26}" width="9" height="11" fill="#f2b468" opacity="${0.45 + 0.4 * rnd(r + c + i)}"/>`;
+    }
+    // hàng cây
+    for (let i = 0; i < 14; i++) { const tx = -500 + i * 180 + 40 * rnd(i + 30), th = 60 + 30 * rnd(i + 31); s += `<rect x="${tx - 4}" y="${520 - th * 0.4}" width="8" height="${th * 0.4 + 30}" fill="#1e1a1c"/><ellipse cx="${tx}" cy="${520 - th * 0.55}" rx="${36 + 12 * rnd(i)}" ry="${th * 0.45}" fill="#24221e"/>`; }
+    // hàng rào lưới
+    s += `<g opacity=".55">` + ln([-600, 470], [2000, 470], '#5a5a62', 3);
+    for (let x = -600; x < 2000; x += 120) s += ln([x, 470], [x, 552], '#5a5a62', 3);
+    for (let x = -600; x < 2000; x += 14) s += ln([x, 472], [x + 40, 550], '#4a4a52', 0.8) + ln([x + 40, 472], [x, 550], '#4a4a52', 0.8);
+    s += '</g>';
+    // tường graffiti (không dùng đỏ/vàng)
+    s += `<rect x="40" y="430" width="380" height="130" fill="#4a4650"/>` + ln([40, 430], [420, 430], '#6a6670', 4);
+    s += `<path d="M70,520 q30,-60 70,-20 q40,40 80,-30 q30,-40 70,10" fill="none" stroke="#3fb8b0" stroke-width="14" stroke-linecap="round"/><path d="M90,540 q60,-30 120,0 t120,-10" fill="none" stroke="#8a6ad8" stroke-width="10" stroke-linecap="round"/>`;
+    s += `<text x="230" y="505" fill="#e8f0ff" stroke="#3b6bd6" stroke-width="4" paint-order="stroke" font-family="Inter" font-size="46" font-weight="900" font-style="italic" text-anchor="middle" transform="rotate(-6 230 505)">SK8</text>`;
+    // cột đèn
+    for (const lx of [-260, 620, 1380]) s += ln([lx, 560], [lx, 380], '#2a2a30', 6) + ln([lx, 382], [lx + 34, 382], '#2a2a30', 5) + `<rect x="${lx + 26}" y="380" width="20" height="8" rx="3" fill="#ffe2b0"/>` + glow(lx + 36, 392, 70, dawn ? 0.15 : 0.35);
+    // sàn bê tông: tấm, khe, vết nứt
+    s += `<rect x="-600" y="560" width="2600" height="360" fill="url(#concP)"/>` + ln([-600, 560], [2000, 560], '#6a6a72', 3);
+    for (let x = -600; x < 2000; x += 160) s += ln([x, 562], [x - 60, 760], '#1c1c22', 2);
+    s += ln([-600, 640], [2000, 640], '#1c1c22', 1.5);
+    for (let i = 0; i < 8; i++) { const cx = -300 + i * 260 + 60 * rnd(i + 50); s += `<path d="M${cx},${600 + 20 * rnd(i)} l14,6 l-6,10 l16,8" fill="none" stroke="#18181c" stroke-width="1.5"/>`; }
+    // thanh trượt + ghế (nền sau)
+    s += ln([1180, 532], [1360, 532], '#9a9aa6', 5) + ln([1196, 532], [1196, 560], '#6a6a74', 4) + ln([1344, 532], [1344, 560], '#6a6a74', 4);
+    s += `<rect x="-120" y="530" width="120" height="10" rx="3" fill="#6a4a30"/>` + ln([-110, 540], [-110, 560], '#3a2a20', 4) + ln([-10, 540], [-10, 560], '#3a2a20', 4);
     if (o.big !== false) s += kicker(KX, KX + 80, 70);
-    if (o.small) s += `<path d="M${o.small - 70},560 L${o.small - 70},520 L${o.small},520 Q${o.small + 30},525 ${o.small + 60},560Z" fill="${CONC}" stroke="${CONC2}" stroke-width="3"/>` + ln([o.small - 70, 520], [o.small, 520], '#8a8a96', 4);
+    if (o.small) s += `<path d="M${o.small - 70},560 L${o.small - 70},520 L${o.small},520 Q${o.small + 30},525 ${o.small + 60},560Z" fill="url(#rampP)" stroke="${CONC2}" stroke-width="3"/>` + ln([o.small - 70, 520], [o.small + 2, 520], '#c8c8d4', 4) + `<rect x="${o.small - 70}" y="520" width="8" height="40" fill="#34343c"/>`;
     return s;
   }
   // thước dây: hộp + dây; enemy = đen vạch đỏ · mine = vàng (của Spark)
@@ -858,7 +897,9 @@
       const push = sc.nopush ? 1 : 1 + 0.08 * clamp((t - sc.a) / (sc.b - sc.a)); // camera không bao giờ ngủ
       let sx = 0, sy = 0;
       for (const [ts, dur, amp] of SHAKES) if (t >= ts && t < ts + dur) { const e = 1 - (t - ts) / dur; sx += Math.sin(t * 97) * amp * e; sy += Math.cos(t * 83) * amp * e; }
-      CAM = { x: c0.x + sx / (c0.k * push), y: c0.y + sy / (c0.k * push), k: c0.k * push };
+      const ZOOM = 0.8; // nhân vật hiển thị nhỏ đi 20%, mặt đất giữ nguyên chỗ trên màn hình
+      const cy = 560 - (560 - c0.y) / ZOOM;
+      CAM = { x: c0.x + sx / (c0.k * ZOOM * push), y: cy + sy / (c0.k * ZOOM * push), k: c0.k * ZOOM * push };
       body += `<g opacity="${o}"><g transform="translate(640,360) scale(${CAM.k}) translate(${-CAM.x},${-CAM.y})">${sc.fn(t)}</g></g>`;
     }
     body += whispers(t);
