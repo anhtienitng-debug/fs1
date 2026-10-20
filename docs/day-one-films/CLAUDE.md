@@ -108,7 +108,7 @@ Mất khoảng 15–20 phút cho mỗi phim 2:45.
 | 2 | TOMORROW | "tomorrow." · "there's always tomorrow." | Lịch tường; TOMORROW → TODAY | Bước đều, mỗi bước một ngày đã tập (DAY 1…45) | Đã duyệt |
 | 3 | PERFECT | "not good enough." · "why even show it?" | `ERASED ×312 / FINISHED 0`; PERFECT → DONE | Ký tên giữa 7 vòng bút đỏ | Đã duyệt |
 | 4 | COMPARE | "look at them." · "you'll never catch up." · "i told you." | Thước dây, `YOU vs THEM −88%`; THEM → YESTERDAY; hồi tưởng vạch chiều cao | Ollie ở dốc nhỏ, thước gãy | Đã duyệt (v3) |
-| 5 | SNOOZE | "five more minutes." · "he'll understand." | Lọ "MISSED" chứa mặt trời; SNOOZE → RISE | Kéo rèm, nắng làm bóng tan | **Chờ DUYỆT 3** |
+| 5 | SNOOZE | "five more minutes." · "he has time." | Lọ "MISSED" chứa mặt trời; số ngày còn sống trên đầu (ông 60 → 1); SNOOZE → RISE | Bóng níu cổ chân dọc sàn, lết tới cửa sổ kéo rèm, nắng làm bóng tan | v2 đã sửa theo DUYỆT 3, chờ anh xem |
 
 ## Ghi chú kỹ thuật (bẫy đã gặp)
 
@@ -123,6 +123,6 @@ Mất khoảng 15–20 phút cho mỗi phim 2:45.
 
 ## Việc đang chờ
 
-- SNOOZE: chờ anh xem và gửi danh sách sửa (DUYỆT 3).
+- SNOOZE: v2 đã sửa 6 điểm của DUYỆT 3 (xem đầu `video-snooze/story.md`). Đoạn chèn 72–78 dùng cơ chế `FLASH_A/FLASH_LEN` + cảnh `{ ins: true }`; `am-thanh.py` tự lùi mốc ≥ 72 thêm 6 giây (`raw=True` để giữ giờ thật).
 - Phim tiếp theo: anh chọn trong mục 7 của `ho-so-kenh.md`.
 - Phía anh: tạo kênh với handle `@keepthefirefilms`, tải ảnh nhận diện, đăng theo `UPLOAD.md` từng phim. Lịch đăng thứ Năm, 18:00 giờ New York.

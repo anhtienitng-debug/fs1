@@ -131,7 +131,7 @@ Mỗi phim theo công thức 6 nhịp trong `../ke-hoach-trien-khai.md`. Kẻ th
 | 1 | SCROLL ✅ `video-scroll/` | "just one more" | Sợi lửa bị hút vào điện thoại | Phone & Focus |
 | 2 | TOMORROW ✅ `video-tomorrow/` | "tomorrow." | Lịch tường: mỗi tờ kẻ thù viết "tomorrow" và nhốt một đốm lửa. Lỡ buổi open mic, rồi TOMORROW thành TODAY | Discipline |
 | 3 | COMPARE ✅ `video-compare/` (làm thứ 4) | "look at them." | Công viên trượt ván: thước dây đo lửa với người khác (−88%). Khung cửa có vạch chiều cao hồi nhỏ, THEM thành YESTERDAY | Mind & Courage |
-| 4 | SNOOZE ✅ `video-snooze/` (làm thứ 5) | "five more minutes." | Ông nội gõ cửa lúc 5:55 rủ đi câu. Mỗi lần bấm báo lại, một mặt trời nhỏ rơi vào lọ "MISSED". SNOOZE thành RISE, kéo rèm cho nắng làm bóng tan | Discipline |
+| 4 | SNOOZE ✅ `video-snooze/` (làm thứ 5) | "five more minutes." | Ông nội gõ cửa lúc 5:55 rủ đi câu. Mỗi lần bấm báo lại, một mặt trời nhỏ rơi vào lọ "MISSED". Trên đầu mỗi người có số ngày còn sống; gặp bà cụ số 1, hôm sau đám tang, Spark thấy ông chỉ còn 35. SNOOZE thành RISE, kéo rèm cho nắng làm bóng tan | Discipline |
 | 5 | FEAR | "what if you fail" | Lửa bị bóng tối nuốt mỗi khi định giơ tay | Mind & Courage |
 | 6 | NOTIFICATION | "someone texted you" | Mỗi tiếng ting dập một ngọn lửa đang tập trung | Phone & Focus |
 | 7 | QUIT | "it's too hard" | Lửa lúc tập gym, dừng ở rep cuối | Discipline |

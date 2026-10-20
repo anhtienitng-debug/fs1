@@ -12,14 +12,16 @@ const ART = () => {
     `<text x="${x}" y="${y}" fill="${o.c || W}" font-family="Inter" font-size="${o.size || 100}" font-weight="900" text-anchor="${o.a || 'start'}" stroke="#000" stroke-width="${o.sw || 14}" paint-order="stroke"${o.f ? ` filter="url(#${o.f})"` : ''}>${s}</text>`;
   const wrap = body => `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">${K.DEFS}<rect width="1280" height="720" fill="${BG}"/>${body}<rect width="1280" height="720" filter="url(#grain)" opacity=".5"/><rect width="1280" height="720" fill="url(#vig)"/></svg>`;
   return {
-    // A: Spark nằm, ngón tay trên nút báo lại; ông nội ngoài cửa sổ giơ hai cần câu
+    // A: Spark nằm ngái ngủ, ngón tay trên nút báo lại; ông nội ngoài cửa sổ giơ hai cần câu, trên đầu ông số 35
     A() {
       let s = `<rect x="820" y="80" width="360" height="300" fill="#1a2240" stroke="#6b6760" stroke-width="8"/>` + K.glow(1000, 330, 260, 0.4);
       const G = K.bentPose(1000, 560, -1); G.lh = [940, 250]; G.le = [960, 300]; G.rh = [1080, 250]; G.re = [1050, 300];
       s += `<svg x="820" y="80" width="360" height="300" overflow="hidden"><g transform="translate(-820,-80) translate(1000,560) scale(1.6) translate(-1000,-560)">` + K.gpa(G, { mood: 'sad' }) + `<line x1="940" y1="250" x2="925" y2="170" stroke="#6a5038" stroke-width="3"/><line x1="1080" y1="250" x2="1095" y2="170" stroke="#6a5038" stroke-width="3"/></g></svg>`;
       s += at(330, 640, 3.0, K.alarm(0, 0, 1, 0.3));
       const J = K.lieBed(0, 0); J.rh = [-138, -57]; J.re = [-110, -20];
-      s += at(900, 600, 2.6, K.fig(J, { flame: 0.1, t: T, mood: 'tired' }));
+      s += at(900, 600, 2.6, K.fig(J, { flame: 0.1, t: T, mood: 'drowsy' }));
+      // số ngày còn lại trên đầu ông
+      s += `<text x="1000" y="62" fill="#f4efe4" font-family="${K.MONO}" font-size="46" font-weight="800" text-anchor="middle" stroke="#000" stroke-width="8" paint-order="stroke">35</text>`;
       s += big(36, 130, 'FIVE MORE', { size: 88 }) + big(36, 230, 'MINUTES.', { size: 88, c: ORANGE });
       return wrap(s);
     },

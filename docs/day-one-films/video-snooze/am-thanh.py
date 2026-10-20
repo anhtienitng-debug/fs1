@@ -10,7 +10,7 @@ import wave
 import numpy as np
 
 SR = 44100
-DUR = 165.0
+DUR = 171.0
 N = int(SR * DUR)
 L = np.zeros(N)
 R = np.zeros(N)
@@ -23,7 +23,12 @@ def note_hz(name):
     return 440.0 * 2 ** ((names[pitch] + 12 * (octave + 1) - 69) / 12)
 
 
-def add(t0, sig, vol=1.0, pan=0.0):
+INS_A, INS_LEN = 72.0, 6.0  # đoạn chèn 72–78 (scene.js): mốc phim gốc từ 72 trở đi lùi 6 giây
+
+
+def add(t0, sig, vol=1.0, pan=0.0, raw=False):
+    if not raw and t0 >= INS_A:
+        t0 += INS_LEN
     i = int(t0 * SR)
     if i >= N:
         return
@@ -241,7 +246,8 @@ birds(17.6, 21, 1.2, 0.04)
 for k in range(3):
     add(21.4 + k * 0.32, knock(), 0.16, pan=0.6)  # gõ cửa nhỏ hơn
 add(22.0, noise(0.8, 1500, 3), 0.12)  # kéo chăn
-add(25.0, noise(1.6, 4000, 2), 0.1)  # ảnh trượt dưới cửa
+add(25.6, ping(), 0.06, pan=0.2)  # con số trên đầu tụt 1
+add(25.9, whoosh(0.4), 0.1)  # quơ tay xua
 for k in range(7):
     add(28.3 + k * 0.42, tink(2093 + 120 * k), 0.12)
 add(31.6, noise(1.0, 800, 2), 0.06)
@@ -262,18 +268,36 @@ for tb in (47.6, 49.4, 51.2):
     snoozeclick(tb)
 for k in range(9):
     add(47.2 + k * 0.6, noise(0.06, 1500, 40), 0.1)
-add(53.4, whoosh(1.8), 0.2)
-add(53.4, noise(1.6, 1200, 2), 0.12)
+add(53.4, noise(1.6, 1200, 2), 0.12)  # kéo chăn trùm
 for k in range(5):
     add(54 + k * 0.8, kick(70, 38, 0.3), 0.18)
 
-# ---------- 4. 58–72 ----------
-add(58, noise(6, 300, 0.2), 0.08)  # xe tải nổ máy
-add(58.4, noise(0.7, 1200, 4), 0.14)  # cửa mở
-add(60.2, kick(90, 60, 0.15), 0.25)  # đặt thùng
-add(58, pad(["A1", "E2", "A2"], 14, 2, 3), 0.22)
-add(64, pad(PADS["F"], 8, 2, 3), 0.14)
-add(64.2, chimes(6, 6), 0.03)
+# ---------- 4. 58–78 (giờ thật): công viên, bà cụ số 1 · đám tang · số của ông ----------
+add(58, pad(["A1", "E2", "A2"], 6.4, 1.5, 2), 0.18, raw=True)
+for k in range(6):
+    add(58.3 + k * 0.36, noise(0.06, 1500, 40), 0.1, raw=True)  # bước chân trên sỏi
+for k in range(10):
+    add(58 + k * 0.6 + rng.uniform(0, 0.2), noise(0.04, 2600, 60), 0.05, pan=0.5, raw=True)  # chim mổ
+add(60.6, ping(), 0.07, pan=0.4, raw=True)  # để ý số "1" của bà
+add(61.4, piano("E5", 2.4), 0.07, raw=True)
+add(63.3, noise(0.5, 3000, 6), 0.06, pan=0.5, raw=True)  # chim vỗ cánh
+# đám tang: mưa nhỏ, một hồi chuông trầm, piano thưa
+add(64, lowpass(rng.standard_normal(int(14 * SR)), 2500) * np.clip(np.arange(int(14 * SR)) / SR / 1.5, 0, 1) * np.clip((14 - np.arange(int(14 * SR)) / SR) / 1.5, 0, 1), 0.035, raw=True)
+add(64, pad(["A1", "E2", "C3"], 8.4, 2, 2), 0.2, raw=True)
+add(64.4, piano("A2", 6), 0.12, raw=True)
+add(64.4, piano("E3", 6), 0.06, raw=True)
+add(65.4, ping(), 0.05, raw=True)  # số 0 trên tấm ảnh tắt
+for k in range(3):
+    add(68.0 + k * 0.6, ping(), 0.04, pan=-0.2 + 0.2 * k, raw=True)  # số trên đầu từng người sáng lên
+add(68.4, piano("C4", 3), 0.07, raw=True)
+add(70.2, piano("B3", 3), 0.07, raw=True)
+# số của ông: 35
+add(72, pad(["F1", "C2", "A2"], 6.2, 1.0, 2), 0.24, raw=True)
+add(73.4, kick(70, 38, 0.4), 0.3, raw=True)
+add(73.4, ping(), 0.12, raw=True)
+add(74.2, kick(70, 38, 0.4), 0.22, raw=True)
+add(76.2, piano("A4", 2.5), 0.08, raw=True)
+add(76.7, piano("E4", 2.5), 0.07, raw=True)
 
 # ---------- 5. 72–86 bước ngoặt ----------
 add(72, pad(["A1", "E2"], 6, 2, 2), 0.24)
@@ -324,8 +348,14 @@ for tb in np.arange(116.3, 125.6, 0.85):
     add(tb, noise(0.03, 3000, 80), 0.06)
 ring(118, 127.1, 0.13)
 add(118.2, whoosh(1.8), 0.2)
-add(119.2, noise(3, 900, 1), 0.08)  # chăn đè
-add(124.2, noise(0.8, 1200, 4), 0.15)  # bật dậy
+add(119.4, noise(0.8, 1200, 4), 0.15)  # tung chăn ngồi dậy
+add(120.3, whoosh(0.7), 0.22)  # hai tay bóng trườn dọc sàn
+add(121.0, kick(90, 50, 0.2), 0.3)  # chộp cổ chân
+for tb in (121.4, 122.6):
+    add(tb, noise(0.3, 900, 8), 0.14)  # cố nhấc chân, bị giật lại
+for tb in (124.5, 125.1, 125.6):
+    add(tb, kick(80, 45, 0.18), 0.28)  # lết từng bước
+    add(tb, noise(0.4, 700, 6), 0.1)
 add(127.1, noise(1.2, 3500, 2.5), 0.4)  # kéo rèm "xoạt"
 add(127.12, kick(120, 40, 0.8), 0.5)
 add(127.12, pad(["C3", "G3", "C4", "E4", "G4"], 5, 0.05, 2.5), 0.22)
@@ -348,7 +378,11 @@ while tt < 150:
         add(tt, piano(mel_s[(i // 2) % 16], 2.0), 0.11, pan=0.1)
     tt += 0.5
     i += 1
-add(144.8, noise(2.6, 300, 0.6), 0.1)  # xe tải đi
+add(140.2, chimes(4.0, 27), 0.06)  # mỗi bình minh trôi qua
+for k in range(27):
+    add(140.2 + k * 4.0 / 27, ping(), 0.012, pan=0.3)
+add(144.8, noise(0.6, 2500, 5), 0.06)  # nhấc mũ len
+add(146.2, noise(0.5, 2500, 5), 0.06)  # đội mũ cho Spark
 birds(147.4, 150.4, 1.0, 0.04)
 
 # ---------- 9. 150–165 kết ----------
@@ -399,12 +433,12 @@ if len(sys.argv) >= 4:
         w = w - lowpass(w, 180)  # bỏ phần trầm ù
         w = w / (np.max(np.abs(w)) + 1e-9)
         pan = float(np.clip((x - 640) / 640, -0.7, 0.7))
-        add(t0 + 0.05, w, 0.30, pan=pan)
-        add(t0 + 0.09, w, 0.10, pan=-pan)  # vọng nhẹ ở kênh đối diện
+        add(t0 + 0.05, w, 0.30, pan=pan, raw=True)
+        add(t0 + 0.09, w, 0.10, pan=-pan, raw=True)  # vọng nhẹ ở kênh đối diện
 
 # ---------- khoảng lặng trước cú vỡ ----------
 _t = np.arange(N) / SR
-_duck = 1 - 0.85 * np.clip((_t - 125.6) / 0.15, 0, 1) * np.clip((127.08 - _t) / 0.05, 0, 1)
+_duck = 1 - 0.85 * np.clip((_t - (125.6 + INS_LEN)) / 0.15, 0, 1) * np.clip(((127.08 + INS_LEN) - _t) / 0.05, 0, 1)
 L *= _duck
 R *= _duck
 for tb in [125.8, 126.35, 126.8]:  # chỉ còn nhịp tim

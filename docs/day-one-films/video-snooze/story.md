@@ -1,4 +1,29 @@
-# SNOOZE | An Animated Short Film: kế hoạch (chờ DUYỆT 1 + 2)
+# SNOOZE | An Animated Short Film: kế hoạch (đã DUYỆT 1 + 2, chọn A)
+
+**v2 (sửa theo DUYỆT 3), phim dài 2:51, bản đăng 2:57:**
+1. Các đoạn đang ngủ, chuông reo mà không dậy (0:05, 0:21, 0:39, 0:53): bỏ hình cái bóng, chỉ còn chữ thì thầm bên gối.
+2. Mặt lúc ngủ:
+   - ngủ say: mắt nhắm cong, miệng hé, có chữ "z" bay lên;
+   - lúc với tay bấm báo lại hoặc mới dậy: mắt lim dim, ngáp nhỏ.
+   - Không còn mặt buồn.
+3. Bỏ cảnh 0:26 (cửa và ảnh nhét dưới cửa).
+4. **Số ngày còn sống trên đầu mỗi người.** Mỗi ngày con số tụt 1.
+   - Spark 21,915, ông 60.
+   - 0:24: Spark ngước nhìn số của mình, quơ tay xua, nhún vai, không hiểu nó là gì.
+   - Đoạn đáy viết lại (58–78 giây, chèn thêm 6 giây):
+     - Công viên buổi trưa: bà cụ cho chim ăn, trên đầu bà là số **1**. Spark ngồi cạnh, nhìn số của bà rồi nhìn số của mình.
+     - Hôm sau đám tang: số **0** trên tấm ảnh bà tắt. Spark thấy số trên đầu từng người và hiểu.
+     - Spark quay sang thấy ông đứng cuối hàng: số **35**, phóng to. Cái bóng: "he has time."
+   - Bỏ xe tải chuyển nhà. Phần thưởng mới:
+     - Sau chủ nhật, hai ông cháu ngồi câu. Thời gian trôi nhanh, mỗi bình minh số của ông tụt 1, `SUNRISES` tăng từ 6 lên 33, đến khi số của ông còn **1**.
+     - Ông nhấc mũ len, trao cho Spark.
+     - Sáng hôm sau Spark đội mũ len, một mình ngồi đúng ghế của ông.
+     - Cảnh kết: mũ len nằm cạnh lọ rỗng.
+5. Chân bước đúng nhịp mỗi khi di chuyển (0:43 trước đây trượt đứng chân): đi đặt đồng hồ, đi vào công viên, lết trong trận cuối.
+6. Trận cuối:
+   - Spark ngồi dậy, đứng lên. Cái bóng cúi rạp, hai tay duỗi dài **sát và song song mặt sàn**, nắm chặt hai cổ chân.
+   - Spark cố nhấc chân, bị giật lại hai lần, rồi lết từng bước tới cửa sổ và kéo rèm. Nắng làm bóng và hai tay tan.
+   - Không còn cảnh níu tay.
 
 Kênh Keep The Fire · phim 05 · dự kiến 2:45 · không lời dẫn.
 
