@@ -509,7 +509,7 @@
     fixArms(J);
     const mood = o.mood || 'asleep';
     let s = fig(J, { flame: o.flame, t, mood, blink: o.blink });
-    if (mood === 'asleep' && !o.cover) for (let i = 0; i < 3; i++) { const k = ((t * 0.45 + i / 3) % 1); s += `<text x="${J.head[0] - 30 - 22 * k}" y="${J.head[1] - 34 - 50 * k}" fill="#8d8a84" fill-opacity="${Math.sin(Math.PI * k) * 0.8}" font-family="Inter" font-size="${10 + 8 * k}" font-weight="800">z</text>`; }
+    if (mood === 'asleep' && !o.cover) for (let i = 0; i < 3; i++) { const k = ((t * 0.45 + i / 3) % 1); s += `<text x="${J.head[0] - 62 - 22 * k}" y="${J.head[1] - 20 - 46 * k}" fill="#8d8a84" fill-opacity="${Math.sin(Math.PI * k) * 0.8}" font-family="Inter" font-size="${10 + 8 * k}" font-weight="800">z</text>`; }
     if (o.blanket !== false) s += `<path d="M${J.neck[0] + 10},${BEDY - 22} Q${BEDX + 60},${BEDY - 70 - (o.lump || 0)} ${BEDX + 190},${BEDY - 14} L${BEDX + 190},${BEDY + 6} L${J.neck[0] + 10},${BEDY + 6}Z" fill="#4a5a7a" stroke="#2a3448" stroke-width="2"/>`;
     if (o.cover) s += `<ellipse cx="${J.head[0]}" cy="${J.head[1] - 4}" rx="40" ry="34" fill="#4a5a7a" stroke="#2a3448" stroke-width="2" opacity="${o.cover}"/>`;
     if (reach > 0) s += handDot(J.rh);
@@ -580,8 +580,8 @@
       fixArms(G);
       let g = gpa(G, { mood: t > 9.6 ? 'sad' : 'happy' });
       if (t > 3.6 && t < 9.6) g += ln(G.lh, [G.lh[0] - 10, G.lh[1] - 60], '#6a5038', 3) + ln(G.rh, [G.rh[0] + 10, G.rh[1] - 60], '#6a5038', 3);
-      s += `<svg x="${WIN[0]}" y="${WIN[1]}" width="150" height="130" overflow="hidden"><g transform="translate(${-WIN[0]},${-WIN[1]})" opacity="${gIn}">${g}</g></svg>`;
-      s += windowR(WIN[0], WIN[1], 0.2, 0.25).replace(/<rect x="800" y="250" width="150" height="130" fill="url\(#dawnW\)"[^>]*>/, '');
+      // vẽ đè lên rèm, cùng cỡ với lần gõ thứ hai, để thấy rõ ông
+      s += `<svg x="${WIN[0]}" y="${WIN[1]}" width="150" height="130" overflow="hidden"><g transform="translate(${-WIN[0]},${-WIN[1]}) translate(${WIN[0] + 75},480) scale(.9) translate(${-(WIN[0] + 75)},-480)" opacity="${gIn}">${g}</g></svg>`;
       s += life({ ...G, head: [G.head[0], WIN[1] + 22] }, gpaN(0), { op: 0.9 * gIn }); // số của ông nổi trên khung cửa sổ
     }
     const reach = ramp(t, 6.4, 7.2) * (1 - ramp(t, 7.6, 8.2));
