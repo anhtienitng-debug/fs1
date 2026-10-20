@@ -10,7 +10,7 @@ import wave
 import numpy as np
 
 SR = 44100
-DUR = 133.0
+DUR = 143.8
 N = int(SR * DUR)
 L = np.zeros(N)
 R = np.zeros(N)
@@ -24,7 +24,7 @@ def note_hz(name):
 
 
 # bảng ghép khớp scene.js: [từ, đến, chèn?] theo giờ phim gốc. Mốc rơi vào đoạn bị bỏ thì không phát.
-EDL = [(0, 42, 0), (58, 72, 0), (72, 78, 1), (72, 92, 0), (98, 116, 0), (132, 165, 0)]
+EDL = [(0, 35, 0), (42, 45, 0), (35, 38.5, 0), (45, 48, 0), (58, 72, 0), (72, 78, 1), (72, 92, 0), (98, 116, 0), (116, 121.5, 0), (132, 147.4, 0), (122, 128, 0), (150.6, 165, 0)]
 
 
 def to_real(t, ins=False):
@@ -219,10 +219,21 @@ def ring(a, b, vol=0.14):
         add(a, bell(b - a), vol, pan=-0.4)
 
 
+def numtick(t0, v=0.07, **kw):
+    """Motif: mỗi lần con số ngày tụt 1 là một tiếng "tách" nhỏ, giống nhau suốt phim."""
+    add(t0, click(), v * 2.2, **kw)
+    add(t0 + 0.01, ping(), v, **kw)
+
+
 def snoozeclick(t0):
     add(t0, click(), 0.6, pan=-0.3)
     add(t0, kick(200, 140, 0.05), 0.2, pan=-0.3)
 
+
+# ---------- mở phim: con số 60 trong bóng tối ----------
+add(0.05, piano("A2", 3.5), 0.12)
+add(0.05, pad(["A1", "E2"], 2.2, 0.4, 1.2), 0.1)
+numtick(0.3, 0.06)
 
 # ---------- 1. 0–14 ----------
 for i in range(4):
@@ -258,31 +269,23 @@ birds(17.6, 21, 1.2, 0.04)
 for k in range(3):
     add(21.4 + k * 0.32, knock(), 0.16, pan=0.6)  # gõ cửa nhỏ hơn
 add(22.0, noise(0.8, 1500, 3), 0.12)  # kéo chăn
-add(25.6, ping(), 0.06, pan=0.2)  # con số trên đầu tụt 1
+numtick(25.6)  # con số trên đầu tụt 1
+numtick(19.2, 0.08, pan=-0.2)  # số của ông ở bến tụt 1
+numtick(36.6, 0.08, pan=-0.2)
 add(25.9, whoosh(0.4), 0.1)  # quơ tay xua
 for k in range(7):
     add(28.3 + k * 0.42, tink(2093 + 120 * k), 0.12)
 add(31.6, noise(1.0, 800, 2), 0.06)
 add(35, water(3.5), 0.12)
 birds(35, 38.5, 1.0, 0.04)
-ring(38.5, 39.6)
-snoozeclick(39.6)
-add(40.8, tink(2349), 0.18)
 
-# ---------- 3. 42–58 ----------
-add(42, pad(["A1", "E2"], 16, 1, 2), 0.1)
-add(43.0, kick(200, 150, 0.06), 0.25)
-add(44.0, kick(200, 150, 0.06), 0.25)
-ring(45.4, 47.6, 0.1)
-add(45.4, bell(3.9) * 0.8, 0.08, pan=0.4)
-add(45.4, bell(5.8) * 0.8, 0.07, pan=0.7)
-for tb in (47.6, 49.4, 51.2):
-    snoozeclick(tb)
-for k in range(9):
-    add(47.2 + k * 0.6, noise(0.06, 1500, 40), 0.1)
-add(53.4, noise(1.6, 1200, 2), 0.12)  # kéo chăn trùm
-for k in range(5):
-    add(54 + k * 0.8, kick(70, 38, 0.3), 0.18)
+# ---------- gieo bà cụ (42–48 gốc): trưa, công viên ----------
+add(42, pad(PADS["Am"], 6.2, 1.0, 1.5), 0.1)
+for k in range(8):
+    add(42.2 + k * 0.7 + rng.uniform(0, 0.2), noise(0.04, 2600, 60), 0.04, pan=0.4)  # chim mổ
+birds(42.4, 47.6, 0.8, 0.025)
+add(42.8, piano("E5", 2.2), 0.06)
+add(45.4, piano("C5", 2.2), 0.06)
 
 # ---------- 4. 58–72 + đoạn chèn 72–78 (ins=True): công viên, bà cụ số 1 · đám tang · số của ông ----------
 add(58, pad(["A1", "E2", "A2"], 6.4, 1.5, 2), 0.18)
@@ -298,7 +301,7 @@ add(64, lowpass(rng.standard_normal(int(14 * SR)), 2500) * np.clip(np.arange(int
 add(64, pad(["A1", "E2", "C3"], 8.4, 2, 2), 0.2)
 add(64.4, piano("A2", 6), 0.12)
 add(64.4, piano("E3", 6), 0.06)
-add(65.4, ping(), 0.05)  # số 0 trên tấm ảnh tắt
+numtick(64.9, 0.06)  # số trên tấm ảnh bà về 0
 for k in range(3):
     add(68.0 + k * 0.6, ping(), 0.04, pan=-0.2 + 0.2 * k)  # số trên đầu từng người sáng lên
 add(68.4, piano("C4", 3), 0.07)
@@ -353,26 +356,29 @@ add(104.6, lowpass(rng.standard_normal(int(2.8 * SR)), 1800) * 0.6, 0.1)  # rót
 for k in range(4):
     add(110.2 + k * 1.5, tink(2637), 0.14, pan=0.4)
 
-# ---------- 7. 116–132 trận cuối ----------
-add(116, pad(["A1", "E2", "B2"], 12, 0.8, 1.5), 0.1)
-for tb in np.arange(116.3, 125.6, 0.85):
-    add(tb, kick(70, 38, 0.3), 0.26)
-    add(tb, noise(0.03, 3000, 80), 0.06)
-ring(118, 127.1, 0.13)
-add(118.2, whoosh(1.8), 0.2)
-add(119.4, noise(0.8, 1200, 4), 0.15)  # tung chăn ngồi dậy
-add(120.3, whoosh(0.7), 0.22)  # hai tay bóng trườn dọc sàn
-add(121.0, kick(90, 50, 0.2), 0.3)  # chộp cổ chân
-for tb in (121.4, 122.6):
-    add(tb, noise(0.3, 900, 8), 0.14)  # cố nhấc chân, bị giật lại
-for tb in (124.5, 125.1, 125.6):
-    add(tb, kick(80, 45, 0.18), 0.28)  # lết từng bước
-    add(tb, noise(0.4, 700, 6), 0.1)
-add(127.1, noise(1.2, 3500, 2.5), 0.4)  # kéo rèm "xoạt"
-add(127.12, kick(120, 40, 0.8), 0.5)
-add(127.12, pad(["C3", "G3", "C4", "E4", "G4"], 5, 0.05, 2.5), 0.22)
-add(127.3, chimes(2.5, 18), 0.12)
-birds(127.4, 132, 1.6, 0.05)
+# ---------- 7. sáng chủ nhật 116–121.5: kéo chăn theo thói quen, con số tụt 1, hất chăn dậy ----------
+add(116, pad(["A1", "E2", "B2"], 3.2, 0.5, 1.0), 0.12)
+ring(116.0, 120.5, 0.09)
+add(116.3, noise(0.8, 1200, 4), 0.12)  # kéo chăn trùm đầu
+for tb in np.arange(116.4, 118.0, 0.8):
+    add(tb, kick(70, 38, 0.3), 0.22)
+numtick(118.1, 0.12)
+add(118.9, noise(0.7, 1500, 5), 0.18)  # hất chăn
+add(118.95, pad(["C3", "G3", "C4", "E4"], 3.0, 0.05, 1.5), 0.18)
+add(119.0, chimes(1.6, 10), 0.06)
+for k in range(4):
+    add(119.6 + k * 0.25, noise(0.06, 1500, 40), 0.12)  # bước chân
+snoozeclick(120.5)  # tắt chuông
+
+# ---------- 7b. sáng sau khi ông đi 122–128: hai ly ca cao, không còn tiếng tách ----------
+add(122, water(6), 0.08)
+birds(122.4, 128, 0.6, 0.03)
+add(122.0, pad(PADS["F"], 3.2, 1.0, 1.5), 0.1)
+add(125.0, pad(PADS["C"], 3.2, 1.0, 1.5), 0.1)
+add(122.4, piano("A4", 3), 0.07)
+add(123.8, tink(2093), 0.05)  # đặt ly lên ghế
+add(125.2, piano("G4", 3), 0.07)
+add(126.4, piano("E4", 3), 0.06)
 
 # ---------- 8. 132–150 phần thưởng ----------
 add(132, water(18), 0.08)
@@ -390,9 +396,9 @@ while tt < 150:
         add(tt, piano(mel_s[(i // 2) % 16], 2.0), 0.11, pan=0.1)
     tt += 0.5
     i += 1
-add(140.2, chimes(4.0, 27), 0.06)  # mỗi bình minh trôi qua
-for k in range(27):
-    add(140.2 + k * 4.0 / 27, ping(), 0.012, pan=0.3)
+add(140.2, chimes(4.0, 8), 0.04)  # thời gian trôi chậm qua hai bình minh
+numtick(141.2, 0.08, pan=0.2)
+numtick(143.2, 0.08, pan=0.2)
 add(144.8, noise(0.6, 2500, 5), 0.06)  # nhấc mũ len
 add(146.2, noise(0.5, 2500, 5), 0.06)  # đội mũ cho Spark
 birds(147.4, 150.4, 1.0, 0.04)

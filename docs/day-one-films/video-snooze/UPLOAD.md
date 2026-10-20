@@ -1,6 +1,6 @@
 # SNOOZE: bộ đăng YouTube
 
-File tải lên: `SNOOZE-dang-youtube.mp4` (phim 2:13 đã nối sẵn 6 giây màn hình kết thúc, tổng 2:19).
+File tải lên: `SNOOZE-dang-youtube.mp4` (phim 2:24 đã nối sẵn 6 giây màn hình kết thúc, tổng 2:30).
 
 **Tiêu đề:**
 ```
@@ -15,7 +15,7 @@ Everyone in Spark's world has a number above their head. Spark's is 21,915. Gran
 
 Every morning at 5:55, Grandpa knocked on the window with two fishing rods. Every morning, a voice said: five more minutes. Snooze. A tiny sunrise fell into a jar on the shelf. Missed: 21.
 
-Then Spark met an old woman on a park bench. Her number was 1.
+Every noon, an old woman on the park bench waved up at Spark's window. Her number was 10. Then 3. Then 1.
 
 This is a wordless animated short about the snooze button, the mornings we sleep through, and the people waiting for us in them.
 
@@ -49,7 +49,7 @@ If you could see the number above someone you love, would you still hit snooze? 
 
 **Danh sách phát:** Battles Inside (All Films), Discipline.
 
-**Màn hình kết thúc:** dùng mẫu như các phim trước. Mọi phần tử bắt đầu ở 2:13.
+**Màn hình kết thúc:** dùng mẫu như các phim trước. Mọi phần tử bắt đầu ở 2:24.
 - Trái: COMPARE.
 - Phải: "Video phù hợp nhất với người xem".
 - Giữa: nút đăng ký.

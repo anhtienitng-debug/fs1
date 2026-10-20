@@ -1,5 +1,25 @@
 # SNOOZE | An Animated Short Film: kế hoạch (đã DUYỆT 1 + 2, chọn A)
 
+**v4 (làm theo review kể chuyện), phim dài 2:24, bản đăng 2:30:**
+1. Mở phim: 1.6 giây đầu chỉ có con số **60** sáng trong bóng tối, kèm tiếng "tách". Sau đó camera lùi từ con số ra, thấy ông ngoài cửa sổ.
+2. Ông gõ cửa lần 1 vẽ trên rèm, rõ như lần 2.
+3. Gieo bà cụ từ sớm:
+   - Ngày 15, nhìn qua cửa sổ lúc trưa thấy bà vẫy, trên đầu bà là số 10.
+   - Ngày 22, nhìn từ công viên thấy Spark ngáp trong khung cửa sổ, bà vẫy lên, số 3.
+   - Ngày 24, gặp bà ở ghế đá với số 1.
+4. Ở bến, số của ông to hơn và tụt 1 ngay trước mắt người xem (57 → 56, 45 → 44).
+5. Bỏ cảnh ngủ 0:39 ("next time") vì trùng lặp.
+6. Bông hoa trắng từ đám tang đặt trên tủ đầu giường lúc Spark mở lọ, nối bước ngoặt với đám tang.
+7. Sáng chủ nhật 5:55, không có cái bóng:
+   - Spark theo thói quen kéo chăn trùm đầu, chữ "five more minutes." hiện bên gối.
+   - Lặng một nhịp, con số trên đầu tụt 1, tiếng "tách".
+   - Spark hất chăn, chữ vỡ vụn rơi xuống, rồi đi tắt chuông ở kệ xa.
+8. Cảnh cuối thay cảnh ngồi một mình:
+   - Spark đội mũ len, cầm hai ly ca cao, đặt một ly lên ghế trống (cần câu của ông dựng cạnh), rồi ngồi vào ghế của ông.
+   - Nhìn sang ghế trống, rồi nhìn ra mặt trời. Đây là cú gặt của cảnh pha hai ly ca cao.
+9. **Motif âm thanh:** mỗi lần con số tụt là cùng một tiếng "tách" (`numtick`). Cảnh cuối không còn tiếng tách.
+10. Giữ chữ *"he has no time..."* theo yêu cầu của anh ở v3.
+
 **v3 (sửa lần 2), phim dài 2:13, bản đăng 2:19:**
 1. Lửa lúc nằm đặt cao hẳn trên con số ngày, không còn che chữ.
 2. Bỏ cảnh đặt nhiều đồng hồ (42–58 bản gốc).
