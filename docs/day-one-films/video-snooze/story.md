@@ -1,5 +1,17 @@
 # SNOOZE | An Animated Short Film: kế hoạch (đã DUYỆT 1 + 2, chọn A)
 
+**v3 (sửa lần 2), phim dài 2:13, bản đăng 2:19:**
+1. Lửa lúc nằm đặt cao hẳn trên con số ngày, không còn che chữ.
+2. Bỏ cảnh đặt nhiều đồng hồ (42–58 bản gốc).
+3. Đi bộ: tay vung về phía trước theo hướng đi.
+4. Lúc thấy số 35 của ông: không có cái bóng. Thay bằng chữ Spark tự nghĩ thầm *"he has no time..."* (màu kem, không phải màu kẻ thù).
+5. Bỏ cảnh 6:15 kéo rèm (1:39 bản v2).
+6. Bỏ trận cuối bóng giữ chân (2:09 bản v2). Bước ngoặt là cái chết của bà hàng xóm; mọi cảnh sau đám tang là lúc Spark đã hiểu, nên cái bóng không còn xuất hiện (bỏ cả tay bóng trên nắp lọ và bóng teo dần ở 6:30).
+7. Cầu tàu dài hết khung, Spark chạy trên cầu chứ không chạy giữa không trung.
+8. Đoạn cuối: thời gian trôi chậm, chỉ 2 bình minh (số của ông 28 → 27 → 26). Rồi ông trao mũ len, cảnh cuối Spark một mình.
+
+Kỹ thuật: thời gian ghép bằng bảng `EDL` trong `scene.js` và `am-thanh.py` (bỏ 42–58, 92–98, 116–132; chèn 72–78).
+
 **v2 (sửa theo DUYỆT 3), phim dài 2:51, bản đăng 2:57:**
 1. Các đoạn đang ngủ, chuông reo mà không dậy (0:05, 0:21, 0:39, 0:53): bỏ hình cái bóng, chỉ còn chữ thì thầm bên gối.
 2. Mặt lúc ngủ:

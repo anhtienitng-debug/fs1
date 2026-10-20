@@ -1,6 +1,6 @@
 # SNOOZE: bộ đăng YouTube
 
-File tải lên: `SNOOZE-dang-youtube.mp4` (phim 2:51 đã nối sẵn 6 giây màn hình kết thúc, tổng 2:57).
+File tải lên: `SNOOZE-dang-youtube.mp4` (phim 2:13 đã nối sẵn 6 giây màn hình kết thúc, tổng 2:19).
 
 **Tiêu đề:**
 ```
@@ -35,7 +35,7 @@ Subscribe: https://www.youtube.com/@keepthefirefilms?sub_confirmation=1
 
 **Bình luận ghim:**
 ```
-Grandpa's number was 60. Spark slept through 21 of them.
+Grandpa's number was 60. Spark slept through 21 of those mornings.
 If you could see the number above someone you love, would you still hit snooze? 👇
 ```
 
@@ -49,7 +49,7 @@ If you could see the number above someone you love, would you still hit snooze? 
 
 **Danh sách phát:** Battles Inside (All Films), Discipline.
 
-**Màn hình kết thúc:** dùng mẫu như các phim trước. Mọi phần tử bắt đầu ở 2:51.
+**Màn hình kết thúc:** dùng mẫu như các phim trước. Mọi phần tử bắt đầu ở 2:13.
 - Trái: COMPARE.
 - Phải: "Video phù hợp nhất với người xem".
 - Giữa: nút đăng ký.

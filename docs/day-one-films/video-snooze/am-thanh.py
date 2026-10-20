@@ -10,7 +10,7 @@ import wave
 import numpy as np
 
 SR = 44100
-DUR = 171.0
+DUR = 133.0
 N = int(SR * DUR)
 L = np.zeros(N)
 R = np.zeros(N)
@@ -23,12 +23,24 @@ def note_hz(name):
     return 440.0 * 2 ** ((names[pitch] + 12 * (octave + 1) - 69) / 12)
 
 
-INS_A, INS_LEN = 72.0, 6.0  # đoạn chèn 72–78 (scene.js): mốc phim gốc từ 72 trở đi lùi 6 giây
+# bảng ghép khớp scene.js: [từ, đến, chèn?] theo giờ phim gốc. Mốc rơi vào đoạn bị bỏ thì không phát.
+EDL = [(0, 42, 0), (58, 72, 0), (72, 78, 1), (72, 92, 0), (98, 116, 0), (132, 165, 0)]
 
 
-def add(t0, sig, vol=1.0, pan=0.0, raw=False):
-    if not raw and t0 >= INS_A:
-        t0 += INS_LEN
+def to_real(t, ins=False):
+    acc = 0.0
+    for a, b, i in EDL:
+        if bool(i) == ins and a <= t < b:
+            return acc + t - a
+        acc += b - a
+    return None
+
+
+def add(t0, sig, vol=1.0, pan=0.0, raw=False, ins=False):
+    if not raw:
+        t0 = to_real(t0, ins)
+        if t0 is None:
+            return
     i = int(t0 * SR)
     if i >= N:
         return
@@ -272,32 +284,32 @@ add(53.4, noise(1.6, 1200, 2), 0.12)  # kéo chăn trùm
 for k in range(5):
     add(54 + k * 0.8, kick(70, 38, 0.3), 0.18)
 
-# ---------- 4. 58–78 (giờ thật): công viên, bà cụ số 1 · đám tang · số của ông ----------
-add(58, pad(["A1", "E2", "A2"], 6.4, 1.5, 2), 0.18, raw=True)
+# ---------- 4. 58–72 + đoạn chèn 72–78 (ins=True): công viên, bà cụ số 1 · đám tang · số của ông ----------
+add(58, pad(["A1", "E2", "A2"], 6.4, 1.5, 2), 0.18)
 for k in range(6):
-    add(58.3 + k * 0.36, noise(0.06, 1500, 40), 0.1, raw=True)  # bước chân trên sỏi
+    add(58.3 + k * 0.36, noise(0.06, 1500, 40), 0.1)  # bước chân trên sỏi
 for k in range(10):
-    add(58 + k * 0.6 + rng.uniform(0, 0.2), noise(0.04, 2600, 60), 0.05, pan=0.5, raw=True)  # chim mổ
-add(60.6, ping(), 0.07, pan=0.4, raw=True)  # để ý số "1" của bà
-add(61.4, piano("E5", 2.4), 0.07, raw=True)
-add(63.3, noise(0.5, 3000, 6), 0.06, pan=0.5, raw=True)  # chim vỗ cánh
+    add(58 + k * 0.6 + rng.uniform(0, 0.2), noise(0.04, 2600, 60), 0.05, pan=0.5)  # chim mổ
+add(60.6, ping(), 0.07, pan=0.4)  # để ý số "1" của bà
+add(61.4, piano("E5", 2.4), 0.07)
+add(63.3, noise(0.5, 3000, 6), 0.06, pan=0.5)  # chim vỗ cánh
 # đám tang: mưa nhỏ, một hồi chuông trầm, piano thưa
-add(64, lowpass(rng.standard_normal(int(14 * SR)), 2500) * np.clip(np.arange(int(14 * SR)) / SR / 1.5, 0, 1) * np.clip((14 - np.arange(int(14 * SR)) / SR) / 1.5, 0, 1), 0.035, raw=True)
-add(64, pad(["A1", "E2", "C3"], 8.4, 2, 2), 0.2, raw=True)
-add(64.4, piano("A2", 6), 0.12, raw=True)
-add(64.4, piano("E3", 6), 0.06, raw=True)
-add(65.4, ping(), 0.05, raw=True)  # số 0 trên tấm ảnh tắt
+add(64, lowpass(rng.standard_normal(int(14 * SR)), 2500) * np.clip(np.arange(int(14 * SR)) / SR / 1.5, 0, 1) * np.clip((14 - np.arange(int(14 * SR)) / SR) / 1.5, 0, 1), 0.035)
+add(64, pad(["A1", "E2", "C3"], 8.4, 2, 2), 0.2)
+add(64.4, piano("A2", 6), 0.12)
+add(64.4, piano("E3", 6), 0.06)
+add(65.4, ping(), 0.05)  # số 0 trên tấm ảnh tắt
 for k in range(3):
-    add(68.0 + k * 0.6, ping(), 0.04, pan=-0.2 + 0.2 * k, raw=True)  # số trên đầu từng người sáng lên
-add(68.4, piano("C4", 3), 0.07, raw=True)
-add(70.2, piano("B3", 3), 0.07, raw=True)
+    add(68.0 + k * 0.6, ping(), 0.04, pan=-0.2 + 0.2 * k)  # số trên đầu từng người sáng lên
+add(68.4, piano("C4", 3), 0.07)
+add(70.2, piano("B3", 3), 0.07)
 # số của ông: 35
-add(72, pad(["F1", "C2", "A2"], 6.2, 1.0, 2), 0.24, raw=True)
-add(73.4, kick(70, 38, 0.4), 0.3, raw=True)
-add(73.4, ping(), 0.12, raw=True)
-add(74.2, kick(70, 38, 0.4), 0.22, raw=True)
-add(76.2, piano("A4", 2.5), 0.08, raw=True)
-add(76.7, piano("E4", 2.5), 0.07, raw=True)
+add(72, pad(["F1", "C2", "A2"], 6.2, 1.0, 2), 0.24, ins=True)
+add(73.4, kick(70, 38, 0.4), 0.3, ins=True)
+add(73.4, ping(), 0.12, ins=True)
+add(74.2, kick(70, 38, 0.4), 0.22, ins=True)
+add(76.2, piano("A4", 2.5), 0.08, ins=True)
+add(76.7, piano("E4", 2.5), 0.07, ins=True)
 
 # ---------- 5. 72–86 bước ngoặt ----------
 add(72, pad(["A1", "E2"], 6, 2, 2), 0.24)
@@ -435,15 +447,6 @@ if len(sys.argv) >= 4:
         pan = float(np.clip((x - 640) / 640, -0.7, 0.7))
         add(t0 + 0.05, w, 0.30, pan=pan, raw=True)
         add(t0 + 0.09, w, 0.10, pan=-pan, raw=True)  # vọng nhẹ ở kênh đối diện
-
-# ---------- khoảng lặng trước cú vỡ ----------
-_t = np.arange(N) / SR
-_duck = 1 - 0.85 * np.clip((_t - (125.6 + INS_LEN)) / 0.15, 0, 1) * np.clip(((127.08 + INS_LEN) - _t) / 0.05, 0, 1)
-L *= _duck
-R *= _duck
-for tb in [125.8, 126.35, 126.8]:  # chỉ còn nhịp tim
-    add(tb, kick(70, 38, 0.3), 0.32)
-    add(tb, noise(0.03, 3000, 80), 0.08)
 
 # ---------- hoàn thiện ----------
 def reverb(x):

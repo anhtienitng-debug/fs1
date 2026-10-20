@@ -2,7 +2,7 @@
 (function () {
   const W = '#f4f1ea', BG = '#0d0a09', MUTED = '#8d8a84', GREY = '#55534f';
   const ORANGE = '#ff8a1f', CORE = '#ffd166', EMBER = '#7a4a22', SMOKE = '#3a3a3a', COLD = '#bcd7ff';
-  const DUR = 171;
+  const DUR = 133;
 
   // ---------- tiện ích ----------
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -159,7 +159,7 @@
   // vị trí ngọn lửa lơ lửng trước ngực (như video mẫu)
   function flamePos(J) {
     const d = J.flameDir ?? dirOf(J), ch = mix(J.neck, J.hip, 0.35);
-    if (Math.abs(J.hip[0] - J.neck[0]) > Math.abs(J.hip[1] - J.neck[1])) return [J.head[0] + 4, J.head[1] - 64]; // đang nằm: lửa trên đầu
+    if (Math.abs(J.hip[0] - J.neck[0]) > Math.abs(J.hip[1] - J.neck[1])) return [J.head[0] - 6, J.head[1] - 92]; // đang nằm: lửa cao trên con số ngày
     if (J.runner) return [J.head[0] - 46 * d, J.head[1] + 6]; // đang chạy: lửa sau lưng, cạnh đầu
     return [ch[0] + 50 * d, ch[1] - 34];
   }
@@ -239,7 +239,7 @@
     const a = Math.sin(ph), b = Math.cos(ph);
     const J = {
       head: [x + 8, g - 194 + Math.abs(b) * -4], neck: [x + 4, g - 156], hip: [x, g - 72 - Math.abs(b) * 3],
-      le: [x - 18 * a, g - 112], lh: [x - 30 * a, g - 80], re: [x + 18 * a, g - 112], rh: [x + 30 * a, g - 80],
+      le: [x + 4 - 12 * a, g - 110], lh: [x + 22 - 18 * a, g - 92 + 6 * a], re: [x + 4 + 12 * a, g - 110], rh: [x + 22 + 18 * a, g - 92 - 6 * a],
       lk: [x + 18 * a, g - 38], lf: [x + 30 * a, g - Math.max(0, -b) * 10], rk: [x - 18 * a, g - 38], rf: [x - 30 * a, g - Math.max(0, b) * 10], look: 6,
     };
     if (o.phone) { J.le = [x + 22, g - 112]; J.lh = [x + 44, g - 130]; J.re = [x + 24, g - 110]; J.rh = [x + 46, g - 128]; J.head = [x + 22, g - 184]; J.neck = [x + 10, g - 152]; }
@@ -439,8 +439,11 @@
 
   // ================= SNOOZE =================
   const GRAPH = '#3a3632', SUNC = '#f2b544', CAPC = '#3b6bd6', BEARD = '#f2eee6', GPA = '#d6cbbb';
-  // đoạn chèn: 72–78 (gặp lại ông ở đám tang) chèn vào phim gốc; sau 78 mọi cảnh lùi 6 giây
-  const FLASH_A = 72, FLASH_LEN = 6;
+  // bảng ghép: [từ, đến, chèn?] theo giờ phim gốc. Bỏ 42–58 (nhiều đồng hồ), 92–98 (kéo rèm), 116–132 (bóng giữ chân);
+  // chèn 72–78 (cảnh {ins:true}: thấy số của ông ở đám tang)
+  const EDL = [[0, 42], [58, 72], [72, 78, 1], [72, 92], [98, 116], [132, 165]];
+  const mapT = T => { let acc = 0; for (const [a, b, ins] of EDL) { if (T < acc + b - a) return { t: a + (T - acc), ins: !!ins }; acc += b - a; } return { t: 165, ins: false }; };
+  const toReal = t => { let acc = 0; for (const [a, b, ins] of EDL) { if (!ins && t >= a && t < b) return acc + t - a; acc += b - a; } return null; };
   // ---------- đạo cụ ----------
   // đồng hồ báo thức chuông cơ: (x,g) = đáy; ring 0..1 = đang reo (rung); time = chuỗi giờ
   function alarm(x, g, ring = 0, t = 0, k = 1) {
@@ -524,9 +527,10 @@
     for (let i = 0; i < 10; i++) { const w = 80 - i * 7; s += `<rect x="${980 - w / 2 + 8 * Math.sin(t * 1.3 + i)}" y="${486 + i * 9}" width="${w}" height="3" rx="1.5" fill="#ffd9a0" opacity="${0.7 - i * 0.06}"/>`; }
     for (let i = 0; i < 4; i++) { const bx = 300 + i * 70 + t * 12, by = 200 + 14 * i + 4 * Math.sin(t * 3 + i); s += `<path d="M${bx - 9},${by} q5,-6 9,0 q4,-6 9,0" fill="none" stroke="#3a2a34" stroke-width="2.2" stroke-linecap="round"/>`; }
     // cầu tàu gỗ
-    s += `<rect x="${o.px0 ?? 100}" y="548" width="${o.pw ?? 1000}" height="14" fill="#6a4a30" stroke="#3a2a1a" stroke-width="2"/>`;
-    for (let x = (o.px0 ?? 100) + 20; x < (o.px0 ?? 100) + (o.pw ?? 1000); x += 90) s += ln([x, 562], [x, 680], '#3a2a1a', 8);
-    for (let x = (o.px0 ?? 100); x < (o.px0 ?? 100) + (o.pw ?? 1000); x += 30) s += ln([x, 549], [x, 561], '#4a3420', 1.2);
+    const p0 = o.px0 ?? -700, pw = o.pw ?? 2600; // cầu tàu dài từ bờ, chạy hết khung hình
+    s += `<rect x="${p0}" y="548" width="${pw}" height="14" fill="#6a4a30" stroke="#3a2a1a" stroke-width="2"/>`;
+    for (let x = p0 + 20; x < p0 + pw; x += 90) s += ln([x, 562], [x, 680], '#3a2a1a', 8);
+    for (let x = p0; x < p0 + pw; x += 30) s += ln([x, 549], [x, 561], '#4a3420', 1.2);
     return s;
   }
   function foldChair(x, g, open = 1) {
@@ -656,35 +660,6 @@
     return s + hudS(FIRES(t), { sn: SN(t), mi: MI(t) });
   }, { cam: STAND(486) });
 
-  // ================= 3. Cày (42–58): ba đồng hồ, vẫn quay lại giường =================
-  const C3 = [[300, 490], [900, 480], [1060, 404]];
-  scene(42, 58, t => {
-    let s = bedroom(t, { sky: 0.15, jarN: 21, clock: false });
-    s += `<rect x="864" y="480" width="72" height="80" fill="#2a2420" stroke="#4a4036"/>` + shelf(1060, 404, 120);
-    const ringing = t > 45.4;
-    const off = i => t > [47.6, 49.4, 51.2][i];
-    C3.forEach(([x, y], i) => { s += alarm(x, y, ringing && !off(i) ? 1 : 0, t + i); });
-    // ly nước + giấy note
-    s += `<rect x="326" y="406" width="16" height="22" fill="#9fc0d8" opacity=".5" stroke="#c8dce8"/>`;
-    let J;
-    if (t < 45.4) { // đặt đồng hồ: bước đi thật (chân đổi nhịp), dừng lại thì đứng
-      const k = clamp((t - 42.2) / 2.4), x = lerp(820, 960, k), moving = k > 0 && k < 1;
-      J = moving ? walk(x, 560, (t - 42.2) * 7) : stand(x, 560, { look: 10 }); J.look = 10; J.lh = [x + 40, 460]; J.le = [x + 22, 470]; fixArms(J);
-      s += fig(J, { flame: 0.3, t, mood: 'fierce' }) + handDot(J.lh) + life(J, sparkN(21)) + `<rect x="${J.head[0] - 12}" y="${J.head[1] - 24}" width="22" height="16" fill="#f2d870" transform="rotate(-8 ${J.head[0]} ${J.head[1] - 16})"/>`;
-    } else if (t < 47.0) { const L = lying(t, 0, { flame: 0.26 }); s += L.s + life(L.J, sparkN(22)); }
-    else if (t < 52.6) { // bò dậy tắt từng cái
-      const stops = [[340, 47.0, 48.2], [860, 48.2, 50.0], [1010, 50.0, 51.8]];
-      let x = 340; for (const [sx, a, b] of stops) if (t > a) x = lerp(x, sx, ramp(t, a, a + 0.8));
-      if (t > 51.8) x = lerp(1010, 620, ramp(t, 51.8, 52.6));
-      J = walk(x, 560, t * 5); J.head = [J.head[0] + 6, J.head[1] + 14]; J.neck = [J.neck[0] + 4, J.neck[1] + 6];
-      s += (x > 700 && t < 51.8 ? fig(J, { flame: 0.22, t, mood: 'drowsy' }) : flip(x, fig(J, { flame: 0.22, t, mood: 'drowsy' })));
-    } else {
-      // nằm lại, kéo chăn trùm kín; không vẽ cái bóng, chỉ còn lời thì thầm
-      const L = lying(t, 0, { flame: 0.2, lump: 40 * ramp(t, 53.0, 54.6) }); s += anchor(400, 360) + L.s + life(L.J, sparkN(22));
-    }
-    return s + hudS(FIRES(t), { sn: SN(t), mi: MI(t) });
-  }, { cam: t => ({ ...STAND(lerp(640, 700, ramp(t, 47, 51))), k: 1.4 }) });
-
   // ================= 4. Đáy (58–78): bà cụ trên ghế đá mang số 1 · hôm sau đám tang · số của ông =================
   // bà cụ: búi tóc bạc, khăn choàng tím; vẽ quay phải rồi lật nếu cần
   function granny(J, o = {}) {
@@ -736,7 +711,7 @@
     fixArms(J);
     s += fig(J, { flame: 0.12, t, mood: 'neutral' }) + life(J, sparkN(24));
     if (t > 63.2) s += `<circle cx="${lerp(J.lh[0], 860, ramp(t, 63.2, 63.8))}" cy="${lerp(J.lh[1], 556, ramp(t, 63.2, 63.8)) - 30 * Math.sin(Math.PI * ramp(t, 63.2, 63.8))}" r="4" fill="#d8b070"/>`;
-    return s + hudS(6, { sn: 52, mi: 21 }) + ui(txt(1170, 140, '12:15 PM', { size: 22, c: '#6f6c66', w: 600, ls: 3 }));
+    return s + hudS(6, { sn: 38, mi: 21 }) + ui(txt(1170, 140, '12:15 PM', { size: 22, c: '#6f6c66', w: 600, ls: 3 }));
   }, { cam: { x: 680, y: 400, k: 1.5 } });
   const JX = J => J.hip[0];
 
@@ -781,7 +756,7 @@
     let s = funeral(t, { zero: fade(t, 64.4, 65.8, 0.3, 0.6), lit: [0, 1, 2].map(i => fade(t, 68.0 + i * 0.6, 68.9 + i * 0.6, 0.15, 0.3)) });
     const up = ramp(t, 66.2, 66.8) * (1 - ramp(t, 67.6, 68.0));
     s += sparkFuneral(t, { up, flame: lerp(0.1, 0.06, ramp(t, 70, 72)) }).s;
-    return s + hudS(6, { sn: 52, mi: 21 });
+    return s + hudS(6, { sn: 38, mi: 21 });
   }, { cam: t => ({ x: lerp(660, 560, ramp(t, 69.6, 72)), y: 400, k: lerp(1.25, 1.5, ramp(t, 69.6, 72)) }) });
   // đoạn chèn 72–78: Spark quay sang thấy ông — số trên đầu ông chỉ còn 35
   scene(72, 78, t => {
@@ -789,10 +764,11 @@
     let s = funeral(t, { gk, wave: t > 76.2 });
     const sp = sparkFuneral(t, { turn: 1, flame: lerp(0.1, 0.05, ramp(t, 73.6, 74.4)), mood: 'sad' });
     s += sp.s;
-    const E = whisperPose(250, 560, 1);
-    s += shadowFig(E, { k: 1.05, op: ramp(t, 74.8, 75.3) * (1 - ramp(t, 77.2, 77.9)) });
+    // Spark tự nghĩ thầm (chữ kem, nghiêng — không phải giọng kẻ thù)
+    const th = fade(t, 75.0, 77.8, 0.5, 0.5);
+    if (th > 0) s += `<text x="${sp.J.head[0] - 10}" y="${sp.J.head[1] - 92}" fill="#efe6d8" fill-opacity="${th}" font-family="Inter" font-size="17" font-style="italic" font-weight="500" text-anchor="middle">he has no time...</text>`;
     if (t > 76.6) s += `<circle cx="${sp.J.head[0] + 12}" cy="${sp.J.head[1] + 6 + 14 * ramp(t, 76.6, 77.6)}" r="2.6" fill="#bcd7ff" opacity="${1 - ramp(t, 77.4, 77.9)}"/>`; // một giọt nước mắt
-    return s + hudS(4, { sn: 52, mi: 21 });
+    return s + hudS(4, { sn: 38, mi: 21 });
   }, { ins: true, cam: t => {
     const p = ramp(t, 72.2, 73.2), back = ramp(t, 74.4, 75.2);
     return { x: lerp(lerp(560, 960, p), 700, back), y: lerp(400, 380, p), k: lerp(lerp(1.5, 2.0, p), 1.3, back) };
@@ -817,7 +793,6 @@
     if (fly > 0.3) s += glow(560, 330, 420, 0.3 * fly);
     // kẻ thù đặt tay lên nắp
     const gone = ramp(t, 76.0, 77.0);
-    if (gone < 1) { const E = whisperPose(760, 560, -1); E.lh = mix(E.lh, [jh[0] + 22, jh[1] - 54], ramp(t, 74.2, 75.0)); E.le = [690, 430]; s += shadowFig(E, { k: 1.0, op: ramp(t, 72.6, 73.2) * (1 - gone), jitter: open > 0 ? 5 : 0 }); }
     if (t > 76.2 && t < 77.4) { const q = (t - 76.2) / 1.2; s += `<text x="${J.head[0] + 60}" y="${J.head[1] + 20 - 26 * q}" fill="${ORANGE}" fill-opacity="${1 - q}" filter="url(#softGlow)" font-family="${MONO}" font-size="15" font-weight="700">+6%</text>`; }
     // từ khoá: SNOOZE (xám) — N O O Z rơi, R I (vàng) trượt vào → RISE → bay vào góc
     if (t > 78.4) {
@@ -834,7 +809,7 @@
       if (slide > 0) ['R', 'I'].forEach((ch, i) => { k += `<text x="${cx - 200 * (1 - slide) + i * cw}" y="${cy}" fill="${YEL}" fill-opacity="${slide}" filter="url(#yelGlow)" font-family="Inter" font-size="${fs}" font-weight="900">${ch}</text>`; });
       s += ui(`<g opacity="${o}">${k}</g>`);
     }
-    return s + hudS(t < 76.2 ? 4 : t < 78 ? 10 : 18, t < 82 ? { sn: 52, mi: 21 - Math.round(21 * fly) } : { rise: 0 });
+    return s + hudS(t < 76.2 ? 4 : t < 78 ? 10 : 18, t < 82 ? { sn: 38, mi: 21 - Math.round(21 * fly) } : { rise: 0 });
   }, { nopush: true, cam: { x: 600, y: 380, k: 1.6 } });
   scene(82.4, 86, t => { // dời đồng hồ ra kệ xa giường
     let s = bedroom(t, { light: 1, sky: 0.1, curtain: 0.6, jarN: 0, jarOpen: 1, clock: t > 83.2 ? false : true });
@@ -853,16 +828,7 @@
     const up = ramp(t, 86.4, 87.0), x = lerp(620, 960, ramp(t, 87.0, 88.6));
     if (up < 1) { const A = lieBed(580, BEDY), B = sitChair(620, 560, { look: 10 }); const J = {}; for (const k in B) J[k] = Array.isArray(B[k]) ? mix(A[k], B[k], up) : B[k]; s += fig(J, { flame: 0.3, t, mood: 'fierce' }) + life(J, sparkN(26)); }
     else { const J = t < 88.6 ? walk(x, 560, t * 7) : stand(960, 560, { look: 10 }); if (t >= 88.6) { J.lh = [990, 380]; J.le = [976, 410]; fixArms(J); } s += fig(J, { flame: 0.34, t, mood: 'fierce' }) + life(J, sparkN(26)) + (t >= 88.6 ? handDot(J.lh) : ''); }
-    s += shadowFig(whisperPose(222, 560, 1), { k: lerp(0.7, 0.05, ramp(t, 87.4, 90.4)), op: fade(t, 86.4, 90.6, 0.3, 0.4), ax: 222, ay: 560 });
     return s + hudS(24, { rise: 1 }) + clock(1170, 140, '6:30 AM');
-  }, { cam: STAND(700) });
-  scene(92, 98, t => { // 6:15: kéo rèm, trời xanh nhạt
-    const c = ramp(t, 92.6, 93.8);
-    let s = bedroom(t, { light: 1, sky: lerp(0.3, 0.8, c), curtain: lerp(0.25, 1, c), jarN: 0, jarOpen: 1 });
-    s += `<path d="M${WIN[0]},${WIN[1]} L${WIN[0] + 150},${WIN[1]} L${WIN[0] - 200},560 L${WIN[0] - 420},560Z" fill="#ffd9a0" opacity="${0.12 * c}"/>`;
-    const J = stand(760, 560, { look: 10 }); J.lh = [lerp(800, 900, c), 300]; J.le = [790, 360]; fixArms(J);
-    s += fig(J, { flame: 0.46, t, mood: 'happy' }) + handDot(J.lh) + life(J, sparkN(27));
-    return s + hudS(36, { rise: 2 }) + clock(1170, 140, '6:15 AM');
   }, { cam: STAND(700) });
   scene(98, 104, t => { // 6:00: chạy ra bến, ông vẫn ở đó, vẫy nhau
     let s = pier(t, { rise: 0.4 }) + foldChair(620, 548) + foldChair(500, 548);
@@ -873,7 +839,7 @@
     const x = lerp(-60, 300, ramp(t, 98.2, 100.8)), J = t < 100.8 ? run(x, 548, t * 10) : stand(300, 548, { look: 10 });
     if (t >= 100.8) { J.lh = [330, 380 + 10 * Math.sin(t * 8 + 1)]; J.le = [320, 420]; fixArms(J); }
     s += fig(J, { flame: 0.58, t, mood: 'happy' }) + life(J, sparkN(28));
-    return s + hudS(48, { rise: 3 }) + clock(1170, 140, '6:00 AM');
+    return s + hudS(48, { rise: 2 }) + clock(1170, 140, '6:00 AM');
   }, { cam: STAND(440) });
   scene(104, 110, t => { // 5:55: pha hai ly ca cao
     let s = `<rect x="-600" y="-400" width="2600" height="960" fill="#1e1814"/>` + room() + `<rect x="420" y="430" width="420" height="130" fill="#3a2e24" stroke="#5a4636" stroke-width="3"/>` + ln([410, 430], [850, 430], '#6a5444', 6);
@@ -881,75 +847,13 @@
     [[600, 0], [680, 1]].forEach(([cx, i]) => { const lvl = clamp(pour * 2 - i); s += `<rect x="${cx - 16}" y="398" width="32" height="32" rx="4" fill="#e8e2d4" stroke="#8a8478" stroke-width="2"/><rect x="${cx - 13}" y="${426 - 24 * lvl}" width="26" height="${24 * lvl}" fill="#6a3a20"/>`; if (lvl >= 1) for (let j = 0; j < 2; j++) s += `<path d="M${cx - 6 + j * 10},392 q-6,-12 2,-24" fill="none" stroke="#d8d0c0" stroke-width="2" opacity="${0.4 + 0.3 * Math.sin(t * 3 + j)}"/>`; });
     const J = stand(520, 560, { look: 10 }); const px = pour < 0.5 ? 600 : 680; J.lh = [px - 20, 370]; J.le = [548, 420]; fixArms(J);
     s += fig(J, { flame: 0.68, t, mood: 'happy' }) + life(J, sparkN(29)) + `<rect x="${J.lh[0] - 8}" y="${J.lh[1] - 18}" width="22" height="30" rx="4" fill="#c8a070" transform="rotate(40 ${J.lh[0]} ${J.lh[1]})"/>` + handDot(J.lh);
-    return s + hudS(62, { rise: 4 }) + clock(1170, 140, '5:55 AM');
+    return s + hudS(62, { rise: 3 }) + clock(1170, 140, '5:55 AM');
   }, { cam: STAND(600) });
   scene(110, 116, t => { // lọ để mở, mỗi sáng một mặt trời bay ra cửa sổ
     let s = bedroom(t, { light: 1, sky: 0.8, curtain: 1, jarN: 0, jarOpen: 1 });
     for (let i = 0; i < 4; i++) { const k = ((t - 110) / 1.5 - i) ; if (k > 0 && k < 1) s += sunIcon(lerp(JAR[0], WIN[0] + 75, k), lerp(JAR[1] - 50, WIN[1] + 60, k) - 60 * Math.sin(Math.PI * k), 6, 1 - k * 0.3, YEL); }
-    return s + hudS(80, { rise: 5 });
+    return s + hudS(80, { rise: 4 });
   }, { cam: { x: 700, y: 330, k: 1.7 } });
-
-  // ================= 7. Trận cuối (116–132): chủ nhật 5:55 — chăn hoá tay kẻ thù · kéo rèm · nắng làm bóng tan =================
-  scene(116, 132, t => {
-    const pulled = t >= 127.1, light = ramp(t, 127.1, 127.8), melt = ramp(t, 127.2, 128.6);
-    let s = bedroom(t, { ring: t > 118 && t < 127.1 ? 1 : 0, sky: lerp(0.4, 1, light), curtain: lerp(0, 1, light), jarN: 0, jarOpen: 1, clock: false });
-    s += alarm(CLK[0], CLK[1], t > 118 && t < 127.1 ? 1 : 0, t);
-    // Spark: nằm thức → chuông reo, ngồi dậy đứng lên → bóng nằm rạp dọc sàn níu hai cổ chân → cố bước, bị kéo lại → lết từng bước tới cửa sổ → (lặng) → kéo rèm
-    let J, x = 640;
-    const GX = 640, WX = 760;
-    if (t < 119.4) {
-      const L = lying(t, 0, { flame: lerp(0.8, 0.6, ramp(t, 118.4, 119.4)), mood: 'neutral', blink: (t % 1.6) < 0.12 }); s += L.s + life(L.J, sparkN(32)); J = L.J;
-    } else {
-      const up = ramp(t, 119.4, 120.2);
-      if (up < 1) { const A = lieBed(580, BEDY), B = stand(GX, 560, { look: 10 }); J = {}; for (const k in B) J[k] = Array.isArray(B[k]) ? mix(A[k], B[k], up) : B[k]; }
-      else if (t < 124.2) { // bị giữ chân: chồm người tới, chân trước nhấc lên rồi bị giật lại
-        J = stand(GX, 560, { look: 10, lean: 10 * ramp(t, 120.6, 121.2) });
-        const tries = [[121.2, 122.0], [122.4, 123.2]];
-        for (const [a, b] of tries) if (t > a && t < b) { const q = (t - a) / (b - a), lift = Math.sin(Math.PI * Math.min(1, q * 1.6)) * (q < 0.6 ? 1 : 0); J.rf = [GX + 22 + 26 * lift, 560 - 16 * lift]; J.rk = [GX + 18 + 18 * lift, 524 - 10 * lift]; if (q >= 0.6) { J.rf = [GX + 18, 560]; } }
-      } else { // lết từng bước nặng nề, hai cổ chân vẫn bị níu
-        const k = ramp(t, 124.2, 125.8); x = lerp(GX, WX, k);
-        J = k < 1 ? walk(x, 560, (t - 124.2) * 4.2) : stand(WX, 560, { look: 10 }); J.look = 10;
-        if (k < 1) { J.head = [J.head[0] + 12, J.head[1] + 4]; J.neck = [J.neck[0] + 8, J.neck[1] + 2]; }
-        if (t > 125.8) { J.lh = [WIN[0] + 20, WIN[1] + 40]; J.le = [792, 380]; J.rh = [WIN[0] + 10, WIN[1] + 70]; J.re = [784, 400]; }
-        if (pulled) J.lh = [lerp(WIN[0] + 20, WIN[0] + 140, light), WIN[1] + 40];
-      }
-      fixArms(J);
-      s += fig(J, { flame: t < 124.2 ? lerp(0.6, 0.42, ramp(t, 120.4, 123.4)) : lerp(0.5, 1.3, melt), t, mood: pulled ? 'happy' : t > 123.4 ? 'fierce' : 'sad' }) + life(J, sparkN(32));
-      if (t > 125.8) s += handDot(J.lh);
-    }
-    // kẻ thù khổng lồ mọc từ bóng cả căn phòng, cúi rạp; hai cánh tay duỗi dài sát sàn, song song mặt sàn, nắm chặt hai cổ chân
-    const born = ramp(t, 118.2, 120.0);
-    if (born > 0 && melt < 1) {
-      const E = { head: [330, 448], neck: [306, 470], hip: [250, 498], le: [300, 520], lh: [340, 548], re: [290, 516], rh: [326, 550], lk: [290, 530], lf: [262, 560], rk: [296, 534], rf: [270, 560], look: 1, face: 1 };
-      const k = 0.5 + 0.9 * born, ax = 250, ay = 560, W = p => [ax + (p[0] - ax) * k, ay + (p[1] - ay) * k];
-      s += `<g opacity="${1 - melt}">` + shadowFig(E, { k, ax, ay, jitter: pulled ? 20 : 0 }) + '</g>';
-      const grab = ramp(t, 120.3, 121.0) * (1 - melt);
-      if (grab > 0 && J) {
-        [[E.lh, J.lf, 0], [E.rh, J.rf, 1]].forEach(([h, f, i]) => {
-          const a = W(h), fy = 552 - i * 3, tip = [lerp(a[0], f[0] - 6, grab), fy];
-          const d = `M${a[0]},${a[1]} Q${a[0] + 20},${fy} ${a[0] + 60},${fy} L${tip[0]},${fy}`;
-          const ww = 13 - i * 2;
-          s += `<g opacity="${1 - melt}"><g filter="url(#redGlow)"><path d="${d}" fill="none" stroke="${RED}" stroke-width="${ww + 5}" stroke-linecap="round" stroke-linejoin="round"/></g><path d="${d}" fill="none" stroke="${INK}" stroke-width="${ww}" stroke-linecap="round" stroke-linejoin="round"/>`;
-          // bàn tay quấn quanh cổ chân
-          if (grab > 0.9) s += `<g filter="url(#redGlow)"><ellipse cx="${f[0] - 2}" cy="${f[1] - 10}" rx="12" ry="8" fill="${INK}" stroke="${RED}" stroke-width="2.5"/></g>` + ln([f[0] + 6, f[1] - 18], [f[0] + 12, f[1] - 4], INK, 4) + ln([f[0] + 1, f[1] - 18], [f[0] + 7, f[1] - 3], INK, 4);
-          s += '</g>';
-        });
-      }
-    }
-    // nắng bình minh tràn vào; bóng tan thành hạt
-    if (light > 0) {
-      s += `<path d="M${WIN[0]},${WIN[1]} L${WIN[0] + 150},${WIN[1]} L${WIN[0] - 200},560 L-200,560 L-200,${WIN[1] + 80}Z" fill="#ffd9a0" opacity="${0.28 * light}"/>` + glow(WIN[0] + 75, WIN[1] + 65, 500, 0.5 * light);
-      if (melt < 1) for (let i = 0; i < 30; i++) { const a = i * 0.7, along = rnd(i + 7); s += `<circle cx="${i < 18 ? 280 + Math.cos(a) * 80 + 200 * melt * rnd(i) : lerp(320, x, along)}" cy="${(i < 18 ? 470 + Math.sin(a) * 60 : 550) - 160 * melt * rnd(i + 3)}" r="${4 * (1 - melt)}" fill="${INK}" stroke="${RED}" stroke-width="1"/>`; }
-    }
-    if (t > 127.1 && t < 127.3) s += ui(`<rect width="1280" height="720" fill="#fff6e0" opacity=".75"/>`);
-    return s;
-  }, { nopush: true, cam: t => {
-    const face = ramp(t, 123.0, 123.5) * (1 - ramp(t, 124.0, 124.3));
-    let c = { x: lerp(600, 560, ramp(t, 118, 120)), y: 400, k: lerp(1.6, 1.3, ramp(t, 118.2, 120.4)) };
-    if (face > 0) c = { x: lerp(c.x, 660, face), y: lerp(c.y, 404, face), k: lerp(c.k, 2.6, face) };
-    if (t > 124.2) c = { x: lerp(560, 640, ramp(t, 124.2, 125.8)), y: 400, k: lerp(1.3, 1.2, ramp(t, 127, 131)) };
-    return c;
-  } });
 
   // ================= 8. Phần thưởng: những buổi sáng cùng ông, số của ông đếm về 1 =================
   scene(132, 137, t => { // chạy ra bến, ông đang xếp đồ
@@ -957,16 +861,16 @@
     const G = bentPose(620, 548, -1); G.lh = [596, 520]; G.rh = [604, 524]; fixArms(G); s += gpa(G, { mood: 'neutral' }) + life(G, gpaN(32));
     const x = lerp(-80, 420, ramp(t, 132.2, 135.6)), J = t < 135.6 ? run(x, 548, t * 11) : stand(420, 548, { look: 10 });
     s += fig(J, { flame: 1.0, t, mood: 'happy' }) + life(J, sparkN(32));
-    return s + hudS(100, { rise: 6 });
+    return s + hudS(100, { rise: 5 });
   }, { cam: STAND(420) });
   // ông mở ghế thứ hai; hai người ngồi câu. Rồi thời gian trôi nhanh: mỗi bình minh số của ông tụt 1, SUNRISES tăng 1
-  const LAPSE = [140.2, 144.2];
-  const lapseDay = t => 32 + Math.floor(27 * clamp((t - LAPSE[0]) / (LAPSE[1] - LAPSE[0]))); // ngày 32 → 59 (ông còn 1)
+  const LAPSE = [140.2, 144.2], NLAPSE = 2;
+  const lapseDay = t => 32 + Math.min(NLAPSE, Math.floor(NLAPSE * clamp((t - LAPSE[0]) / (LAPSE[1] - LAPSE[0])) + 0.5)); // ngày 32 → 34 (ông 28 → 26), chậm
   scene(137, 147.4, t => {
     const open = ramp(t, 137.4, 138.4), sit = ramp(t, 138.8, 139.6);
     const lp = clamp((t - LAPSE[0]) / (LAPSE[1] - LAPSE[0])), inLapse = t > LAPSE[0] && t < LAPSE[1];
     const day = t < LAPSE[0] ? 32 : lapseDay(t);
-    const cyc = inLapse ? (lp * 27) % 1 : 0, rise = inLapse ? cyc : lerp(0.4, 0.9, ramp(t, 137, 140.2));
+    const cyc = inLapse ? (lp * NLAPSE) % 1 : 0, rise = inLapse ? cyc : lerp(0.4, 0.9, ramp(t, 137, 140.2));
     let s = pier(t, { rise: t >= LAPSE[1] ? 0.85 : rise }) + foldChair(470, 548, open) + foldChair(640, 548);
     if (inLapse) s += `<rect x="-600" y="-400" width="2600" height="1400" fill="#0a0a18" opacity="${0.45 * Math.pow(Math.cos(Math.PI * cyc), 2)}"/>`;
     // ông: càng về sau lưng càng còng; cuối cùng đội mũ len của mình lên đầu Spark
@@ -982,7 +886,7 @@
     fixArms(G);
     let g = gpa(G, { mood: 'happy' });
     if (off) g = g.replace(/<path d="M[^"]*" fill="#3b6bd6"[^>]*\/><circle[^>]*fill="#e8e8f0"\/>/, ''); // mũ rời đầu ông
-    s += g + (!off ? rod(G.rh, [840, 400], 620) + handDot(G.rh) : handDot(G.lh)) + life(G, gpaN(day), { glow: day >= 58, k: day >= 59 ? 1.2 : 1 });
+    s += g + (!off ? rod(G.rh, [840, 400], 620) + handDot(G.rh) : handDot(G.lh)) + life(G, gpaN(day));
     const J = sit > 0 ? sitChair(470, 548, { look: 8 }) : stand(440, 548, { look: 10 });
     if (sit > 0) { J.rh = [530, 470]; J.re = [510, 486]; J.lh = [522, 474]; }
     if (b1 > 0) J.lh = b1 < 1 ? mix(MEET, capTop(J.head), b1) : [522, 474];
@@ -991,7 +895,7 @@
     s += fig(J, { flame: 1.1, t, mood: 'happy', blink: (t % 3.2) < 0.12 }) + (sit > 0 ? rod(J.rh, [700, 410], 610) + handDot(J.rh) : '') + life(J, sparkN(day), { dy: onSpark ? 16 : 0 });
     if (off && !onSpark) { const cp = b1 > 0 ? J.lh : G.lh; s += woolCap(cp[0], cp[1] + 30) + handDot(cp); }
     if (onSpark) s += woolCap(J.head[0], J.head[1] + 4);
-    return s + hudS(100, { rise: 6 + day - 32 });
+    return s + hudS(100, { rise: 5 + day - 32 });
   }, { cam: t => ({ x: 580, y: 420, k: lerp(1.5, 1.7, ramp(t, 137, 147.4)) }) });
   function woolCap(hx, hy) { return `<path d="M${hx - 31},${hy - 4} Q${hx},${hy - 50} ${hx + 31},${hy - 4}Z" fill="${CAPC}" stroke="#22388a" stroke-width="2"/><circle cx="${hx}" cy="${hy - 38}" r="7" fill="#e8e8f0"/>`; }
   scene(147.4, 150.6, t => { // sáng hôm sau: Spark đội mũ len của ông, một mình ngồi đúng ghế của ông; ghế bên cạnh trống
@@ -1021,9 +925,6 @@
     [21.6, "it's still dark", 2.0],
     [28.6, 'you deserve rest', 2.0],
     [39.0, 'next time', 1.8],
-    [53.0, 'five more minutes.', 2.2],
-    [74.4, 'five more minutes.', 1.8],
-    [87.0, 'five more minutes', 1.6],
     [119.4, 'five more minutes', 2.2], [120.4, "he'll understand", 2.0], [121.4, "it's warm here", 1.8], [122.4, 'next time', 1.6],
   ];
   function whispers(t) {
@@ -1059,20 +960,19 @@
   // bộ vẽ dùng chung cho thumbnail
   window.KIT = { fig, shadowFig, flame, glow, txt, stand, slump, sitChair, whisperPose, lieBed, alarm, jar, sunIcon, gpa, bentPose, bedroom, lying, pier, foldChair, rod, windowR, DEFS, MONO, C: { W, BG, MUTED, ORANGE, CORE, RED, YEL, SKIN, COLD } };
   window.DURATION = DUR;
-  for (const w of WH) if (w[0] >= FLASH_A) w[0] += FLASH_LEN;
-  WH.push([75.4, 'he has time.', 2.2]); // đoạn chèn: giờ thật
-  WH.sort((p, q) => p[0] - q[0]);
+  for (const w of WH) w[0] = toReal(w[0]);
+  for (let i = WH.length - 1; i >= 0; i--) if (WH[i][0] === null) WH.splice(i, 1);
+
   window.WHISPERS = WH;
-  const SHAKES = [[127.1, 0.5, 10]];
+  const SHAKES = [];
   window.frame = function (T) {
-    const FB = T >= FLASH_A && T < FLASH_A + FLASH_LEN; let t = T >= FLASH_A + FLASH_LEN ? T - FLASH_LEN : T; // t = thời gian phim gốc
+    const m = mapT(T), FB = m.ins, t = m.t; // t = thời gian phim gốc
     let body = '';
     ENEMY = null;
     CLIPN = 0;
     const seed = Math.floor(T * 8) % 9; // nét rung vẽ lại mỗi 3 khung
     const defs = DEFS.replace('seed="4"', `seed="${seed + 1}"`).replace('seed="77"', `seed="${seed + 30}"`);
     for (const sc of FB ? SI : S) {
-      if (FB) t = T;
       if (t < sc.a || t >= sc.b) continue;
       const o = Math.min(clamp((t - sc.a) / sc.fi), clamp((sc.b - t) / sc.fo));
       const c0 = typeof sc.cam === 'function' ? sc.cam(t) : (sc.cam || { x: 640, y: 360, k: 1 });

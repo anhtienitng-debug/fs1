@@ -108,7 +108,7 @@ Mất khoảng 15–20 phút cho mỗi phim 2:45.
 | 2 | TOMORROW | "tomorrow." · "there's always tomorrow." | Lịch tường; TOMORROW → TODAY | Bước đều, mỗi bước một ngày đã tập (DAY 1…45) | Đã duyệt |
 | 3 | PERFECT | "not good enough." · "why even show it?" | `ERASED ×312 / FINISHED 0`; PERFECT → DONE | Ký tên giữa 7 vòng bút đỏ | Đã duyệt |
 | 4 | COMPARE | "look at them." · "you'll never catch up." · "i told you." | Thước dây, `YOU vs THEM −88%`; THEM → YESTERDAY; hồi tưởng vạch chiều cao | Ollie ở dốc nhỏ, thước gãy | Đã duyệt (v3) |
-| 5 | SNOOZE | "five more minutes." · "he has time." | Lọ "MISSED" chứa mặt trời; số ngày còn sống trên đầu (ông 60 → 1); SNOOZE → RISE | Bóng níu cổ chân dọc sàn, lết tới cửa sổ kéo rèm, nắng làm bóng tan | v2 đã sửa theo DUYỆT 3, chờ anh xem |
+| 5 | SNOOZE | "five more minutes." · "it's still dark" · "next time" | Lọ "MISSED" chứa mặt trời; số ngày còn sống trên đầu (ông 60); SNOOZE → RISE | Không có trận cuối: bước ngoặt là đám tang bà hàng xóm số 1, Spark nghĩ "he has no time..."; sau đó cái bóng không xuất hiện nữa | v3, chờ anh xem |
 
 ## Ghi chú kỹ thuật (bẫy đã gặp)
 
@@ -123,6 +123,6 @@ Mất khoảng 15–20 phút cho mỗi phim 2:45.
 
 ## Việc đang chờ
 
-- SNOOZE: v2 đã sửa 6 điểm của DUYỆT 3 (xem đầu `video-snooze/story.md`). Đoạn chèn 72–78 dùng cơ chế `FLASH_A/FLASH_LEN` + cảnh `{ ins: true }`; `am-thanh.py` tự lùi mốc ≥ 72 thêm 6 giây (`raw=True` để giữ giờ thật).
+- SNOOZE: v3 (xem đầu `video-snooze/story.md`). Cắt và chèn cảnh bằng bảng `EDL` (giờ phim gốc → giờ thật) trong `scene.js` và `am-thanh.py`; cảnh chèn đánh dấu `{ ins: true }`, âm thanh chèn dùng `ins=True`, giọng thì thầm dùng `raw=True`.
 - Phim tiếp theo: anh chọn trong mục 7 của `ho-so-kenh.md`.
 - Phía anh: tạo kênh với handle `@keepthefirefilms`, tải ảnh nhận diện, đăng theo `UPLOAD.md` từng phim. Lịch đăng thứ Năm, 18:00 giờ New York.
