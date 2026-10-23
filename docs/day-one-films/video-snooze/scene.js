@@ -827,8 +827,14 @@
   // ================= 6. Montage (86–116) =================
   scene(86, 92, t => { // 6:30: chuông reo ở kệ xa, chân chạm sàn ngay
     let s = bedroom(t, { sky: 0.3, jarN: 0, jarOpen: 1, clock: false, curtain: 0.4 }) + shelf(1000, 404, 120) + alarm(1000, 404, t < 87.4 ? 1 : 0, t, 0.9);
-    const up = ramp(t, 86.4, 87.0), x = lerp(620, 960, ramp(t, 87.0, 88.6));
-    if (up < 1) { const A = lieBed(580, BEDY), B = sitChair(620, 560, { look: 10 }); const J = {}; for (const k in B) J[k] = Array.isArray(B[k]) ? mix(A[k], B[k], up) : B[k]; s += fig(J, { flame: 0.3, t, mood: 'fierce' }) + life(J, sparkN(26)); }
+    // đang ngủ bình thường (đắp chăn, tay xuôi) → chuông reo thì bừng tỉnh (mắt mở, giật mình) → hất chăn ngồi dậy
+    const up = ramp(t, 86.75, 87.25), x = lerp(620, 960, ramp(t, 87.25, 88.6));
+    if (t < 86.75) {
+      const woke = t > 86.3, L = lying(t, 0, { flame: woke ? 0.34 : 0.26, mood: woke ? 'neutral' : 'asleep' });
+      const jolt = woke ? 5 * Math.sin(Math.PI * clamp((t - 86.3) / 0.25)) : 0;
+      s += `<g transform="translate(0,${-jolt})">` + L.s + life(L.J, sparkN(26)) + '</g>';
+      if (woke) { const [hx, hy] = L.J.head; s += ln([hx + 34, hy - 26], [hx + 44, hy - 36], '#cfc6b8', 3) + ln([hx + 40, hy - 12], [hx + 54, hy - 16], '#cfc6b8', 3) + ln([hx + 26, hy - 36], [hx + 30, hy - 50], '#cfc6b8', 3); } // vạch giật mình
+    } else if (up < 1) { const A = lieBed(580, BEDY), B = sitChair(620, 560, { look: 10 }); const J = {}; for (const k in B) J[k] = Array.isArray(B[k]) ? mix(A[k], B[k], up) : B[k]; J.lh = mix([J.hip[0] - 30, J.hip[1] - 6], B.lh, up); J.rh = mix([J.hip[0] - 20, J.hip[1] - 4], B.rh, up); s += fig(J, { flame: 0.3, t, mood: 'fierce' }) + life(J, sparkN(26)); }
     else { const J = t < 88.6 ? walk(x, 560, t * 7) : stand(960, 560, { look: 10 }); if (t >= 88.6) { J.lh = [990, 380]; J.le = [976, 410]; fixArms(J); } s += fig(J, { flame: 0.34, t, mood: 'fierce' }) + life(J, sparkN(26)) + (t >= 88.6 ? handDot(J.lh) : ''); }
     return s + hudS(24, { rise: 1 }) + clock(1170, 140, '6:30 AM');
   }, { cam: STAND(700) });
@@ -858,13 +864,28 @@
   }, { cam: { x: 700, y: 330, k: 1.7 } });
 
   // ================= 8. Phần thưởng: những buổi sáng cùng ông, số của ông đếm về 1 =================
-  scene(132, 137, t => { // chạy ra bến, ông đang xếp đồ
-    let s = pier(t, { rise: 0.3 }) + foldChair(500, 548, 0) + `<rect x="560" y="520" width="40" height="28" fill="#c8a070" stroke="#8a6a40"/>`;
-    const G = bentPose(620, 548, -1); G.lh = [596, 520]; G.rh = [604, 524]; fixArms(G); s += gpa(G, { mood: 'neutral' }) + life(G, gpaN(32));
-    const x = lerp(-80, 420, ramp(t, 132.2, 135.6)), J = t < 135.6 ? run(x, 548, t * 11) : stand(420, 548, { look: 10 });
-    s += fig(J, { flame: 1.0, t, mood: 'happy' }) + life(J, sparkN(32));
+  scene(132, 137, t => { // Spark đi trước trên cầu tàu, xách ghế và cần câu, ngoái lại chờ; ông chậm rãi theo sau, dẫn tới chỗ câu
+    let s = pier(t, { rise: 0.3 });
+    // ông: đi chậm, lưng còng
+    const kg = clamp((t - 132.0) / 4.6), gx = lerp(-260, 520, ease(kg));
+    const G = kg < 1 ? walk(gx, 548, (t - 132) * 4.5) : stand(520, 548, { look: 8 }); G.look = 8;
+    G.head = [G.head[0] + 12, G.head[1] + 8]; G.neck = [G.neck[0] + 8, G.neck[1] + 4]; fixArms(G);
+    s += gpa(G, { mood: 'happy' }) + life(G, gpaN(32));
+    // Spark: đi trước, xách hai ghế gấp (tay sau) và hai cần câu (tay trước)
+    const ks = clamp((t - 132.2) / 3.0), sx = lerp(-40, 700, ease(ks)), arrived = ks >= 1;
+    const J = arrived ? stand(700, 548, { look: -10 }) : walk(sx, 548, (t - 132.2) * 7);
+    if (arrived) { J.face = -1; J.look = -10; J.lh = [654 + 8 * Math.sin(t * 9), 326]; J.le = [668, 372]; } // quay lại vẫy ông: "đây rồi, ông ơi"
+    else J.look = 10;
+    J.rh = arrived ? [J.hip[0] + 18, 486] : [J.hip[0] + 14, 486];
+    fixArms(J);
+    // hai ghế gấp: xách ở tay, tới nơi thì dựng sẵn ở chỗ câu
+    const chairs = arrived ? `<rect x="756" y="486" width="10" height="62" rx="3" fill="#3b6bd6" transform="rotate(8 761 548)"/><rect x="768" y="486" width="10" height="62" rx="3" fill="#2f5bc0" transform="rotate(8 773 548)"/>`
+      : `<rect x="${J.rh[0] - 6}" y="${J.rh[1] - 4}" width="10" height="64" rx="3" fill="#3b6bd6"/><rect x="${J.rh[0] + 2}" y="${J.rh[1] - 2}" width="10" height="62" rx="3" fill="#2f5bc0"/>`;
+    s += chairs + fig(J, { flame: 1.0, t, mood: 'happy' }) + life(J, sparkN(32)) + (arrived ? '' : handDot(J.rh));
+    if (!arrived) s += ln(J.lh, [J.lh[0] + 50, J.lh[1] - 70], '#6a5038', 3) + ln(J.lh, [J.lh[0] + 58, J.lh[1] - 64], '#6a5038', 3) + handDot(J.lh);
+    else s += handDot(J.lh) + ln([720, 548], [740, 440], '#6a5038', 3) + ln([726, 548], [748, 444], '#6a5038', 3); // cần câu dựng sẵn ở chỗ câu
     return s + hudS(100, { rise: 5 });
-  }, { cam: STAND(420) });
+  }, { cam: t => ({ ...STAND(lerp(260, 600, ramp(t, 132, 136.6))), k: 1.5 }) });
   // ông mở ghế thứ hai; hai người ngồi câu. Rồi thời gian trôi nhanh: mỗi bình minh số của ông tụt 1, SUNRISES tăng 1
   const LAPSE = [140.2, 144.2], NLAPSE = 2;
   const lapseDay = t => 32 + Math.min(NLAPSE, Math.floor(NLAPSE * clamp((t - LAPSE[0]) / (LAPSE[1] - LAPSE[0])) + 0.5)); // ngày 32 → 34 (ông 28 → 26), chậm
