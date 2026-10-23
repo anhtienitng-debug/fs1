@@ -108,13 +108,14 @@ Mất khoảng 15–20 phút cho mỗi phim 2:45.
 | 2 | TOMORROW | "tomorrow." · "there's always tomorrow." | Lịch tường; TOMORROW → TODAY | Bước đều, mỗi bước một ngày đã tập (DAY 1…45) | Đã duyệt |
 | 3 | PERFECT | "not good enough." · "why even show it?" | `ERASED ×312 / FINISHED 0`; PERFECT → DONE | Ký tên giữa 7 vòng bút đỏ | Đã duyệt |
 | 4 | COMPARE | "look at them." · "you'll never catch up." · "i told you." | Thước dây, `YOU vs THEM −88%`; THEM → YESTERDAY; hồi tưởng vạch chiều cao | Ollie ở dốc nhỏ, thước gãy | Đã duyệt (v3) |
-| 5 | SNOOZE | "five more minutes." · "it's still dark" · "next time" | Lọ "MISSED" chứa mặt trời; số ngày còn sống trên đầu (ông 60); SNOOZE → RISE | Không có cái bóng ở trận cuối: sáng chủ nhật con số tụt 1, Spark hất chăn, chữ "five more minutes." vỡ vụn. Bước ngoặt là đám tang bà hàng xóm (gieo 10 → 3 → 1). Kết: hai ly ca cao, một ly trên ghế trống | v4, chờ anh xem |
+| 5 | SNOOZE | "five more minutes." · "it's still dark" · "next time" | Lọ "MISSED" chứa mặt trời; số ngày còn sống trên đầu (ông 60); SNOOZE → RISE | Không có cái bóng ở trận cuối: sáng chủ nhật con số tụt 1, Spark hất chăn, chữ "five more minutes." vỡ vụn. Bước ngoặt là đám tang bà hàng xóm (gieo 10 → 3 → 1). Kết: hai ly ca cao, một ly trên ghế trống | Đã duyệt (v4) |
 
 ## Ghi chú kỹ thuật (bẫy đã gặp)
 
 - **Bộ máy mới** (COMPARE, SNOOZE): `limb()` vẽ tay chân là đường cong bậc hai qua khớp. `ikArm` cho khuỷu luôn bẻ xuống (chỉ theo gợi ý khi giơ tay cao) để không lật khuỷu khi tay chuyển động nhanh.
 - **Kích thước nhân vật:** trong `frame()`, `ZOOM = 0.8` làm nhân vật nhỏ đi 20%, công thức `cy` giữ đường mặt đất y = 560 cố định trên màn hình. Chữ giao diện bọc trong `ui()` để không bị phóng.
-- **Hồi tưởng chèn giữa phim:** COMPARE có cơ chế `FLASH_A/FLASH_LEN` trong `frame()`. Thời gian phim gốc dời đi, `WH` dời theo, còn `am-thanh.py` dùng cờ `SHIFT`.
+- **Hồi tưởng chèn giữa phim:** COMPARE có cơ chế `FLASH_A/FLASH_LEN` trong `frame()`. SNOOZE dùng cách tổng quát hơn: bảng `EDL` cắt, chèn, đảo thứ tự cảnh; `am-thanh.py` dùng cùng bảng.
+- **AAC vọt đỉnh với âm cao** (tiếng "tinh"): `dung-video.sh` của SNOOZE thêm `lowpass=f=16000` trước bộ chặn đỉnh.
 - **Lời thì thầm:** hàm `whispers()` ước lượng bề rộng chữ để không tràn mép. Nếu kẻ thù đứng sát mép trái, chữ sẽ bị đẩy đè lên đầu nó, khi đó dời camera (`STAND(x)`) sang trái.
 - **SVG lồng:** thẻ `<svg x y>` lồng trong SVG khác có toạ độ riêng, phải bù `translate(-x,-y)`. Đã gặp lỗi này ở thumbnail SNOOZE.
 - **AAC làm vọt đỉnh** khoảng 1 dB: dùng `alimiter limit=0.56` ở 192 kHz.
@@ -123,6 +124,6 @@ Mất khoảng 15–20 phút cho mỗi phim 2:45.
 
 ## Việc đang chờ
 
-- SNOOZE: v4 (xem đầu `video-snooze/story.md`). Cắt và chèn cảnh bằng bảng `EDL` (giờ phim gốc → giờ thật) trong `scene.js` và `am-thanh.py`; cảnh chèn đánh dấu `{ ins: true }`, âm thanh chèn dùng `ins=True`, giọng thì thầm dùng `raw=True`.
+- SNOOZE: đã duyệt v4, bộ đăng trong `video-snooze/UPLOAD.md`. Ghi chú kỹ thuật: Cắt và chèn cảnh bằng bảng `EDL` (giờ phim gốc → giờ thật) trong `scene.js` và `am-thanh.py`; cảnh chèn đánh dấu `{ ins: true }`, âm thanh chèn dùng `ins=True`, giọng thì thầm dùng `raw=True`.
 - Phim tiếp theo: anh chọn trong mục 7 của `ho-so-kenh.md`.
 - Phía anh: tạo kênh với handle `@keepthefirefilms`, tải ảnh nhận diện, đăng theo `UPLOAD.md` từng phim. Lịch đăng thứ Năm, 18:00 giờ New York.

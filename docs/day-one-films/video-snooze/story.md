@@ -1,6 +1,11 @@
-# SNOOZE | An Animated Short Film: kế hoạch (đã DUYỆT 1 + 2, chọn A)
+# SNOOZE | An Animated Short Film: kế hoạch (đã DUYỆT 1 + 2 + 3, bản cuối v4)
 
-**v4 (làm theo review kể chuyện), phim dài 2:24, bản đăng 2:30:**
+**v4 (làm theo review kể chuyện), phim dài 2:24, bản đăng 2:30, anh đã duyệt:**
+- Sửa thêm sau v4:
+  - Ở đám tang ông chỉ lặng nhìn cháu, không cười, không vẫy.
+  - Chữ "Wake up for them." hiện từ chỗ trống.
+  - 6:30: đang ngủ đắp chăn rồi bừng tỉnh.
+  - Ra bến: Spark đi trước, xách ghế và cần câu, dẫn ông tới chỗ câu.
 1. Mở phim: 1.6 giây đầu chỉ có con số **60** sáng trong bóng tối, kèm tiếng "tách". Sau đó camera lùi từ con số ra, thấy ông ngoài cửa sổ.
 2. Ông gõ cửa lần 1 vẽ trên rèm, rõ như lần 2.
 3. Gieo bà cụ từ sớm:

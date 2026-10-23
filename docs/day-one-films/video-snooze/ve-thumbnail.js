@@ -18,8 +18,14 @@ const ART = () => {
       const G = K.bentPose(1000, 560, -1); G.lh = [940, 250]; G.le = [960, 300]; G.rh = [1080, 250]; G.re = [1050, 300];
       s += `<svg x="820" y="80" width="360" height="300" overflow="hidden"><g transform="translate(-820,-80) translate(1000,560) scale(1.6) translate(-1000,-560)">` + K.gpa(G, { mood: 'sad' }) + `<line x1="940" y1="250" x2="925" y2="170" stroke="#6a5038" stroke-width="3"/><line x1="1080" y1="250" x2="1095" y2="170" stroke="#6a5038" stroke-width="3"/></g></svg>`;
       s += at(330, 640, 3.0, K.alarm(0, 0, 1, 0.3));
-      const J = K.lieBed(0, 0); J.rh = [-138, -57]; J.re = [-110, -20];
-      s += at(900, 600, 2.6, K.fig(J, { flame: 0.1, t: T, mood: 'drowsy' }));
+      // nằm đắp chăn, gối dưới đầu; một tay thò ra khỏi chăn với về phía đồng hồ đang reo
+      const J = K.lieBed(0, 0); J.lh = [J.hip[0] - 30, J.hip[1] - 6]; J.le = [J.hip[0] - 50, J.hip[1] - 16]; J.rh = [J.hip[0] - 20, J.hip[1] - 4]; J.re = [J.hip[0] - 40, J.hip[1] - 14];
+      s += at(900, 600, 2.6, `<ellipse cx="-128" cy="-12" rx="46" ry="14" fill="#e6dccd" stroke="#b9ab98" stroke-width="1.5"/>` + K.fig(J, { flame: 0.1, t: T, mood: 'drowsy' }) +
+        `<path d="M-74,-22 Q40,-70 170,-14 L170,8 L-74,8Z" fill="#4a5a7a" stroke="#2a3448" stroke-width="2"/>` +
+        // tay duỗi dọc gối, dưới cằm, chạm tới đồng hồ
+        `<path d="M-60,0 Q-120,16 -186,-10" fill="none" stroke="#9a846b" stroke-width="15" stroke-linecap="round"/><path d="M-60,0 Q-120,16 -186,-10" fill="none" stroke="#e9d6bd" stroke-width="12" stroke-linecap="round"/>` +
+        `<path d="M-74,-22 Q-40,-36 0,-34 L0,8 L-74,8Z" fill="#4a5a7a"/>` +
+        `<circle cx="-188" cy="-11" r="7.5" fill="#e9d6bd" stroke="#9a846b" stroke-width="2"/>`);
       // số ngày còn lại trên đầu ông
       s += `<text x="1000" y="62" fill="#f4efe4" font-family="${K.MONO}" font-size="46" font-weight="800" text-anchor="middle" stroke="#000" stroke-width="8" paint-order="stroke">35</text>`;
       s += big(36, 130, 'FIVE MORE', { size: 88 }) + big(36, 230, 'MINUTES.', { size: 88, c: ORANGE });
