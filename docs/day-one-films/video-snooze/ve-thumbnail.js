@@ -40,9 +40,9 @@ const ART = () => {
     },
     // C: hai ông cháu ngồi câu lúc bình minh — lộ kết, để dự phòng
     C() {
-      let s = `<svg x="0" y="0" width="1280" height="720" viewBox="20 230 960 540">${K.pier(0.4, { rise: 0.8 })}${K.foldChair(470, 548)}${K.foldChair(640, 548)}` +
+      let s = `<svg x="0" y="0" width="1280" height="720" viewBox="-130 160 960 540">${K.pier(0.4, { rise: 0.8 })}${K.foldChair(470, 548)}${K.foldChair(640, 548)}` +
         (() => { const G = K.sitChair(640, 548, { look: 8 }); G.rh = [700, 470]; G.re = [680, 486]; G.lh = [692, 474]; const J = K.sitChair(470, 548, { look: 8 }); J.rh = [530, 470]; J.re = [510, 486]; J.lh = [522, 474]; return K.gpa(G, { mood: 'happy' }) + K.rod([700, 470], [840, 400], 620) + K.fig(J, { flame: 1.1, t: T, mood: 'happy' }) + K.rod([530, 470], [700, 410], 610); })() + '</svg>';
-      s += big(36, 110, 'WAKE UP', { size: 78 }) + big(36, 200, 'FOR THEM.', { size: 78, c: YEL, f: 'yelGlow' });
+      s += big(48, 250, 'WAKE UP', { size: 84 }) + big(48, 345, 'FOR THEM.', { size: 84, c: YEL, f: 'yelGlow' });
       return wrap(s);
     },
   };

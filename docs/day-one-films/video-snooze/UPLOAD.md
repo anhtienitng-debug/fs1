@@ -2,13 +2,13 @@
 
 File tải lên: `SNOOZE-dang-youtube.mp4`. Phim dài 2:24, nối sẵn 6 giây màn hình kết thúc, tổng 2:30, 1920×1080, 24 fps. Âm thanh −15.7 LUFS, đỉnh −1.4 dB.
 
-**Tiêu đề:**
+**Tiêu đề** (một câu dẫn chuyện theo nội dung chính, tên phim để cuối):
 ```
-SNOOZE | An Animated Short Film
+Everyone Had a Number Above Their Head. Grandpa's Was 60. | SNOOZE
 ```
-Tiêu đề dự phòng (khi thử tiêu đề, giữ "SNOOZE |" ở đầu):
-- `SNOOZE | What If You Could See How Many Days They Have Left?`
-- `SNOOZE | A Short Film About the Mornings We Sleep Through`
+Tiêu đề dự phòng để thử (Thử nghiệm và so sánh):
+- `He Kept Hitting Snooze While Grandpa's Days Ran Out | SNOOZE`
+- `She Waved at My Window Every Day. Then Her Number Hit 1. | SNOOZE`
 
 **Mô tả:**
 ```
@@ -48,7 +48,7 @@ If you could see the number above someone you love, would you still hit snooze? 
 |---|---|---|
 | **A "FIVE MORE MINUTES."** | Spark nằm đắp chăn, ngái ngủ, tay với tới đồng hồ đang reo. Ông nội ngoài cửa sổ giơ tay, trên đầu ông số 35 | **Bản chính.** Nói ra nỗi đau và con số, không lộ kết |
 | B "MISSED 21 SUNRISES." | Lọ "MISSED" đầy những mặt trời nhỏ bị nhốt | Bản thử với A trong "Thử nghiệm và so sánh" |
-| C "WAKE UP FOR THEM." | Hai ông cháu ngồi câu trên bến lúc bình minh | Dự phòng. Bản này lộ kết phim nên để sau |
+| C "WAKE UP FOR THEM." | Hai ông cháu ngồi câu trên bến lúc bình minh, người dời sang phải, chữ to ở giữa bên trái | Dự phòng. Bản này lộ kết phim nên để sau |
 
 **Chi tiết khi tải lên:**
 - Danh mục Film & Animation, ngôn ngữ video English.

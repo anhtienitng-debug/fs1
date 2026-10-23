@@ -27,6 +27,7 @@ Mọi phim được **vẽ bằng code**: SVG chạy trong Chromium qua Playwrig
    - Không có câu dẫn chuyện.
    - Bước ngoặt dùng **một từ khoá đổi nghĩa** (TOMORROW→TODAY, PERFECT→DONE, THEM→YESTERDAY, SNOOZE→RISE).
    - Thẻ kết là một cặp câu: câu lặng màu trắng, rồi câu đấm màu vàng.
+   - **Tiêu đề YouTube** là một câu dẫn chuyện theo nội dung chính, tên phim để cuối: `<câu> | <TÊN>` (từ SNOOZE). Không chỉ một từ.
 6. **Không chữ đè mặt, không tay lơ lửng** (tay cầm vật phải chạm vật).
 7. **Âm thanh:**
    - Master khoảng −15 LUFS, đỉnh ≤ −1 dBTP. Chặn đỉnh ở 192 kHz trước khi nén AAC, đã có sẵn trong `dung-video.sh`, `limit=0.56`.
