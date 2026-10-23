@@ -741,9 +741,9 @@
     MOURN.forEach(([x, n, i]) => { s += mourner(x, n - 1, i, t, o.lit ? o.lit[i] : 0); });
     // ông đứng cuối hàng, không ô, đội mũ len
     const G = bentPose(1060, 560, -1); G.head = [G.head[0] - 4, G.head[1] + 6]; G.lh = [1030, 480]; G.rh = [1040, 484];
-    if (o.wave) { G.lh = [996, 372 + 8 * Math.sin(t * 6)]; G.le = [1010, 420]; }
+    if (o.look) { G.head = [G.head[0] - 6, G.head[1] - 4]; } // ngẩng lên nhìn về phía Spark
     fixArms(G);
-    s += gpa(G, { mood: o.wave ? 'happy' : 'sad' }) + life(G, gpaN(25), { k: o.gk || 1, glow: (o.gk || 1) > 1.2 });
+    s += gpa(G, { mood: 'sad' }) + life(G, gpaN(25), { k: o.gk || 1, glow: (o.gk || 1) > 1.2 });
     return s;
   }
   // Spark đứng bên trái, nhìn về tấm ảnh
@@ -763,7 +763,7 @@
   // đoạn chèn 72–78: Spark quay sang thấy ông — số trên đầu ông chỉ còn 35
   scene(72, 78, t => {
     const gk = 1 + 1.2 * ramp(t, 73.4, 74.4);
-    let s = funeral(t, { gk, wave: t > 76.2 });
+    let s = funeral(t, { gk, look: t > 76.2 }); // đám tang: ông chỉ lặng lẽ nhìn sang cháu, không cười, không vẫy
     const sp = sparkFuneral(t, { turn: 1, flame: lerp(0.1, 0.05, ramp(t, 73.6, 74.4)), mood: 'sad' });
     s += sp.s;
     // Spark tự nghĩ thầm (chữ kem, nghiêng — không phải giọng kẻ thù)
@@ -1008,7 +1008,7 @@
   scene(150.6, 159.4, t => {
     let s = `<rect x="-600" y="-400" width="2600" height="960" fill="#2a2018"/>` + `<path d="M800,100 L1000,100 L760,600 L460,600Z" fill="#ffd9a0" opacity=".12"/>` + shelf(JAR[0], JAR[1], 220) + jar(JAR[0], JAR[1], 0, t, { open: 1 }) + woolCap(JAR[0] - 64, JAR[1] + 2);
     s += ui(`<rect x="0" y="100" width="1280" height="66" fill="#000" opacity="${0.5 * fade(t, 151.0, 159.2, 0.8, 0.6)}"/>` + txt(640, 144, "Some mornings don't come back.", { size: 40, w: 600, op: fade(t, 151.0, 159.2, 0.8, 0.6) }) +
-      `<text x="640" y="610" fill="${YEL}" fill-opacity="${fade(t, 154.2, 159.2, 0.6, 0.6)}" filter="url(#yelGlow)" font-family="Inter" font-size="52" font-weight="800" text-anchor="middle" stroke="#1a0f0c" stroke-width="6" paint-order="stroke">Wake up for them.</text>`);
+      `<text x="640" y="610" fill="${YEL}" opacity="${fade(t, 154.2, 159.2, 0.6, 0.6)}" filter="url(#yelGlow)" font-family="Inter" font-size="52" font-weight="800" text-anchor="middle" stroke="#1a0f0c" stroke-width="6" paint-order="stroke">Wake up for them.</text>`);
     return s;
   }, { fo: 0.6, cam: { x: 600, y: 320, k: 2.6 } });
   scene(159.4, 165, t => {
