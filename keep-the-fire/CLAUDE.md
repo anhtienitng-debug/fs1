@@ -1,4 +1,4 @@
-# Đọc trước tiên: kênh Keep The Fire (bàn giao từ phiên cloud)
+# Đọc trước tiên: kênh Keep The Fire
 
 Đây là kênh YouTube quốc tế **Keep The Fire**: phim hoạt hình ngắn **không lời dẫn** về những cuộc chiến bên trong.
 - Nhân vật chính **Spark** là hạt đậu màu kem, có ngọn lửa lơ lửng trước ngực.
@@ -53,6 +53,7 @@ keep-the-fire/
   concept/ *.md              ← phân tích kênh mẫu, thiết kế nhân vật, tên kênh
   tham-khao/                 ← quy tắc gốc của anh
   tai-kokoro.sh              ← tải model giọng Kokoro
+  kiem-tra-may.sh            ← kiểm tra máy đủ công cụ chưa
 ```
 
 Mỗi thư mục phim có:
@@ -67,6 +68,25 @@ Mỗi thư mục phim có:
 | `ve-thumbnail.js` | Vẽ 3 thumbnail A/B/C vào `anh/`. A là bản chính (không lộ kết), B là bản thử, C là dự phòng (lộ kết) |
 | `UPLOAD.md` | Tiêu đề, mô tả, thẻ, bình luận ghim, mốc màn hình kết thúc, lịch đăng |
 | `<TÊN>-dang-youtube.mp4` | Bản cuối đã duyệt hoặc chờ duyệt |
+
+## Chuyển về máy nội bộ
+
+Thư mục `keep-the-fire/` là **toàn bộ kênh**, tự đứng một mình, không phụ thuộc phần còn lại của repo `fs1`.
+
+**Cách 1: file zip (đơn giản nhất, có sẵn video).** Giải nén `keep-the-fire.zip` vào ví dụ `D:\Yt\keep-the-fire`. Zip có đủ code, tài liệu, ảnh và các file mp4 bản cuối, kể cả `end-screen-6s.mp4` mà `dung-video.sh` cần.
+
+**Cách 2: git (để đồng bộ tiếp với cloud).**
+```
+git clone https://github.com/anhtienitng-debug/fs1.git
+cd fs1
+git checkout claude/eager-volta-t7dy1m
+```
+Kênh nằm ở `fs1/keep-the-fire/`. File mp4 không có trên git, nên chép `end-screen-6s.mp4` và các bản cuối từ zip vào đúng chỗ.
+
+**Sau khi có thư mục:**
+1. Cài công cụ ở mục dưới, rồi chạy `bash kiem-tra-may.sh <thư mục model>` cho tới khi báo "Máy đã sẵn sàng."
+2. Mở Claude Code **ngay trong thư mục `keep-the-fire/`** (`cd keep-the-fire && claude`). File này sẽ được đọc tự động, Claude ở máy nội bộ nắm được luật kênh và cách làm.
+3. Thử dựng lại SNOOZE để chắc máy chạy đúng (mục "Dựng một phim").
 
 ## Cài đặt trên máy
 
@@ -121,7 +141,7 @@ Mất khoảng 15–20 phút cho mỗi phim 2:45.
 - **SVG lồng:** thẻ `<svg x y>` lồng trong SVG khác có toạ độ riêng, phải bù `translate(-x,-y)`. Đã gặp lỗi này ở thumbnail SNOOZE.
 - **AAC làm vọt đỉnh** khoảng 1 dB: dùng `alimiter limit=0.56` ở 192 kHz.
 - **Font không có ký tự ☀:** tự vẽ bằng `sunIcon()`.
-- **File mp4 không đưa lên git** (`.gitignore` có `*.mp4`). Các bản cuối nằm sẵn trong zip này.
+- **File mp4 không đưa lên git** (`.gitignore` của repo có `*.mp4`). Các bản cuối nằm trong `keep-the-fire.zip`.
 
 ## Việc đang chờ
 
