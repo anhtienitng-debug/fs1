@@ -173,6 +173,7 @@ def plan_visuals(
     media: str | None = typer.Option(
         None, "--media", "-m",
         help="Thư mục ảnh đã tải, kèm db.json ghi tác giả/giấy phép"),
+    config: str | None = ConfigOpt,
 ):
     """Gán hình cho từng cảnh theo kế hoạch viết tay: ảnh tư liệu, thẻ chữ, biểu đồ."""
     import json
@@ -199,6 +200,10 @@ def plan_visuals(
             continue
         if spec.get("says") and spec["says"].lower() not in sc.narration.lower():
             mismatched.append(sc.id)
+        sc.callout = spec.get("callout", "")
+        if "anim" in spec or "group" in spec:
+            sc.on_screen_text = ""
+            continue
         sc.on_screen_text = spec.get("label", "")
         key = spec.get("photo") or spec.get("video")
         if key and key in have:
@@ -240,6 +245,25 @@ def plan_visuals(
         con.print(f"[red]Kế hoạch hình lệch với lời đọc ở {', '.join(mismatched)}.[/red] "
                   "Kiểm tra lại visuals.json, chưa ghi gì.")
         raise typer.Exit(1)
+    # Bieu do chuyen dong: ve sau cung vi can thoi luong that cua tung canh
+    from .config import load_config
+    from .stages import motion
+    cfg = load_config(config_file=config) if config else load_config()
+    gap = cfg.get("tts.pause_between_scenes_ms", 450) / 1000.0
+    fps = int(cfg.get("video.fps", 30))
+    groups: dict[str, list] = {}
+    for sc in scene_list:
+        spec = plan.get(sc.id) or {}
+        g = spec.get("group") or (sc.id if "anim" in spec else None)
+        if g:
+            groups.setdefault(g, []).append(sc)
+    for g, members in groups.items():
+        spec = next(plan[m.id]["anim"] for m in members if "anim" in plan[m.id])
+        clips = motion.render_group(members, json.loads(json.dumps(spec)), gap,
+                                    job.file("motion", g), fps)
+        for m in members:
+            m.media_path, m.visual_kind = str(clips[m.id]), "video"
+        counts["chart"] += len(members)
     job.write_text("scenes.json", scenes_mod.to_json(scene_list))
     job.write_json("assets.json", [a.__dict__ for a in assets.values()])
     con.print(f"[green]✓[/green] {counts['photo']} ảnh/phim tư liệu, {counts['card']} thẻ chữ, "

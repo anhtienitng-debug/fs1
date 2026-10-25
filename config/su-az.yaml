@@ -37,6 +37,8 @@ video:
   fit_tolerance: 0.3
   label_style: corner          # nhan nguon tu lieu nho o goc
   kenburns_zoom: 0.06
+  kenburns_prefilter: 0.9      # lam mem truoc khi zoom, het nhap nhay o ban in luoi cham
+  fps: 24                      # phim tu lieu goc 24 hinh/giay: khong lap khung, khong giat
 
 charts:
   maps: false

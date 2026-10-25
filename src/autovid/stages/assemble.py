@@ -95,6 +95,10 @@ def kenburns(media: str, dest: Path, *, dur: float, cfg: Any, seed: str = "",
     zoom = float(cfg.get("video.kenburns_zoom", 0.06))
     frames = max(int(round(dur * fps)), 1)
     src = _compose(media, w, h, cfg.get("video.fit_tolerance", 0.3))
+    # Anh nguon o 2x roi thu ve 1x: lam mem ~1px truoc de khong nhap nhay (moire)
+    # o ban in luoi cham va hat phim khi zoom cham
+    from PIL import ImageFilter
+    src = src.filter(ImageFilter.GaussianBlur(cfg.get("video.kenburns_prefilter", 0.9)))
     W, H = src.size
     rnd = zlib.crc32(seed.encode())
     zoom_in = rnd % 2 == 0
@@ -144,8 +148,6 @@ def scene_clip(
 ) -> Path:
     w, h = cfg.get("video.resolution", [1920, 1080])
     fps = cfg.get("video.fps", 30)
-    crf = cfg.get("video.crf", 19)
-    preset = cfg.get("video.preset", "medium")
     fade = 0.25
     dur = scene.duration + gap_ms / 1000.0
 
@@ -197,6 +199,21 @@ def scene_clip(
     ]
     af = f"aresample=48000,apad,atrim=0:{dur:.3f},aformat=channel_layouts=stereo"
 
+    if scene.callout:
+        raw = dest.with_suffix(".raw.mp4")
+        _encode(args, vf, af, cfg, dur, raw, log)
+        add_callout(raw, scene.callout, dest, dur=dur, log=log)
+        raw.unlink(missing_ok=True)
+        return dest
+    _encode(args, vf, af, cfg, dur, dest, log)
+    return dest
+
+
+def _encode(args: list, vf: str, af: str, cfg: Any, dur: float, dest: Path,
+            log: Path | None) -> None:
+    fps = cfg.get("video.fps", 30)
+    crf = cfg.get("video.crf", 19)
+    preset = cfg.get("video.preset", "medium")
     ffmpeg.run(
         [*[str(a) for a in args],
          "-vf", vf, "-af", af,
@@ -206,6 +223,46 @@ def scene_clip(
          "-t", f"{dur:.3f}", "-shortest", str(dest)],
         log=log,
     )
+
+
+def callout_png(text: str, dest: Path) -> Path:
+    """The "LY DO" kieu thanh ngang hien dai: nen toi, vach mau son, chu trang."""
+    from PIL import Image, ImageDraw
+
+    from .cards import ACCENT, LACQUER, _font, _wrap
+    fe, ft = _font("semi", 26), _font("semi", 40)
+    probe = ImageDraw.Draw(Image.new("RGB", (10, 10)))
+    lines = _wrap(probe, text, ft, 1100)
+    w = int(max(probe.textlength(ln, font=ft) for ln in lines)) + 110
+    h = 70 + 54 * len(lines) + 28
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle([0, 0, w - 1, h - 1], radius=14, fill=(14, 15, 18, 232))
+    d.rectangle([0, 0, 10, h], fill=(*LACQUER, 255))
+    d.text((44, 22), "LÝ DO", font=fe, fill=(*ACCENT, 255))
+    y = 62
+    for ln in lines:
+        d.text((44, y), ln, font=ft, fill=(240, 236, 228, 255))
+        y += 54
+    img.save(dest)
+    return dest
+
+
+def add_callout(src: Path, text: str, dest: Path, *, dur: float,
+                log: Path | None = None) -> Path:
+    png = callout_png(text, src.with_suffix(".callout.png"))
+    t0 = max(0.6, dur - 4.8)
+    slide = (f"if(lt(t,{t0:.2f}),-w,-w+(w+90)*(1-pow(1-min(1,(t-{t0:.2f})/0.6),3)))")
+    ffmpeg.run(
+        ["-i", str(src), "-loop", "1", "-i", str(png),
+         "-filter_complex",
+         f"[1]format=rgba[c];[0][c]overlay=x='{slide}':y=H-h-110:shortest=1:format=auto,"
+         f"format=yuv420p",
+         "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-c:a", "copy",
+         "-t", f"{dur:.3f}", str(dest)],
+        log=log,
+    )
+    png.unlink(missing_ok=True)
     return dest
 
 
