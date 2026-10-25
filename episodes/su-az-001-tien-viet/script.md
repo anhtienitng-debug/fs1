@@ -9,21 +9,21 @@
 
 ## [HOOK]
 
-Mùa hạ năm Bính Tý, tức năm 1396, triều đình Đại Việt ban ra một lệnh đổi tiền rất lạ. Người dân mang một quan tiền đồng đến, nhận về một quan hai tiền giấy. Đổi có lời. Vậy mà rất nhiều người vẫn tìm cách giấu đồng xu cũ. Gần sáu trăm năm sau, ngày 14 tháng 9 năm 1985, cả nước lại đổi tiền, mười đồng cũ lấy một đồng mới. Riêng năm 1986, giá cả tăng gần gấp chín. Hai mốc đó nằm trong một nghìn năm đồng tiền Việt liên tục thay hình đổi dạng. Vì sao nó cứ phải làm lại từ đầu?
+Tháng tư năm Bính Tý, năm 1396. Triều đình Đại Việt ra lệnh đổi tiền. Nộp một quan tiền đồng, nhận về một quan hai, bằng tiền giấy. Đổi có lời. Giữ tiền đồng là trái lệnh. Vậy mà rất nhiều người vẫn lén giấu đồng xu cũ. Gần sáu trăm năm sau, ngày 14 tháng 9 năm 1985, cả nước lại đổi tiền: mười đồng cũ, lấy một đồng mới. Năm sau đó, giá cả tăng gần gấp chín. Nhiều gia đình lại giữ vàng, giữ gạo, thay vì giữ tờ tiền. Giấu đồng xu năm 1396. Giữ vàng năm 1986. Giữa hai cảnh ấy là một nghìn năm đồng tiền Việt liên tục thay hình đổi dạng. Vì sao nó cứ phải làm lại từ đầu?
 
 ## [CHƯƠNG 1] Toàn cảnh một nghìn năm
 
 *Chữ trên màn hình:* Các mốc tiền tệ Việt Nam, 970 đến nay
 *Gợi ý hình:* `bieu do moc thoi gian`
 
-Trước khi đi vào từng câu chuyện, hãy nhìn toàn cảnh. Trước thế kỷ thứ mười, trên đất này lưu hành tiền của các triều đại phương Bắc. Khoảng năm 970, đồng tiền đầu tiên mang dấu ấn người Việt ra đời. Năm 1396, tiền giấy xuất hiện, rồi biến mất chỉ sau hơn mười năm. Khoảng thế kỷ mười bảy, mười tám, tiền kẽm và bạc nén lên ngôi. Cuối thế kỷ mười chín, đồng bạc Đông Dương thay chỗ. Rồi chỉ trong bốn mươi năm, từ 1946 đến 1985, có sáu mốc thay đổi: đồng tiền mới ra đời năm 1946, đổi năm 1951, đổi năm 1959, đổi ở miền Nam năm 1975, thống nhất cả nước năm 1978, và đổi lần cuối năm 1985. Từ đó đến nay, hơn bốn mươi năm, không đổi thêm lần nào. Mỗi mốc trên biểu đồ này có một lý do riêng. Muốn hiểu, phải bắt đầu từ một chữ khắc trên mặt sau một đồng xu.
+Câu trả lời nằm rải rác trên một nghìn năm này. Trước thế kỷ mười, người dân nơi đây tiêu tiền của các triều đại phương Bắc. Khoảng năm 970: đồng tiền đầu tiên mang dấu ấn người Việt. Năm 1396: tiền giấy. Hơn mười năm sau, nó biến mất. Thế kỷ mười bảy, mười tám: tiền kẽm và bạc nén. Cuối thế kỷ mười chín: đồng bạc Đông Dương. Rồi nhịp đổi bỗng dồn dập. Bốn mươi năm, sáu lần. Năm 1946, tiền mới ra đời. Năm 1951, đổi. Năm 1959, đổi. Năm 1975, miền Nam đổi. Năm 1978, thống nhất cả nước. Và năm 1985, lần cuối. Rồi dừng hẳn. Hơn bốn mươi năm nay, không đổi thêm lần nào. Mỗi lần đổi có một lý do riêng. Lý do đầu tiên được khắc trên mặt sau một đồng xu, chỉ bằng một chữ.
 
 ## [CHƯƠNG 2] Năm 970: một chữ trên mặt sau đồng xu
 
 *Chữ trên màn hình:* Lý do: khẳng định một nhà nước độc lập
 *Gợi ý hình:* `thai binh hung bao coin`
 
-Năm 968, Đinh Bộ Lĩnh, tức vua Đinh Tiên Hoàng, thống nhất đất nước, lên ngôi, đặt quốc hiệu Đại Cồ Việt. Ít năm sau, triều Đinh cho đúc đồng Thái Bình Hưng Bảo. Nhìn qua, nó giống hệt tiền phương Bắc: tròn, lỗ vuông, bốn chữ Hán. Nhưng lật mặt sau lại, có thêm một chữ: chữ Đinh. Chỉ một chữ. Nhưng đó là lần đầu tiên, trên một đồng tiền lưu hành ở vùng đất này, có dấu ấn của một triều đình người Việt. Từ đây, các triều vua nối nhau đúc tiền riêng. Vua Lê Đại Hành có Thiên Phúc Trấn Bảo, mặt sau đúc chữ Lê. Vua Lý Thái Tổ có Thuận Thiên Đại Bảo. Vì sao lại cần đúc tiền riêng? Vì một nhà nước độc lập cần đồng tiền của chính mình, mang niên hiệu của chính mình.
+Năm 968, Đinh Bộ Lĩnh, tức vua Đinh Tiên Hoàng, thống nhất đất nước, lên ngôi, đặt quốc hiệu Đại Cồ Việt. Ít năm sau, triều Đinh cho đúc đồng Thái Bình Hưng Bảo. Nhìn qua, nó giống hệt tiền phương Bắc: tròn, lỗ vuông, bốn chữ Hán. Nhưng lật mặt sau lại, có thêm một chữ: chữ Đinh, họ của nhà vua. Chỉ một chữ. Nhưng đó là lần đầu tiên, trên một đồng tiền lưu hành ở vùng đất này, có dấu ấn của một triều đình người Việt. Từ đây, các triều vua nối nhau đúc tiền riêng. Vua Lê Đại Hành có Thiên Phúc Trấn Bảo, mặt sau đúc chữ Lê. Vua Lý Thái Tổ có Thuận Thiên Đại Bảo. Vì sao lại cần đúc tiền riêng? Vì một nhà nước độc lập cần đồng tiền của chính mình, mang niên hiệu của chính mình.
 
 ## [CHƯƠNG 3] Năm 1396: lệnh đổi tiền có lời
 
@@ -51,14 +51,14 @@ Nửa sau thế kỷ mười chín, Pháp thiết lập quyền cai trị, lần
 *Chữ trên màn hình:* Lý do: nhà nước mới cần tiền riêng, chi phí chiến tranh
 *Gợi ý hình:* `vietnam 1950s banknote`
 
-Năm 1946, nước Việt Nam Dân chủ Cộng hòa phát hành đồng tiền riêng. Người dân gọi là giấy bạc Cụ Hồ. Trong kháng chiến, tiền được in ở chiến khu, có lúc trên giấy dó. Chiến tranh tốn kém, lượng tiền in ra tăng nhanh, và giá cả tăng theo. Năm 1951, Ngân hàng Quốc gia Việt Nam ra đời, mười đồng cũ đổi một đồng mới. Năm 1959, ở miền Bắc, một đồng mới đổi một nghìn đồng cũ. Ba số không biến mất khỏi mọi tờ tiền, mọi bảng giá. Giai đoạn này có hai lý do chồng lên nhau: một nhà nước mới cần đồng tiền riêng, và chi phí chiến tranh khiến đồng tiền mất giá, phải đổi để bắt đầu lại.
+Năm 1946, nước Việt Nam Dân chủ Cộng hòa phát hành đồng tiền riêng. Người dân gọi là giấy bạc Cụ Hồ. Trong kháng chiến, tiền được in ở các chiến khu. Chiến tranh tốn kém, lượng tiền in ra tăng nhanh, và giá cả tăng theo. Năm 1951, Ngân hàng Quốc gia Việt Nam ra đời, mười đồng cũ đổi một đồng mới. Năm 1959, ở miền Bắc, một đồng mới đổi một nghìn đồng cũ. Ba chữ số không biến mất khỏi mọi tờ tiền, mọi bảng giá. Giai đoạn này có hai lý do chồng lên nhau: một nhà nước mới cần đồng tiền riêng, và chi phí chiến tranh khiến đồng tiền mất giá, phải đổi để bắt đầu lại.
 
 ## [CHƯƠNG 7] 1975 đến 1978: hai đồng tiền thành một
 
 *Chữ trên màn hình:* Lý do: đất nước thống nhất, tiền tệ thống nhất
 *Gợi ý hình:* `saigon 1950s street`
 
-Từ năm 1954 đến năm 1975, trên cùng một dải đất có hai đồng tiền, của hai chính quyền, với hai hệ thống giá. Tháng 9 năm 1975, ở miền Nam, năm trăm đồng cũ được đổi lấy một đồng mới, thường gọi là tiền giải phóng. Tháng 5 năm 1978, tiền tệ được thống nhất trên cả nước. Một đồng mới bằng một đồng ở miền Bắc, hoặc bằng tám hào tiền giải phóng ở miền Nam. Như vậy, chỉ trong khoảng ba năm, người dân miền Nam đã dùng qua ba loại tiền. Lý do của hai lần đổi tiền này là rõ ràng nhất trong cả câu chuyện: một đất nước thống nhất cần một đồng tiền thống nhất.
+Từ năm 1954 đến năm 1975, trên cùng một dải đất có hai đồng tiền, của hai chính quyền, với hai hệ thống giá. Tháng 9 năm 1975, ở miền Nam, năm trăm đồng cũ được đổi lấy một đồng mới, thường gọi là tiền giải phóng. Tháng 5 năm 1978, tiền tệ được thống nhất trên cả nước. Một đồng mới bằng một đồng ở miền Bắc, hoặc bằng tám hào tiền giải phóng ở miền Nam. Như vậy, chỉ trong khoảng ba năm, người dân miền Nam đã dùng qua ba loại tiền. Lý do của hai lần đổi tiền này: một đất nước thống nhất cần một đồng tiền thống nhất.
 
 ## [CHƯƠNG 8] 1985: mười lấy một
 
@@ -69,7 +69,7 @@ Rồi đến ngày 14 tháng 9 năm 1985. Đổi tiền mười lấy một đi 
 
 ## [OUTRO]
 
-Tháng 12 năm 1986, đường lối Đổi Mới được đề ra. Đầu năm 1989, lãi suất tiết kiệm được nâng cao hơn tốc độ tăng giá, và việc in tiền để bù ngân sách được hạn chế. Ngay trong năm đó, lạm phát giảm mạnh. Từ đó đến nay, Việt Nam không đổi tiền thêm lần nào. Cuối năm 2003, tiền polymer bắt đầu được đưa vào lưu thông, bền hơn và khó làm giả hơn, nhưng đó là thay chất liệu, không phải làm lại đồng tiền. Vậy vì sao năm 1396, người dân được đổi có lời mà vẫn giấu đồng xu? Vì một đồng tiền không có giá trị chỉ nhờ con số in trên đó. Nó có giá trị khi người cầm nó tin rằng ngày mai vẫn có người nhận nó. Nhiều lần trong lịch sử, khi niềm tin ấy lung lay, đồng tiền phải làm lại từ đầu. Đây là Sử AZ. Hẹn gặp bạn ở tập sau: lương bổng của một vị quan thời Nguyễn.
+Tháng 12 năm 1986, đường lối Đổi Mới được đề ra. Đầu năm 1989, lãi suất tiết kiệm được nâng cao hơn tốc độ tăng giá, và việc in tiền để bù ngân sách được hạn chế. Ngay trong năm đó, lạm phát giảm mạnh. Từ đó đến nay, Việt Nam không đổi tiền thêm lần nào. Cuối năm 2003, tiền polymer bắt đầu được đưa vào lưu thông, bền hơn và khó làm giả hơn, nhưng đó là thay chất liệu, không phải làm lại đồng tiền. Vậy vì sao năm 1396, người dân được đổi có lời mà vẫn giấu đồng xu? Vì một đồng tiền không có giá trị chỉ nhờ con số in trên đó. Nó có giá trị khi người cầm nó tin rằng ngày mai vẫn có người nhận nó. Nhiều lần trong lịch sử, khi niềm tin ấy lung lay, đồng tiền phải làm lại từ đầu. Đây là Sử AZ. Hẹn gặp lại quý vị ở tập sau: lương bổng của một vị quan thời Nguyễn.
 
 ---
 

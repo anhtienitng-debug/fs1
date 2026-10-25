@@ -202,6 +202,14 @@ def scene_clip(
     ]
     af = f"aresample=48000,apad,atrim=0:{dur:.3f},aformat=channel_layouts=stereo"
 
+    if scene.fx:
+        # Lop chuyen dong nhan manh (Remotion, nen trong suot) chong len canh
+        base = dest.with_suffix(".base.mp4")
+        inner = Scene(**{**scene.__dict__, "fx": []})
+        scene_clip(inner, cfg, base, gap_ms=gap_ms, font=font, log=log)
+        add_fx(base, scene.fx, dest, dur=dur, log=log)
+        base.unlink(missing_ok=True)
+        return dest
     if scene.callout or scene.chapter_tag:
         raw = dest.with_suffix(".raw.mp4")
         _encode(args, vf, af, cfg, dur, raw, log)
@@ -256,6 +264,47 @@ def callout_png(text: str, dest: Path) -> Path:
         d.text((44, y), ln, font=ft, fill=(240, 236, 228, 255))
         y += 54
     img.save(dest)
+    return dest
+
+
+FX_DIR = Path(__file__).resolve().parents[3] / "motion-fx"
+CHROME = "/opt/pw-browsers/chromium-1243/chrome-linux64/chrome"
+
+
+def render_fx(items: list[dict], dur: float, dest: Path, log: Path | None = None) -> Path:
+    """Render lop chuyen dong bang Remotion (motion-fx/), ProRes 4444 co kenh alpha."""
+    import json
+    import os
+    import subprocess
+
+    props = dest.with_suffix(".json")
+    # khoanh vung ve truoc (nam duoi), vi no lam toi ca khung
+    order = sorted(items, key=lambda i: (i["type"] != "highlight", i["from"]))
+    props.write_text(json.dumps({"duration": dur, "items": order}, ensure_ascii=False),
+                     encoding="utf-8")
+    cmd = ["npx", "remotion", "render", "src/index.ts", "Fx", str(dest.resolve()),
+           f"--props={props.resolve()}", "--codec=prores", "--prores-profile=4444",
+           "--pixel-format=yuva444p10le", "--image-format=png", "--log=error"]
+    exe = os.environ.get("REMOTION_CHROME", CHROME)
+    if Path(exe).exists():
+        cmd.append(f"--browser-executable={exe}")
+    with open(log, "ab") if log else open(os.devnull, "wb") as fh:
+        subprocess.run(cmd, cwd=FX_DIR, check=True, stdout=fh, stderr=fh)
+    props.unlink(missing_ok=True)
+    return dest
+
+
+def add_fx(src: Path, items: list[dict], dest: Path, *, dur: float,
+           log: Path | None = None) -> Path:
+    fx = render_fx(items, dur, src.with_suffix(".fx.mov"), log)
+    ffmpeg.run(
+        ["-i", str(src), "-i", str(fx), "-filter_complex",
+         "[0][1]overlay=0:0:format=auto:shortest=1,format=yuv420p",
+         "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-c:a", "copy",
+         "-t", f"{dur:.3f}", str(dest)],
+        log=log,
+    )
+    fx.unlink(missing_ok=True)
     return dest
 
 

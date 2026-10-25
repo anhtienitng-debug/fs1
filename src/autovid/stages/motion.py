@@ -102,7 +102,6 @@ def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
     axis_y = int(H * 0.50)
     sweep = spec.get("sweep_end", 0.85)       # ty le thoi luong de quet het truc
     p = ease(t / (dur * sweep))
-    _title(d, spec.get("title", ""), spec.get("subtitle", ""), ease_out(t / 0.8))
 
     start, end = spec["segments"][0][0], spec["segments"][-1][1]
     head_year = start + (end - start) * p
@@ -209,6 +208,24 @@ def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
         d.rounded_rectangle([cx - bw / 2 - 14 * S, by + 6 * S, cx + bw / 2 + 14 * S,
                              by + 52 * S], radius=8 * S, fill=_mix(BG, BG, 1))
         _text_c(d, (cx, by + 12 * S), br["label"], fb, _mix(BG, RED, k))
+
+    # May quay: day vao moc dang doc, keo ra toan canh o cuoi (reveal)
+    cam = spec.get("camera")
+    if cam:
+        reveal_at = br["at"] if br and "at" in br else dur * 0.85
+        z = 1 + (cam.get("zoom", 1.35) - 1) * (ease(t / 1.2) - ease((t - reveal_at) / 1.4))
+        if z > 1.001:
+            fx = head_x if p < 1 else W / 2
+            spec["_cx"] = fx = spec.get("_cx", fx) + (fx - spec.get("_cx", fx)) * 0.08
+            cw, ch = W / z, H / z
+            cx = min(max(fx, cw / 2), W - cw / 2)
+            cy = min(max(axis_y + 40 * S, ch / 2), H - ch / 2)
+            img = img.transform((W, H), Image.Transform.EXTENT,
+                                (cx - cw / 2, cy - ch / 2, cx + cw / 2, cy + ch / 2),
+                                resample=Image.Resampling.BICUBIC)
+    d = ImageDraw.Draw(img)
+    d.rectangle([0, 0, W, 200 * S], fill=None)
+    _title(d, spec.get("title", ""), spec.get("subtitle", ""), ease_out(t / 0.8))
     return img
 
 

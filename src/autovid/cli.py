@@ -166,6 +166,33 @@ def script_new(
 
 
 # ============================================================ plan-visuals
+def fx_timing(scene, items: list[dict]) -> list[dict]:
+    """Doi "say" (cum tu trong loi doc) thanh moc giay trong canh.
+
+    Uoc theo vi tri ky tu vi giong doc deu; moi hieu ung giu den hieu ung ke tiep
+    cung vi tri (hoac het canh), toi da "hold" giay neu co.
+    """
+    out = []
+    text = scene.narration
+    for it in items:
+        it = dict(it)
+        if "say" in it:
+            pos = text.find(it.pop("say"))
+            it["from"] = round(scene.duration * max(pos, 0) / max(len(text), 1), 2)
+        it.setdefault("from", 0.0)
+        out.append(it)
+    out.sort(key=lambda i: i["from"])
+    end = scene.duration + 0.6
+    for i, it in enumerate(out):
+        if "to" in it:
+            continue
+        nxt = next((o["from"] for o in out[i + 1:]
+                    if o.get("pos", "x") == it.get("pos", "x") or o["type"] == it["type"]), end)
+        it["to"] = round(min(nxt + 0.2, end, it["from"] + it.pop("hold", 99)), 2)
+    return out
+
+
+
 @app.command(name="plan-visuals")
 def plan_visuals(
     plan_file: str = typer.Argument(..., help="visuals.json: hình cho từng cảnh"),
@@ -202,6 +229,7 @@ def plan_visuals(
             mismatched.append(sc.id)
         sc.callout = spec.get("callout", "")
         sc.chapter_tag = spec.get("chapter_tag", "")
+        sc.fx = fx_timing(sc, spec.get("fx", []))
         if "anim" in spec or "group" in spec:
             sc.on_screen_text = ""
             continue

@@ -1,21 +1,89 @@
 {
  "s-000": {
   "says": "Bính Tý",
-  "photo": "S00_mold_top",
-  "label": "Tiền đồng vừa ra khuôn · Schroeder, 1905"
+  "photo": "S00_wide",
+  "label": "Tiền đồng vừa ra khuôn · Schroeder, 1905",
+  "fx": [
+   {
+    "type": "date",
+    "text": "THÁNG TƯ · BÍNH TÝ · 1396",
+    "say": "Tháng tư",
+    "hold": 4
+   },
+   {
+    "type": "compare",
+    "left": "1 quan",
+    "leftSub": "tiền đồng",
+    "right": "1 quan 2",
+    "rightSub": "tiền giấy",
+    "text": "→",
+    "say": "Nộp một quan"
+   },
+   {
+    "type": "keyword",
+    "text": "ĐỔI CÓ LỜI",
+    "say": "Đổi có lời",
+    "pos": "center"
+   }
+  ]
  },
  "s-001": {
   "says": "14 tháng 9 năm 1985",
   "label": "Tiền đồng · Schroeder, 1905",
-  "photo": "S01_grid"
+  "photo": "S01_wide",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "…vẫn lén GIẤU đồng xu",
+    "say": "Vậy mà",
+    "pos": "bottom-left"
+   },
+   {
+    "type": "date",
+    "text": "14 · 9 · 1985",
+    "say": "ngày 14",
+    "hold": 4
+   },
+   {
+    "type": "strike",
+    "old": "10 đồng cũ",
+    "text": "1 đồng mới",
+    "say": "mười đồng cũ",
+    "pos": "bottom-left"
+   }
+  ]
  },
  "s-002": {
   "says": "gần gấp chín",
   "video": "v_saigon_vendors",
-  "label": "Sài Gòn, 1955 · NARA"
+  "label": "Sài Gòn, 1955 · NARA",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "GIÁ CẢ ×9",
+    "say": "giá cả tăng",
+    "pos": "bottom-left",
+    "sub": "năm 1986 · theo số liệu thường được trích dẫn"
+   },
+   {
+    "type": "compare",
+    "left": "1396",
+    "leftSub": "giấu đồng xu",
+    "right": "1986",
+    "rightSub": "giữ vàng, giữ gạo",
+    "text": "↔",
+    "say": "Giấu đồng xu"
+   },
+   {
+    "type": "keyword",
+    "text": "VÌ SAO phải làm lại từ đầu?",
+    "say": "Vì sao",
+    "pos": "center"
+   }
+  ]
  },
  "s-003": {
-  "says": "hãy nhìn toàn cảnh",
+  "says": "Câu trả lời",
   "group": "intro",
   "anim": {
    "anim": "timeline",
@@ -83,7 +151,7 @@
      "label": "Trước TK 10",
      "note": "Tiền phương Bắc",
      "side": "down",
-     "say": "Trước thế kỷ thứ mười",
+     "say": "Trước thế kỷ mười",
      "level": 0,
      "nodot": true
     },
@@ -107,7 +175,7 @@
      "label": "TK 17–18",
      "note": "Tiền kẽm, bạc nén",
      "side": "up",
-     "say": "thế kỷ mười bảy"
+     "say": "Thế kỷ mười bảy"
     },
     {
      "year": 1885,
@@ -123,7 +191,7 @@
      "note": "Giấy bạc Việt Nam",
      "side": "up",
      "reset": true,
-     "say": "ra đời năm 1946",
+     "say": "Năm 1946",
      "level": 0
     },
     {
@@ -132,7 +200,7 @@
      "note": "10 đổi 1",
      "side": "down",
      "reset": true,
-     "say": "đổi năm 1951",
+     "say": "Năm 1951",
      "level": 0
     },
     {
@@ -142,7 +210,7 @@
      "side": "up",
      "level": 1,
      "reset": true,
-     "say": "đổi năm 1959"
+     "say": "Năm 1959"
     },
     {
      "year": 1975,
@@ -151,7 +219,7 @@
      "side": "down",
      "level": 1,
      "reset": true,
-     "say": "miền Nam năm 1975"
+     "say": "Năm 1975"
     },
     {
      "year": 1978,
@@ -160,7 +228,7 @@
      "side": "up",
      "level": 2,
      "reset": true,
-     "say": "cả nước năm 1978"
+     "say": "Năm 1978"
     },
     {
      "year": 1985,
@@ -169,34 +237,131 @@
      "side": "down",
      "level": 2,
      "reset": true,
-     "say": "lần cuối năm 1985"
+     "say": "năm 1985, lần cuối"
     }
    ],
    "bracket": {
     "from": 1946,
     "to": 1985,
     "label": "6 mốc thay đổi trong 40 năm",
-    "say": "có sáu mốc"
+    "say": "Bốn mươi năm, sáu lần"
    },
    "bg": "L04_plate",
-   "bg_dim": 0.72
-  }
+   "bg_dim": 0.72,
+   "camera": {
+    "zoom": 1.35
+   }
+  },
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "Trước TK 10 · tiền phương Bắc",
+    "say": "Trước thế kỷ",
+    "pos": "bottom-left"
+   }
+  ]
  },
  "s-004": {
   "says": "Khoảng năm 970",
-  "group": "intro"
+  "group": "intro",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "970 · đồng tiền Việt đầu tiên",
+    "say": "Khoảng năm 970",
+    "pos": "bottom-left"
+   },
+   {
+    "type": "keyword",
+    "text": "1396 · tiền giấy, chỉ hơn 10 năm",
+    "say": "Năm 1396",
+    "pos": "bottom-left"
+   }
+  ]
  },
  "s-005": {
-  "says": "thế kỷ mười bảy",
-  "group": "intro"
+  "says": "Thế kỷ mười bảy",
+  "group": "intro",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "TK 17–18 · tiền kẽm, bạc nén",
+    "say": "Thế kỷ mười bảy",
+    "pos": "bottom-left"
+   },
+   {
+    "type": "keyword",
+    "text": "Cuối TK 19 · đồng bạc Đông Dương",
+    "say": "Cuối thế kỷ",
+    "pos": "bottom-left"
+   },
+   {
+    "type": "keyword",
+    "text": "40 NĂM · 6 LẦN",
+    "say": "Bốn mươi năm",
+    "pos": "bottom-left"
+   }
+  ]
  },
  "s-006": {
-  "says": "ra đời năm 1946",
-  "group": "intro"
+  "says": "Năm 1946",
+  "group": "intro",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "1946 · tiền mới",
+    "say": "Năm 1946",
+    "pos": "bottom-left"
+   },
+   {
+    "type": "keyword",
+    "text": "1951 · 10 đổi 1",
+    "say": "Năm 1951",
+    "pos": "bottom-left"
+   },
+   {
+    "type": "keyword",
+    "text": "1959 · 1.000 đổi 1",
+    "say": "Năm 1959",
+    "pos": "bottom-left"
+   },
+   {
+    "type": "keyword",
+    "text": "1975 · 500 đổi 1",
+    "say": "Năm 1975",
+    "pos": "bottom-left"
+   },
+   {
+    "type": "keyword",
+    "text": "1978 · thống nhất",
+    "say": "Năm 1978",
+    "pos": "bottom-left"
+   },
+   {
+    "type": "keyword",
+    "text": "1985 · 10 đổi 1",
+    "say": "năm 1985",
+    "pos": "bottom-left"
+   }
+  ]
  },
  "s-007": {
   "says": "không đổi thêm lần nào",
-  "group": "intro"
+  "group": "intro",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "Hơn 40 năm · không đổi",
+    "say": "Rồi dừng hẳn",
+    "pos": "bottom-left"
+   },
+   {
+    "type": "keyword",
+    "text": "Bắt đầu từ MỘT CHỮ",
+    "say": "Lý do đầu tiên",
+    "pos": "bottom-left"
+   }
+  ]
  },
  "s-008": {
   "says": "Năm 968",
@@ -207,7 +372,19 @@
  "s-009": {
   "says": "chữ Đinh",
   "photo": "L04_tbhb",
-  "label": "Thái Bình Hưng Bảo, mặt trước và mặt sau · Lacroix, 1900"
+  "label": "Thái Bình Hưng Bảo, mặt trước và mặt sau · Lacroix, 1900",
+  "fx": [
+   {
+    "type": "highlight",
+    "x": 0.355,
+    "y": 0.25,
+    "w": 0.18,
+    "h": 0.3,
+    "label": "Chữ Đinh",
+    "sub": "họ của nhà vua",
+    "say": "chữ Đinh"
+   }
+  ]
  },
  "s-010": {
   "says": "lần đầu tiên",
@@ -224,7 +401,19 @@
  "s-011": {
   "says": "Thiên Phúc Trấn Bảo",
   "photo": "L04_thienphuc",
-  "label": "Thiên Phúc Trấn Bảo, mặt sau chữ Lê · Lacroix, 1900"
+  "label": "Thiên Phúc Trấn Bảo, mặt sau chữ Lê · Lacroix, 1900",
+  "fx": [
+   {
+    "type": "highlight",
+    "x": 0.46,
+    "y": 0.33,
+    "w": 0.2,
+    "h": 0.36,
+    "label": "Chữ Lê",
+    "sub": "mặt sau Thiên Phúc Trấn Bảo",
+    "say": "mặt sau đúc chữ Lê"
+   }
+  ]
  },
  "s-012": {
   "says": "nhà nước độc lập",
@@ -272,14 +461,25 @@
  },
  "s-016": {
   "says": "kim loại đồng",
-  "photo": "S00_mold",
+  "photo": "S00_wide2",
   "label": "Tiền đồng vừa ra khuôn đúc · Schroeder, 1905"
  },
  "s-017": {
   "says": "đúc vũ khí",
-  "photo": "S01_grid",
+  "photo": "S01_wide2",
   "label": "Tiền đồng · Schroeder, 1905",
-  "callout": "Tập trung kim loại đồng về triều đình"
+  "callout": "Tập trung kim loại đồng về triều đình",
+  "fx": [
+   {
+    "type": "compare",
+    "left": "Đúc tiền",
+    "leftSub": "trao đổi",
+    "right": "Đúc vũ khí",
+    "rightSub": "quốc phòng",
+    "text": "đồng",
+    "say": "Đồng dùng để"
+   }
+  ]
  },
  "s-018": {
   "says": "Cuối năm 1406",
@@ -305,12 +505,49 @@
  "s-022": {
   "says": "Thiệu Trị",
   "photo": "L19_close",
-  "label": "Nén bạc Thiệu Trị, hai mặt · Lacroix, 1900"
+  "label": "Nén bạc Thiệu Trị, hai mặt · Lacroix, 1900",
+  "fx": [
+   {
+    "type": "highlight",
+    "shape": "rect",
+    "x": 0.28,
+    "y": 0.12,
+    "w": 0.19,
+    "h": 0.74,
+    "label": "Thiệu Trị niên tạo",
+    "sub": "đúc dưới niên hiệu Thiệu Trị",
+    "say": "mặt trước"
+   },
+   {
+    "type": "highlight",
+    "shape": "rect",
+    "x": 0.52,
+    "y": 0.12,
+    "w": 0.2,
+    "h": 0.74,
+    "label": "Sơn Tây quan ngân thập lạng",
+    "sub": "bạc quan, nặng mười lạng",
+    "say": "Mặt sau"
+   }
+  ]
  },
  "s-023": {
   "says": "Minh Mạng",
   "photo": "S24_gold",
-  "label": "Thỏi vàng Minh Mạng năm thứ 14 · Schroeder, 1905"
+  "label": "Thỏi vàng Minh Mạng năm thứ 14 · Schroeder, 1905",
+  "fx": [
+   {
+    "type": "highlight",
+    "shape": "rect",
+    "x": 0.39,
+    "y": 0.08,
+    "w": 0.22,
+    "h": 0.84,
+    "label": "Hoàng kim bách lạng",
+    "sub": "100 lạng vàng · Minh Mạng năm 14 (1833)",
+    "say": "hoàng kim"
+   }
+  ]
  },
  "s-024": {
   "says": "nền kinh tế đang lớn lên",
@@ -332,7 +569,20 @@
  "s-027": {
   "says": "9 tháng 5 năm 1893",
   "photo": "L42_head",
-  "label": "“Saigon, 9 Mai 1893” · Lacroix, 1900"
+  "label": "“Saigon, 9 Mai 1893” · Lacroix, 1900",
+  "fx": [
+   {
+    "type": "highlight",
+    "shape": "rect",
+    "x": 0.26,
+    "y": 0.38,
+    "w": 0.3,
+    "h": 0.16,
+    "label": "SAIGON, 9 Mai 1893",
+    "sub": "nơi và ngày phát hành",
+    "say": "đề ngày"
+   }
+  ]
  },
  "s-028": {
   "says": "mang tên một ngân hàng",
@@ -393,7 +643,17 @@
     }
    ],
    "source": "Ngân hàng Nhà nước Việt Nam; tổng hợp báo chí"
-  }
+  },
+  "fx": [
+   {
+    "type": "strike",
+    "old": "1.000 đồng",
+    "text": "1 đồng",
+    "sub": "miền Bắc, 1959",
+    "say": "Ba chữ số không",
+    "pos": "top-right"
+   }
+  ]
  },
  "s-034": {
   "says": "nhà nước mới cần đồng tiền riêng",
@@ -410,12 +670,32 @@
  "s-036": {
   "says": "Tháng 9 năm 1975",
   "video": "v_saigon_vendor2",
-  "label": "Sài Gòn, 1955 · NARA"
+  "label": "Sài Gòn, 1955 · NARA",
+  "fx": [
+   {
+    "type": "strike",
+    "old": "500 đồng cũ",
+    "text": "1 đồng mới",
+    "sub": "miền Nam, 9/1975",
+    "say": "năm trăm"
+   }
+  ]
  },
  "s-037": {
   "says": "tám hào",
   "video": "v_saigon_boulevard2",
-  "label": "Sài Gòn, 1955 · NARA"
+  "label": "Sài Gòn, 1955 · NARA",
+  "fx": [
+   {
+    "type": "compare",
+    "left": "1 đồng miền Bắc",
+    "right": "8 hào giải phóng",
+    "text": "=",
+    "leftSub": "= 1 đồng mới",
+    "rightSub": "= 1 đồng mới",
+    "say": "Một đồng mới"
+   }
+  ]
  },
  "s-038": {
   "says": "đất nước thống nhất",
@@ -427,7 +707,21 @@
   "says": "14 tháng 9 năm 1985",
   "video": "v_saigon_shops",
   "label": "Sài Gòn, 1955 · NARA",
-  "chapter_tag": "Chương 8 · Năm 1985"
+  "chapter_tag": "Chương 8 · Năm 1985",
+  "fx": [
+   {
+    "type": "date",
+    "text": "14 · 9 · 1985",
+    "say": "14 tháng 9",
+    "hold": 4
+   },
+   {
+    "type": "keyword",
+    "text": "GIÁ · LƯƠNG · TIỀN",
+    "say": "cải cách",
+    "pos": "bottom-left"
+   }
+  ]
  },
  "s-040": {
   "says": "thâm hụt lớn",
@@ -450,7 +744,18 @@
  "s-042": {
   "says": "Gần sáu trăm năm trước",
   "photo": "L06_grid",
-  "label": "Tiền cổ Việt Nam · Lacroix, 1900"
+  "label": "Tiền cổ Việt Nam · Lacroix, 1900",
+  "fx": [
+   {
+    "type": "compare",
+    "left": "1396",
+    "leftSub": "giấu đồng xu",
+    "right": "1986",
+    "rightSub": "giữ vàng, giữ gạo",
+    "text": "↔",
+    "say": "Gần sáu trăm"
+   }
+  ]
  },
  "s-043": {
   "says": "gốc rễ",
@@ -462,7 +767,22 @@
   "says": "Đổi Mới",
   "video": "v_saigon_rain",
   "label": "Sài Gòn, 1955 · NARA",
-  "chapter_tag": "Kết"
+  "chapter_tag": "Kết",
+  "fx": [
+   {
+    "type": "date",
+    "text": "12 · 1986 · ĐỔI MỚI",
+    "say": "Tháng 12",
+    "hold": 4
+   },
+   {
+    "type": "keyword",
+    "text": "Lãi suất > tốc độ tăng giá",
+    "say": "Đầu năm 1989",
+    "pos": "bottom-left",
+    "sub": "đầu năm 1989"
+   }
+  ]
  },
  "s-045": {
   "says": "lạm phát giảm mạnh",
@@ -484,12 +804,29 @@
  "s-047": {
   "says": "giấu đồng xu",
   "photo": "S00_mold",
-  "label": "Tiền đồng vừa ra khuôn · Schroeder, 1905"
+  "label": "Tiền đồng vừa ra khuôn · Schroeder, 1905",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "VÌ SAO vẫn giấu đồng xu?",
+    "say": "Vậy vì sao",
+    "pos": "center"
+   }
+  ]
  },
  "s-048": {
   "says": "ngày mai vẫn có người nhận",
   "photo": "L04_tbhb",
-  "label": "Thái Bình Hưng Bảo · Lacroix, 1900"
+  "label": "Thái Bình Hưng Bảo · Lacroix, 1900",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "NIỀM TIN",
+    "say": "tin rằng",
+    "pos": "center",
+    "sub": "ngày mai vẫn có người nhận"
+   }
+  ]
  },
  "s-049": {
   "says": "tập sau",

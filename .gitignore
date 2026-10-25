@@ -21,3 +21,6 @@ assets/geo/*.geojson
 assets/music/*
 !assets/music/.gitkeep
 review/
+motion-fx/node_modules/
+motion-fx/package-lock.json
+motion-fx/out/

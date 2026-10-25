@@ -1,0 +1,5 @@
+{"duration": 6, "items": [
+ {"type":"date","from":0.2,"to":5.8,"text":"MÙA HẠ NĂM BÍNH TÝ · 1396"},
+ {"type":"keyword","from":1.5,"to":5.8,"text":"ĐỔI CÓ LỜI","sub":"1 quan tiền đồng → 1 quan 2 tiền giấy","pos":"bottom-left"},
+ {"type":"highlight","from":2.5,"to":5.8,"x":0.62,"y":0.3,"w":0.16,"h":0.28,"label":"Chữ Đinh","sub":"quốc tính của triều đại"}
+]}
