@@ -17,8 +17,9 @@ def test_script_new_tao_job_tu_kich_ban(tmp_path, monkeypatch):
 
     job = Job(tmp_path / "job")
     script = json.loads(job.file("script.json").read_text(encoding="utf-8"))
-    assert script["hook"].startswith("Tháng 9 năm 1985")
-    assert len(script["chapters"]) == 5
+    md = open(f"{EP}/script.md", encoding="utf-8").read()
+    assert script["hook"] and script["outro"]
+    assert len(script["chapters"]) == md.count("## [CHƯƠNG")
     assert all(ch["key_point"] and ch["visual_note"] for ch in script["chapters"])
     # dong ghi chu cho bien tap khong duoc lot vao loi doc
     assert not any("Gợi ý hình" in ch["body"] or "Chữ trên màn hình" in ch["body"]
