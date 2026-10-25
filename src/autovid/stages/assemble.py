@@ -115,9 +115,11 @@ def kenburns(media: str, dest: Path, *, dur: float, cfg: Any, seed: str = "",
         for k in range(frames):
             p = k / max(frames - 1, 1)
             e = 0.5 - 0.5 * math.cos(math.pi * p)          # cham dau, cham cuoi
-            z = 1 + zoom * (e if zoom_in else 1 - e)
-            bw, bh = W / (1 + zoom) * (1 + zoom) / z, H / z
-            cx = W / 2 + pan * (e - 0.5)
+            # luon phong to toi thieu 4% de con le cho truot ngang; kep tam khung
+            # de mep anh khong bao gio lot vao (truoc day lo dai den 16-40 px)
+            z = 1.04 + zoom * (e if zoom_in else 1 - e)
+            bw, bh = W / z, H / z
+            cx = min(max(W / 2 + pan * (e - 0.5), bw / 2), W - bw / 2)
             cy = H / 2
             box = (cx - bw / 2, cy - bh / 2, cx + bw / 2, cy + bh / 2)
             frame = src.transform((w, h), Image.Transform.EXTENT, box,

@@ -250,3 +250,23 @@ def test_dong_phu_de_ngan_duoc_keo_dai():
     out = merge_short([a, b])
     assert " ".join(c.text for c in out).split()[-1] == "lời."
     assert all(c.end - c.start >= 0.99 for c in out)
+
+
+def test_ken_burns_khong_lo_mep_den(tmp_path):
+    import numpy as np
+    from PIL import Image
+
+    from autovid.config import load_config
+    from autovid.stages.assemble import kenburns
+
+    src = tmp_path / "a.png"
+    Image.new("RGB", (1920, 1080), (200, 180, 150)).save(src)
+    cfg = load_config(extra=["video.fps=4", "video.resolution=[320,180]"])
+    cfg.set("video.resolution", [320, 180])
+    for seed in ("s-001", "s-002", "s-003", "s-008"):
+        out = kenburns(str(src), tmp_path / f"{seed}.mp4", dur=2.0, cfg=cfg, seed=seed)
+        import subprocess
+        raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", str(out), "-f", "rawvideo",
+                              "-pix_fmt", "gray", "-"], capture_output=True).stdout
+        frames = np.frombuffer(raw, np.uint8).reshape(-1, 180, 320)
+        assert frames[:, :, :3].min() > 100 and frames[:, :, -3:].min() > 100
