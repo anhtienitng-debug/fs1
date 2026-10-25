@@ -52,6 +52,81 @@ def _aspect(path: str) -> float:
         return 16 / 9
 
 
+def _is_card(path: str) -> bool:
+    return Path(path).parent.name == "cards"
+
+
+def _compose(media: str, w: int, h: int, tol: float) -> Any:
+    """Anh nguon o 2x do phan giai. Anh doc/vuong (dong xu, to tien) giu tron
+    tren nen mo cua chinh no, thay vi bi cat mat phan lon noi dung."""
+    from PIL import Image, ImageEnhance, ImageFilter
+
+    W, H = w * 2, h * 2
+    src = Image.open(media).convert("RGB")
+
+    def cover(im: Any) -> Any:
+        k = max(W / im.width, H / im.height)
+        im = im.resize((round(im.width * k), round(im.height * k)), Image.LANCZOS)
+        x, y = (im.width - W) // 2, (im.height - H) // 2
+        return im.crop((x, y, x + W, y + H))
+
+    if abs(src.width / src.height - w / h) <= tol:
+        return cover(src)
+    bg = cover(src).filter(ImageFilter.GaussianBlur(60))
+    bg = ImageEnhance.Brightness(bg).enhance(0.55)
+    k = min(W * 0.9 / src.width, H * 0.9 / src.height)
+    fg = src.resize((round(src.width * k), round(src.height * k)), Image.LANCZOS)
+    bg.paste(fg, ((W - fg.width) // 2, (H - fg.height) // 2))
+    return bg
+
+
+def kenburns(media: str, dest: Path, *, dur: float, cfg: Any, seed: str = "",
+             log: Path | None = None) -> Path:
+    """Ken Burns muot: moi khung hinh cat bang toa do thuc (duoi 1 pixel) roi noi
+    suy bicubic, nen khong bi giat nhu zoompan (von lam tron vi tri theo pixel)."""
+    import math
+    import subprocess
+    import zlib
+
+    from PIL import Image
+
+    w, h = cfg.get("video.resolution", [1920, 1080])
+    fps = int(cfg.get("video.fps", 30))
+    zoom = float(cfg.get("video.kenburns_zoom", 0.06))
+    frames = max(int(round(dur * fps)), 1)
+    src = _compose(media, w, h, cfg.get("video.fit_tolerance", 0.3))
+    W, H = src.size
+    rnd = zlib.crc32(seed.encode())
+    zoom_in = rnd % 2 == 0
+    pan = ((rnd >> 1) % 3 - 1) * 0.04 * W   # trai / dung / phai
+
+    proc = subprocess.Popen(
+        ["ffmpeg", "-loglevel", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24",
+         "-s", f"{w}x{h}", "-r", str(fps), "-i", "-",
+         "-c:v", "libx264", "-preset", "fast", "-crf", "16", "-pix_fmt", "yuv420p",
+         str(dest)],
+        stdin=subprocess.PIPE, stderr=open(log, "ab") if log else subprocess.DEVNULL,
+    )
+    try:
+        for k in range(frames):
+            p = k / max(frames - 1, 1)
+            e = 0.5 - 0.5 * math.cos(math.pi * p)          # cham dau, cham cuoi
+            z = 1 + zoom * (e if zoom_in else 1 - e)
+            bw, bh = W / (1 + zoom) * (1 + zoom) / z, H / z
+            cx = W / 2 + pan * (e - 0.5)
+            cy = H / 2
+            box = (cx - bw / 2, cy - bh / 2, cx + bw / 2, cy + bh / 2)
+            frame = src.transform((w, h), Image.Transform.EXTENT, box,
+                                  resample=Image.Resampling.BICUBIC)
+            proc.stdin.write(frame.tobytes())
+    finally:
+        proc.stdin.close()
+        proc.wait()
+    if proc.returncode:
+        raise RuntimeError(f"ffmpeg loi khi dung Ken Burns cho {media}")
+    return dest
+
+
 def _esc(text: str) -> str:
     return (text.replace("\\", "\\\\").replace(":", "\\:")
             .replace("'", "\u2019").replace("%", "\\%"))
@@ -71,36 +146,22 @@ def scene_clip(
     fps = cfg.get("video.fps", 30)
     crf = cfg.get("video.crf", 19)
     preset = cfg.get("video.preset", "medium")
-    zoom = cfg.get("video.kenburns_zoom", 0.10)
     fade = 0.25
     dur = scene.duration + gap_ms / 1000.0
-    frames = max(int(dur * fps), 1)
 
     args: list[str] = []
     media = scene.media_path
 
     if media and Path(media).exists() and _is_image(media):
-        # Ken Burns: phong to anh truoc roi moi zoompan, neu khong se bi giat
-        args += ["-loop", "1", "-framerate", fps, "-t", f"{dur:.3f}", "-i", media]
-        if abs(_aspect(media) - w / h) > cfg.get("video.fit_tolerance", 0.3):
-            # Anh doc/vuong (dong xu, to tien, tai lieu): giu tron anh tren nen mo
-            # cua chinh no, thay vi cat mat phan lon noi dung
-            fill = (
-                f"split[bg][fg];"
-                f"[bg]scale={w * 2}:{h * 2}:force_original_aspect_ratio=increase,"
-                f"crop={w * 2}:{h * 2},boxblur=40:2,eq=brightness=-0.25[bg];"
-                f"[fg]scale={int(w * 1.8)}:{int(h * 1.8)}:"
-                f"force_original_aspect_ratio=decrease[fg];"
-                f"[bg][fg]overlay=(W-w)/2:(H-h)/2,"
-            )
+        if _is_card(media):
+            # The chu dung yen: zoom chu chi lam nhoe chu
+            args += ["-loop", "1", "-framerate", fps, "-t", f"{dur:.3f}", "-i", media]
+            vf = f"scale={w}:{h}:force_original_aspect_ratio=decrease,pad={w}:{h}:-1:-1"
         else:
-            fill = (f"scale={w * 2}:{h * 2}:force_original_aspect_ratio=increase,"
-                    f"crop={w * 2}:{h * 2},")
-        vf = (
-            fill +
-            f"zoompan=z='min(zoom+{zoom / frames:.6f},{1 + zoom})':"
-            f"d={frames}:s={w}x{h}:fps={fps}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
-        )
+            moving = dest.with_suffix(".motion.mp4")
+            kenburns(media, moving, dur=dur, cfg=cfg, seed=scene.id, log=log)
+            args += ["-i", str(moving)]
+            vf = "null"
     elif media and Path(media).exists():
         args += ["-stream_loop", "-1", "-t", f"{dur:.3f}", "-i", media]
         vf = (

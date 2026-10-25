@@ -86,7 +86,7 @@ video:
   crf: 19
   preset: "medium"
   audio_bitrate: "192k"
-  kenburns_zoom: 0.10         # zoom 10% trong suot canh
+  kenburns_zoom: 0.06         # zoom 6% suot canh, muot (Ken Burns duoi 1 pixel)
   crossfade_ms: 500
   # Phu de: dot vao video (burn-in) va/hoac xuat file .srt rieng
   subtitles_burn: true
