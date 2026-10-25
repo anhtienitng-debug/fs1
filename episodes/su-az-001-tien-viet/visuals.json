@@ -249,101 +249,21 @@
    "bg": "L04_plate",
    "bg_dim": 0.72,
    "camera": {
-    "zoom": 1.35
+    "zoom": 1.18
    }
-  },
-  "fx": [
-   {
-    "type": "keyword",
-    "text": "Trước TK 10 · tiền phương Bắc",
-    "say": "Trước thế kỷ",
-    "pos": "bottom-left"
-   }
-  ]
+  }
  },
  "s-004": {
   "says": "Khoảng năm 970",
-  "group": "intro",
-  "fx": [
-   {
-    "type": "keyword",
-    "text": "970 · đồng tiền Việt đầu tiên",
-    "say": "Khoảng năm 970",
-    "pos": "bottom-left"
-   },
-   {
-    "type": "keyword",
-    "text": "1396 · tiền giấy, chỉ hơn 10 năm",
-    "say": "Năm 1396",
-    "pos": "bottom-left"
-   }
-  ]
+  "group": "intro"
  },
  "s-005": {
   "says": "Thế kỷ mười bảy",
-  "group": "intro",
-  "fx": [
-   {
-    "type": "keyword",
-    "text": "TK 17–18 · tiền kẽm, bạc nén",
-    "say": "Thế kỷ mười bảy",
-    "pos": "bottom-left"
-   },
-   {
-    "type": "keyword",
-    "text": "Cuối TK 19 · đồng bạc Đông Dương",
-    "say": "Cuối thế kỷ",
-    "pos": "bottom-left"
-   },
-   {
-    "type": "keyword",
-    "text": "40 NĂM · 6 LẦN",
-    "say": "Bốn mươi năm",
-    "pos": "bottom-left"
-   }
-  ]
+  "group": "intro"
  },
  "s-006": {
   "says": "Năm 1946",
-  "group": "intro",
-  "fx": [
-   {
-    "type": "keyword",
-    "text": "1946 · tiền mới",
-    "say": "Năm 1946",
-    "pos": "bottom-left"
-   },
-   {
-    "type": "keyword",
-    "text": "1951 · 10 đổi 1",
-    "say": "Năm 1951",
-    "pos": "bottom-left"
-   },
-   {
-    "type": "keyword",
-    "text": "1959 · 1.000 đổi 1",
-    "say": "Năm 1959",
-    "pos": "bottom-left"
-   },
-   {
-    "type": "keyword",
-    "text": "1975 · 500 đổi 1",
-    "say": "Năm 1975",
-    "pos": "bottom-left"
-   },
-   {
-    "type": "keyword",
-    "text": "1978 · thống nhất",
-    "say": "Năm 1978",
-    "pos": "bottom-left"
-   },
-   {
-    "type": "keyword",
-    "text": "1985 · 10 đổi 1",
-    "say": "năm 1985",
-    "pos": "bottom-left"
-   }
-  ]
+  "group": "intro"
  },
  "s-007": {
   "says": "không đổi thêm lần nào",
@@ -405,8 +325,8 @@
   "fx": [
    {
     "type": "highlight",
-    "x": 0.46,
-    "y": 0.33,
+    "x": 0.45,
+    "y": 0.22,
     "w": 0.2,
     "h": 0.36,
     "label": "Chữ Lê",
