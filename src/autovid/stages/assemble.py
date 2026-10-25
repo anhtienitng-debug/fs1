@@ -190,7 +190,8 @@ def scene_clip(
             f"boxborderw=24:x=(w-text_w)/2:y=h-{int(h * 0.20)}:"
             f"enable='between(t,0.6,{max(dur - 0.6, 1.2):.2f})'"
         )
-    vf += f",fade=t=in:st=0:d={fade},fade=t=out:st={max(dur - fade, 0):.3f}:d={fade}"
+    if "motion" not in Path(media or "").parts:  # hieu ung lien canh: khong nhay den
+        vf += f",fade=t=in:st=0:d={fade},fade=t=out:st={max(dur - fade, 0):.3f}:d={fade}"
     vf += ",format=yuv420p"
 
     # Audio: loi doc cua canh + khoang lang cuoi canh

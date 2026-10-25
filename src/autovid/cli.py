@@ -258,8 +258,11 @@ def plan_visuals(
         if g:
             groups.setdefault(g, []).append(sc)
     for g, members in groups.items():
-        spec = next(plan[m.id]["anim"] for m in members if "anim" in plan[m.id])
-        clips = motion.render_group(members, json.loads(json.dumps(spec)), gap,
+        spec = json.loads(json.dumps(
+            next(plan[m.id]["anim"] for m in members if "anim" in plan[m.id])))
+        if spec.get("bg") in have:
+            spec["bg_path"] = str(have[spec["bg"]])
+        clips = motion.render_group(members, spec, gap,
                                     job.file("motion", g), fps)
         for m in members:
             m.media_path, m.visual_kind = str(clips[m.id]), "video"

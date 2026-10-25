@@ -6,8 +6,8 @@
  },
  "s-001": {
   "says": "14 tháng 9 năm 1985",
-  "video": "v_print_2",
-  "label": "Tư liệu: in giấy bạc (minh hoạ)"
+  "label": "Tiền đồng · Schroeder, 1905",
+  "photo": "S01_grid"
  },
  "s-002": {
   "says": "gần gấp chín",
@@ -42,12 +42,16 @@
     {
      "from": 850,
      "to": 970,
-     "label": "Tiền phương Bắc"
+     "label": "Tiền phương Bắc",
+     "align": "right",
+     "pad": 10
     },
     {
      "from": 970,
      "to": 1650,
-     "label": "Tiền đồng các triều đại"
+     "label": "Tiền đồng các triều đại",
+     "align": "right",
+     "pad": 30
     },
     {
      "from": 1650,
@@ -67,14 +71,11 @@
     }
    ],
    "ticks": [
-    1000,
     1200,
-    1400,
-    1600,
+    1500,
     1800,
-    1950,
-    1975,
-    2000
+    1925,
+    1995
    ],
    "events": [
     {
@@ -168,22 +169,15 @@
      "level": 2,
      "reset": true,
      "say": "lần cuối năm 1985"
-    },
-    {
-     "year": 2003,
-     "label": "2003",
-     "note": "Tiền polymer",
-     "side": "up",
-     "level": 0,
-     "say": "Từ đó đến nay"
     }
    ],
    "bracket": {
     "from": 1946,
     "to": 1985,
     "label": "6 mốc thay đổi trong 40 năm",
-    "say": "không đổi thêm lần nào"
-   }
+    "say": "có sáu mốc"
+   },
+   "bg": "L04_plate"
   }
  },
  "s-004": {
@@ -205,7 +199,7 @@
  "s-008": {
   "says": "Năm 968",
   "photo": "L04_plate",
-  "label": "Tiền thời Đinh, Tiền Lê, Lý · Lacroix, Numismatique annamite, 1900"
+  "label": "Plate II: tiền thời Đinh, Tiền Lê, Lý · Lacroix, Numismatique annamite, 1900"
  },
  "s-009": {
   "says": "chữ Đinh",
@@ -232,7 +226,7 @@
  "s-012": {
   "says": "nhà nước độc lập",
   "photo": "L05_grid",
-  "label": "Tiền thời Lý, Trần · Lacroix, 1900",
+  "label": "Tiền cổ Việt Nam · Lacroix, 1900",
   "callout": "Một nhà nước độc lập cần đồng tiền của chính mình"
  },
  "s-013": {
@@ -263,7 +257,7 @@
  "s-015": {
   "says": "tội chết",
   "card": "overlay",
-  "bg": "S00_mold_top",
+  "bg": "L12_grid",
   "eyebrow": "Đại Việt Sử Ký Toàn Thư",
   "title": "“Ai làm giả phải tội chết”",
   "lines": [
@@ -291,12 +285,12 @@
  "s-019": {
   "says": "không đủ đồng",
   "photo": "L12_grid",
-  "label": "Tiền thời Lê, Nguyễn · Lacroix, 1900"
+  "label": "Tiền cổ Việt Nam · Lacroix, 1900"
  },
  "s-020": {
   "says": "tiền kẽm",
-  "photo": "S13_minhmang",
-  "label": "Tiền thời Nguyễn · Schroeder, 1905"
+  "photo": "L12_part",
+  "label": "Tiền cổ Việt Nam · Lacroix, 1900"
  },
  "s-021": {
   "says": "bạc nén",
@@ -346,7 +340,7 @@
  },
  "s-030": {
   "says": "chính quyền thuộc địa",
-  "video": "v_saigon_shops",
+  "video": "v_saigon_boulevard",
   "label": "Sài Gòn, 1955 · NARA",
   "callout": "Đồng tiền đi theo hệ thống của chính quyền thuộc địa"
  },
@@ -360,7 +354,7 @@
  "s-032": {
   "says": "Chiến tranh tốn kém",
   "video": "v_print_1",
-  "label": "Tư liệu: in giấy bạc (minh hoạ)"
+  "label": "Xưởng in tiền Mỹ (minh hoạ) · Washington Stories"
  },
  "s-033": {
   "says": "Năm 1959",
@@ -396,13 +390,13 @@
  },
  "s-034": {
   "says": "nhà nước mới cần đồng tiền riêng",
-  "video": "v_print_3",
-  "label": "Tư liệu: in giấy bạc (minh hoạ)",
+  "video": "v_saigon_street",
+  "label": "Sài Gòn, 1955 · NARA",
   "callout": "Nhà nước mới cần tiền riêng; chi phí chiến tranh làm tiền mất giá"
  },
  "s-035": {
   "says": "Từ năm 1954",
-  "video": "v_saigon_street",
+  "video": "v_saigon_aerial",
   "label": "Sài Gòn, 1955 · NARA"
  },
  "s-036": {
@@ -412,7 +406,7 @@
  },
  "s-037": {
   "says": "tám hào",
-  "video": "v_saigon_rain",
+  "video": "v_saigon_cyclo",
   "label": "Sài Gòn, 1955 · NARA"
  },
  "s-038": {
@@ -423,13 +417,13 @@
  },
  "s-039": {
   "says": "14 tháng 9 năm 1985",
-  "video": "v_print_2",
-  "label": "Tư liệu: in giấy bạc (minh hoạ)"
+  "video": "v_saigon_shops",
+  "label": "Sài Gòn, 1955 · NARA"
  },
  "s-040": {
   "says": "thâm hụt lớn",
-  "video": "v_print_1",
-  "label": "Tư liệu: in giấy bạc (minh hoạ)"
+  "video": "v_print_3",
+  "label": "Xưởng in tiền Mỹ (minh hoạ) · Washington Stories"
  },
  "s-041": {
   "says": "bảy trăm bảy mươi lăm",
@@ -446,24 +440,24 @@
  },
  "s-042": {
   "says": "Gần sáu trăm năm trước",
-  "photo": "S00_mold_top",
-  "label": "Tiền đồng · Schroeder, 1905"
+  "photo": "L06_grid",
+  "label": "Tiền cổ Việt Nam · Lacroix, 1900"
  },
  "s-043": {
   "says": "gốc rễ",
-  "video": "v_print_3",
-  "label": "Tư liệu: in giấy bạc (minh hoạ)",
+  "video": "v_saigon_walk",
+  "label": "Sài Gòn, 1955 · NARA",
   "callout": "Tiền được phát hành nhanh hơn lượng hàng hóa làm ra"
  },
  "s-044": {
   "says": "Đổi Mới",
-  "video": "v_saigon_shops",
+  "video": "v_saigon_rain",
   "label": "Sài Gòn, 1955 · NARA"
  },
  "s-045": {
   "says": "lạm phát giảm mạnh",
-  "video": "v_saigon_street",
-  "label": "Sài Gòn, 1955 · NARA"
+  "video": "v_saigon_cathedral",
+  "label": "Nhà thờ Đức Bà Sài Gòn, phim 1955 · NARA"
  },
  "s-046": {
   "says": "polymer",

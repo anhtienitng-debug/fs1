@@ -45,7 +45,7 @@ def _ts(t: float) -> str:
     return f"{h}:{m:02d}:{s:02d}" if h else f"{m}:{s:02d}"
 
 
-def credits_text(assets: list[Asset], script: VideoScript) -> str:
+def credits_text(assets: list[Asset], script: VideoScript, maps: bool = True) -> str:
     lines = ["NGUỒN THAM KHẢO", ""]
     for s in script.sources:
         lines.append(f"- {s.title or s.url}" + (f" — {s.publisher}" if s.publisher else ""))
@@ -57,8 +57,10 @@ def credits_text(assets: list[Asset], script: VideoScript) -> str:
         if line not in seen:
             seen.add(line)
             lines.append(f"- {line}")
-    lines += ["", "Bản đồ: Natural Earth (public domain)",
-              "Biểu đồ: tự tổng hợp từ các nguồn nêu trên."]
+    lines += [""]
+    if maps:
+        lines.append("Bản đồ: Natural Earth (public domain)")
+    lines.append("Biểu đồ: tự tổng hợp từ các nguồn nêu trên.")
     return "\n".join(lines)
 
 
@@ -160,7 +162,7 @@ def run(
         meta = {"titles": [script.title], "description": script.thesis,
                 "tags": [], "thumbnail_text": script.title[:24]}
 
-    credits = credits_text(assets, script)
+    credits = credits_text(assets, script, maps=bool(cfg.get("charts.maps", True)))
     (job_dir / "credits.txt").write_text(credits, encoding="utf-8")
 
     thumb = thumbnail(scenes, meta.get("thumbnail_text") or script.title,

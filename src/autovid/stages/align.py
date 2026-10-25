@@ -164,13 +164,14 @@ def cues_for_scene(scene: Scene, words: list[tuple[float, float, str]],
                    cfg: Any) -> list[Cue]:
     """Gom tu thanh dong phu de <= 2 dong, moi dong <= 42 ky tu."""
     width = 42
-    max_chars = width * 2
     cues: list[Cue] = []
     buf: list[str] = []
     start = words[0][0] if words else 0.0
     for w_start, w_end, tok in words:
         candidate = " ".join(buf + [tok])
-        if buf and len(candidate) > max_chars:
+        # Ngat theo so dong that sau khi xuong dong theo tu, khong theo tong ky tu:
+        # dem ky tu thi co luc can 3 dong va dong thu 3 bi cat mat chu
+        if buf and len(wrap_subtitle(candidate, width, max_lines=99).split("\n")) > 2:
             cues.append(Cue(scene.start + start, scene.start + w_start,
                             wrap_subtitle(" ".join(buf), width)))
             buf, start = [], w_start
@@ -180,6 +181,20 @@ def cues_for_scene(scene: Scene, words: list[tuple[float, float, str]],
         cues.append(Cue(scene.start + start, scene.start + end,
                         wrap_subtitle(" ".join(buf), width)))
     return cues
+
+
+def merge_short(cues: list[Cue], min_dur: float = 1.0, width: int = 42) -> list[Cue]:
+    """Gop dong phu de qua ngan (vd "lời." 0,25 giay) vao dong truoc neu van vua 2 dong."""
+    out: list[Cue] = []
+    for c in cues:
+        if out and c.end - c.start < min_dur:
+            joined = (out[-1].text.replace("\n", " ") + " " + c.text.replace("\n", " ")).strip()
+            wrapped = wrap_subtitle(joined, width, max_lines=99)
+            if len(wrapped.split("\n")) <= 2:
+                out[-1] = Cue(out[-1].start, c.end, wrapped)
+                continue
+        out.append(c)
+    return out
 
 
 def run(
@@ -213,7 +228,7 @@ def run(
                     on_progress(f"{scene.id}: whisper lỗi ({exc}), ước lượng thay thế")
         if not words:
             words = _estimate_words(scene)
-        cues += cues_for_scene(scene, words, cfg)
+        cues += merge_short(cues_for_scene(scene, words, cfg))
         if on_progress and i % 10 == 0:
             on_progress(f"căn phụ đề {i}/{len(scenes)} cảnh")
     return cues

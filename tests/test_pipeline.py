@@ -226,3 +226,17 @@ def test_motion_timeline_ve_duoc_moi_thoi_diem():
             "keyframes": [(0.0, 900), (1.0, 970), (3.0, 2030)]}
     for k in range(0, 31):
         assert motion.timeline_frame(spec, k / 10, 3.0).size == (motion.W, motion.H)
+
+
+def test_phu_de_khong_mat_chu_khi_xuong_dong():
+    from autovid.models import Scene
+    from autovid.stages.align import _estimate_words, cues_for_scene, merge_short
+
+    text = ("Năm 1975, ở miền Nam, năm trăm đồng cũ được đổi lấy một đồng mới, thường gọi "
+            "là tiền giải phóng. Vua Lý Thái Tổ có Thuận Thiên Đại Bảo, mặt sau đúc chữ Lê. "
+            "Ai làm tiền giả thì bị tội chết, tịch thu điền sản. Lời.")
+    sc = Scene(id="s", chapter="c", narration=text, duration=20.0)
+    cues = merge_short(cues_for_scene(sc, _estimate_words(sc), None))
+    got = " ".join(c.text.replace("\n", " ") for c in cues).split()
+    assert got == text.split()
+    assert all(len(c.text.split("\n")) <= 2 for c in cues)

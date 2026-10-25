@@ -79,8 +79,25 @@ def _year_x(year: float, spec: dict) -> float:
     return x1
 
 
+def _background(spec: dict) -> Image.Image:
+    """Nen: anh tu lieu mo va toi (neu co), de bieu do nam tren tu lieu that."""
+    if "_bg" not in spec:
+        img = Image.new("RGB", (W, H), BG)
+        path = spec.get("bg_path")
+        if path and Path(path).exists():
+            from PIL import ImageFilter
+            src = Image.open(path).convert("RGB")
+            k = max(W / src.width, H / src.height)
+            src = src.resize((round(src.width * k), round(src.height * k)), Image.LANCZOS)
+            x, y = (src.width - W) // 2, (src.height - H) // 2
+            src = src.crop((x, y, x + W, y + H)).filter(ImageFilter.GaussianBlur(3 * S))
+            img = Image.blend(src, img, spec.get("bg_dim", 0.8))
+        spec["_bg"] = img
+    return spec["_bg"].copy()
+
+
 def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
-    img = Image.new("RGB", (W, H), BG)
+    img = _background(spec)
     d = ImageDraw.Draw(img)
     axis_y = int(H * 0.50)
     sweep = spec.get("sweep_end", 0.85)       # ty le thoi luong de quet het truc
@@ -110,15 +127,24 @@ def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
         col = ERA_COLORS[i % len(ERA_COLORS)]
         d.rounded_rectangle([ex0 + 3 * S, axis_y - 26 * S, vis - 3 * S, axis_y + 26 * S],
                             radius=10 * S, fill=col)
-        if vis - ex0 > 120 * S:
+        if vis - ex0 > 80 * S:
             lab = era["label"]
             fl = f("semi", 22)
-            while d.textlength(lab, font=fl) > (ex1 - ex0) - 24 * S and fl.size > 14 * S:
+            pad = era.get("pad", 14) * S
+            while d.textlength(lab, font=fl) > (ex1 - ex0) - 2 * pad and fl.size > 12 * S:
                 fl = _font("semi", fl.size - 2 * S)
             tw = d.textlength(lab, font=fl)
-            lx = ex1 - tw - 14 * S if era.get("align") == "right" else ex0 + 14 * S
+            lx = ex1 - tw - pad if era.get("align") == "right" else ex0 + pad
             if era.get("align") != "right" or vis >= ex1:
                 d.text((lx, axis_y - 14 * S), lab, font=fl, fill=FG)
+
+    # dau ngat: noi ty le truc thay doi
+    for seg in spec["segments"][1:]:
+        bx = _year_x(seg[0], spec)
+        if bx <= head_x:
+            for off in (-7, 7):
+                d.line([bx + off * S - 6 * S, axis_y + 36 * S, bx + off * S + 6 * S,
+                        axis_y + 22 * S], fill=MUTED, width=2 * S)
 
     # vach nam
     for y in spec.get("ticks", []):
@@ -186,11 +212,11 @@ def bars_frame(spec: dict, t: float, dur: float) -> Image.Image:
     n = len(items)
     slot = (W - 280 * S) / n
     bw = slot * 0.46
-    step = dur * 0.7 / n
+    step = min(dur * 0.35 / n, 0.9)
     for k, it in enumerate(items):
         p = ease_out((t - 0.4 - k * step) / max(step * 1.4, 0.6))
         cx = 140 * S + slot * (k + 0.5)
-        hgt = (base_y - top_y) * (it["value"] / vmax) * p
+        hgt = max((base_y - top_y) * (it["value"] / vmax), 14 * S) * p
         col = RED if it.get("highlight") else GOLD
         if hgt > 0:
             d.rounded_rectangle([cx - bw / 2, base_y - max(hgt, 6 * S), cx + bw / 2, base_y],
