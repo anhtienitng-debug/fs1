@@ -20,6 +20,9 @@ def test_script_new_tao_job_tu_kich_ban(tmp_path, monkeypatch):
     assert script["hook"].startswith("Tháng 9 năm 1985")
     assert len(script["chapters"]) == 8
     assert all(ch["key_point"] and ch["visual_note"] for ch in script["chapters"])
+    # dong ghi chu cho bien tap khong duoc lot vao loi doc
+    assert not any("Gợi ý hình" in ch["body"] or "Chữ trên màn hình" in ch["body"]
+                   for ch in script["chapters"])
     assert "Cần kiểm" not in script["outro"]
     assert len(script["data_points"]) == 2
     assert job.is_approved("script")

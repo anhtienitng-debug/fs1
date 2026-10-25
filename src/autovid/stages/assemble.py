@@ -31,6 +31,7 @@ def _is_image(path: str) -> bool:
 
 def _find_font() -> str:
     candidates = [
+        str(Path.home() / ".local/share/fonts/BeVietnamPro-SemiBold.ttf"),
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
         "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
         "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
@@ -40,6 +41,15 @@ def _find_font() -> str:
         if Path(c).exists():
             return c
     return ""
+
+
+def _aspect(path: str) -> float:
+    try:
+        from PIL import Image
+        with Image.open(path) as im:
+            return im.width / max(im.height, 1)
+    except Exception:  # noqa: BLE001
+        return 16 / 9
 
 
 def _esc(text: str) -> str:
@@ -72,9 +82,22 @@ def scene_clip(
     if media and Path(media).exists() and _is_image(media):
         # Ken Burns: phong to anh truoc roi moi zoompan, neu khong se bi giat
         args += ["-loop", "1", "-framerate", fps, "-t", f"{dur:.3f}", "-i", media]
+        if abs(_aspect(media) - w / h) > cfg.get("video.fit_tolerance", 0.3):
+            # Anh doc/vuong (dong xu, to tien, tai lieu): giu tron anh tren nen mo
+            # cua chinh no, thay vi cat mat phan lon noi dung
+            fill = (
+                f"split[bg][fg];"
+                f"[bg]scale={w * 2}:{h * 2}:force_original_aspect_ratio=increase,"
+                f"crop={w * 2}:{h * 2},boxblur=40:2,eq=brightness=-0.25[bg];"
+                f"[fg]scale={int(w * 1.8)}:{int(h * 1.8)}:"
+                f"force_original_aspect_ratio=decrease[fg];"
+                f"[bg][fg]overlay=(W-w)/2:(H-h)/2,"
+            )
+        else:
+            fill = (f"scale={w * 2}:{h * 2}:force_original_aspect_ratio=increase,"
+                    f"crop={w * 2}:{h * 2},")
         vf = (
-            f"scale={w * 2}:{h * 2}:force_original_aspect_ratio=increase,"
-            f"crop={w * 2}:{h * 2},"
+            fill +
             f"zoompan=z='min(zoom+{zoom / frames:.6f},{1 + zoom})':"
             f"d={frames}:s={w}x{h}:fps={fps}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
         )

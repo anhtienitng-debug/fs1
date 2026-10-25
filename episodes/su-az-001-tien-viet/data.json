@@ -88,5 +88,30 @@
       "url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=VN",
       "publisher": "World Bank"
     }
-  ]
+  ],
+  "meta": {
+    "titles": [
+      "1000 Năm Tiền Việt: Vì Sao Đồng Tiền Cứ Phải Làm Lại Từ Đầu?",
+      "Từ Thái Bình Hưng Bảo Đến Tờ 500.000: 1000 Năm Tiền Việt",
+      "Vì Sao Việt Nam Từng Đổi Tiền 1 Lấy 1.000? Lịch Sử Tiền Việt"
+    ],
+    "description": "Năm 1985, cả nước đổi tiền mười lấy một. Năm 1959, một đồng mới đổi một nghìn đồng cũ. Năm 1396, tiền giấy đầu tiên của Việt Nam ra đời. Vì sao đồng tiền Việt nhiều lần phải bắt đầu lại?\n\nVideo đi qua một nghìn năm tiền tệ Việt Nam: tiền Ngũ Thù thời Bắc thuộc, Thái Bình Hưng Bảo của nhà Đinh, Thông Bảo Hội Sao năm 1396, tiền kẽm và bạc nén, đồng bạc Đông Dương, giấy bạc năm 1946, các lần đổi tiền 1951, 1959, 1975, 1978, 1985, và tờ polymer 500.000 đồng.\n\nSử AZ kể lịch sử qua tiền bạc, giá cả và đời sống. Kênh chỉ thuật lại sự kiện và số liệu có nguồn; nguồn tham khảo ghi ở cuối mô tả.",
+    "tags": [
+      "lịch sử tiền tệ việt nam",
+      "tiền việt nam",
+      "đổi tiền 1985",
+      "đổi tiền",
+      "thái bình hưng bảo",
+      "thông bảo hội sao",
+      "hồ quý ly",
+      "tiền giấy",
+      "đồng bạc đông dương",
+      "lạm phát 1986",
+      "lịch sử việt nam",
+      "sử az",
+      "vietnamese dong history",
+      "history of money vietnam"
+    ],
+    "thumbnail_text": "1000 NĂM TIỀN VIỆT"
+  }
 }

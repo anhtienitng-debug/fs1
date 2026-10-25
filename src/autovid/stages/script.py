@@ -328,7 +328,8 @@ def from_markdown(md: str, base: VideoScript) -> VideoScript:
     for block in re.split(r"^##\s+", md, flags=re.M)[1:]:
         head, _, rest = block.partition("\n")
         head = head.strip()
-        body = re.sub(r"^\*.*\*\s*$", "", rest, flags=re.M)
+        body = re.sub(r"^\*(Chữ trên màn hình|Gợi ý hình):\*.*$", "", rest, flags=re.M)
+        body = re.sub(r"^\*.*\*\s*$", "", body, flags=re.M)
         body = body.split("\n---")[0].strip()
         if head.startswith("[HOOK]"):
             script.hook = body

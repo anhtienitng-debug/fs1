@@ -141,16 +141,19 @@ def run(
 ) -> dict[str, Any]:
     chapters = chapters_from_scenes(scenes)
     try:
-        meta = llm.json(
-            META_PROMPT.format(
-                title=script.title,
-                thesis=script.thesis,
-                chapters=" | ".join(name for _, name in chapters),
-            ),
-            model=cfg.get("llm.model_utility"),
-            max_tokens=2500,
-            temperature=0.6,
-        )
+        if (job_dir / "meta.json").exists():  # metadata viet tay, khong goi LLM
+            meta = json.loads((job_dir / "meta.json").read_text(encoding="utf-8"))
+        else:
+            meta = llm.json(
+                META_PROMPT.format(
+                    title=script.title,
+                    thesis=script.thesis,
+                    chapters=" | ".join(name for _, name in chapters),
+                ),
+                model=cfg.get("llm.model_utility"),
+                max_tokens=2500,
+                temperature=0.6,
+            )
     except Exception as exc:  # noqa: BLE001
         if on_progress:
             on_progress(f"sinh metadata lỗi ({exc}) — dùng mặc định")

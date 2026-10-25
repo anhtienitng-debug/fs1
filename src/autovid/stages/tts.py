@@ -40,9 +40,9 @@ class VieNeuClient:
             "top_p": cfg.get("tts.top_p", 0.95),
             "repetition_penalty": cfg.get("tts.repetition_penalty", 1.2),
         }
-        speed = cfg.get("tts.speed", 1.0)
-        if speed and abs(speed - 1.0) > 1e-3:
-            self.params["speed"] = speed
+        # Server VieNeu v3 nhan nhung bo qua "speed", nen toc do duoc chinh o
+        # phia client bang atempo sau khi ghep (xem apply_speed)
+        self.speed = float(cfg.get("tts.speed", 1.0) or 1.0)
         import os
         self.key = os.getenv("VIENEU_API_KEY", "")
 
@@ -143,6 +143,21 @@ def join_wav(parts: list[bytes], gap_ms: int, dest: Path) -> float:
     return total / (rate * channels * width)
 
 
+def apply_speed(path: Path, speed: float) -> float:
+    """Doi toc do doc ma giu nguyen cao do giong (ffmpeg atempo). Tra ve thoi luong moi."""
+    if abs(speed - 1.0) < 1e-3:
+        return _duration(path)
+    import subprocess
+    tmp = path.with_suffix(".tempo.wav")
+    subprocess.run(
+        ["ffmpeg", "-loglevel", "error", "-y", "-i", str(path),
+         "-filter:a", f"atempo={speed:.4f}", str(tmp)],
+        check=True,
+    )
+    tmp.replace(path)
+    return _duration(path)
+
+
 # ------------------------------------------------------------------- stage
 def run(
     scenes: list[Scene],
@@ -171,6 +186,7 @@ def run(
             chunks = chunk_for_tts(text, tts.max_chars)
             parts = [tts.speak(c) for c in chunks]
             scene.duration = join_wav(parts, intra_gap, dest)
+            scene.duration = apply_speed(dest, tts.speed)
             scene.audio_path = str(dest)
             if on_progress:
                 on_progress(

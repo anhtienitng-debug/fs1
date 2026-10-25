@@ -67,7 +67,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 # ------------------------------------------------------------------ backends
-def _whisper_words(path: Path, cfg: Any) -> list[tuple[float, float, str]]:
+_MODELS: dict[tuple[str, str], Any] = {}
+
+
+def _model(cfg: Any) -> Any:
+    """Nap model mot lan cho ca video, khong phai moi canh mot lan."""
     from faster_whisper import WhisperModel
 
     device = cfg.get("align.device", "auto")
@@ -78,15 +82,67 @@ def _whisper_words(path: Path, cfg: Any) -> list[tuple[float, float, str]]:
         except ImportError:
             device = "cpu"
     compute = "float16" if device == "cuda" else "int8"
-    model = WhisperModel(cfg.get("align.model", "large-v3"), device=device,
-                         compute_type=compute)
-    segments, _ = model.transcribe(str(path), language="vi", word_timestamps=True,
-                                   vad_filter=True)
+    name = cfg.get("align.model", "large-v3")
+    if (name, device) not in _MODELS:
+        _MODELS[(name, device)] = WhisperModel(name, device=device, compute_type=compute)
+    return _MODELS[(name, device)]
+
+
+def _load_16k(path: Path) -> Any:
+    """Giai ma bang ffmpeg thay vi PyAV: faster-whisper va PyAV moi hay lech phien ban."""
+    import subprocess
+
+    import numpy as np
+
+    raw = subprocess.run(
+        ["ffmpeg", "-loglevel", "error", "-i", str(path),
+         "-f", "s16le", "-ac", "1", "-ar", "16000", "-"],
+        capture_output=True, check=True,
+    ).stdout
+    return np.frombuffer(raw, np.int16).astype(np.float32) / 32768.0
+
+
+def _whisper_words(path: Path, cfg: Any) -> list[tuple[float, float, str]]:
+    segments, _ = _model(cfg).transcribe(_load_16k(path), language="vi",
+                                         word_timestamps=True, vad_filter=True)
     words: list[tuple[float, float, str]] = []
     for seg in segments:
         for w in (seg.words or []):
             words.append((w.start, w.end, w.word.strip()))
     return words
+
+
+def retime_script(narration: str,
+                  heard: list[tuple[float, float, str]]) -> list[tuple[float, float, str]]:
+    """Gan moc thoi gian cua whisper len dung chu trong kich ban.
+
+    Whisper nghe sai ten rieng ("Hồ Quy Li"), nen phu de lay chu tu kich ban va
+    chi muon thoi gian: moi tu kich ban duoc dat vao vi tri tuong ung theo ty le
+    so ky tu da doc, noi suy tren chuoi tu whisper nghe duoc.
+    """
+    toks = strip_tags(narration).split()
+    if not toks or not heard:
+        return []
+    marks = [(0.0, heard[0][0])]
+    total_heard = sum(max(len(w), 1) for _, _, w in heard)
+    acc = 0
+    for _, end, w in heard:
+        acc += max(len(w), 1)
+        marks.append((acc / total_heard, end))
+
+    def at(frac: float) -> float:
+        for (f0, t0), (f1, t1) in zip(marks, marks[1:], strict=False):
+            if frac <= f1:
+                return t0 + (t1 - t0) * ((frac - f0) / (f1 - f0) if f1 > f0 else 0.0)
+        return marks[-1][1]
+
+    total = sum(len(t) for t in toks)
+    out, acc = [], 0
+    for tok in toks:
+        start = at(acc / total)
+        acc += len(tok)
+        out.append((start, at(acc / total), tok))
+    return out
 
 
 def _estimate_words(scene: Scene) -> list[tuple[float, float, str]]:
@@ -151,7 +207,7 @@ def run(
         words: list[tuple[float, float, str]] = []
         if use_whisper:
             try:
-                words = _whisper_words(path, cfg)
+                words = retime_script(scene.narration, _whisper_words(path, cfg))
             except Exception as exc:  # noqa: BLE001
                 if on_progress:
                     on_progress(f"{scene.id}: whisper lỗi ({exc}), ước lượng thay thế")

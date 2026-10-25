@@ -148,6 +148,8 @@ def script_new(
     job.write_json("article.json", article.to_dict())
     _save_script(job, script)
     job.write_text("script.md", md)
+    if extra.get("meta"):
+        job.write_json("meta.json", extra["meta"])
     job.mark("script", words=script.est_words, source=str(path))
     if approve_now:
         job.approve("script")
@@ -161,6 +163,74 @@ def script_new(
            f"Duyệt: [bold]autovid approve {job.path.name}[/bold]\nRồi chạy: ")
         + f"[bold]autovid run {job.path.name} -c <config kênh>[/bold]",
         title="Đã tạo job từ kịch bản", border_style="green"))
+
+
+# ============================================================ plan-visuals
+@app.command(name="plan-visuals")
+def plan_visuals(
+    plan_file: str = typer.Argument(..., help="visuals.json: hình cho từng cảnh"),
+    job_ref: str = typer.Argument("latest"),
+    media: str | None = typer.Option(
+        None, "--media", "-m",
+        help="Thư mục ảnh đã tải, kèm db.json ghi tác giả/giấy phép"),
+):
+    """Gán hình cho từng cảnh theo kế hoạch viết tay: ảnh tư liệu, thẻ chữ, biểu đồ."""
+    import json
+    import shutil
+
+    from .models import Asset
+    from .stages import cards
+
+    job = Job.open(job_ref)
+    plan = json.loads(Path(plan_file).read_text(encoding="utf-8"))
+    db = {}
+    if media and (Path(media) / "db.json").exists():
+        db = json.loads((Path(media) / "db.json").read_text(encoding="utf-8"))
+    have = {k: Path(media) / Path(v["file"]).name for k, v in db.items()
+            if media and (Path(media) / Path(v["file"]).name).exists()}
+
+    scene_list = scenes_mod.from_json(job.file("scenes.json").read_text(encoding="utf-8"))
+    assets: dict[str, Asset] = {}
+    counts = {"photo": 0, "card": 0, "chart": 0}
+    for sc in scene_list:
+        spec = plan.get(sc.id)
+        if not spec:
+            continue
+        if "photo" in spec and spec["photo"] in have:
+            src = have[spec["photo"]]
+            dest = job.file("media", src.name)
+            shutil.copy2(src, dest)
+            sc.media_path, sc.visual_kind = str(dest), "photo"
+            info = db[spec["photo"]]
+            assets[spec["photo"]] = Asset(
+                scene_id=sc.id, provider="Wikimedia Commons", provider_id=info["title"],
+                url=info["desc"], local_path=str(dest), kind="photo",
+                license=info.get("lic", ""), license_url=info.get("licurl", ""),
+                author=info.get("artist", ""))
+            counts["photo"] += 1
+            continue
+        spec = spec.get("else", spec) if "photo" in spec else spec
+        if "chart" in spec:
+            sc.visual_kind, sc.chart_ref, sc.media_path = "chart", spec["chart"], ""
+            counts["chart"] += 1
+            continue
+        if "card" in spec:
+            out = cards.render(spec, job.file("cards", f"{sc.id}.png"), have)
+            sc.media_path, sc.visual_kind = str(out), "photo"
+            if spec.get("bg") in have and spec["bg"] not in assets:
+                info = db[spec["bg"]]
+                assets[spec["bg"]] = Asset(
+                    scene_id=sc.id, provider="Wikimedia Commons",
+                    provider_id=info["title"], url=info["desc"],
+                    local_path=str(have[spec["bg"]]), kind="photo",
+                    license=info.get("lic", ""), license_url=info.get("licurl", ""),
+                    author=info.get("artist", ""))
+            counts["card"] += 1
+        sc.on_screen_text = ""  # the chu da noi dung, khong chong them lower-third
+    job.write_text("scenes.json", scenes_mod.to_json(scene_list))
+    job.write_json("assets.json", [a.__dict__ for a in assets.values()])
+    con.print(f"[green]✓[/green] {counts['photo']} ảnh tư liệu, {counts['card']} thẻ chữ, "
+              f"{counts['chart']} biểu đồ · ghi công {len(assets)} ảnh")
 
 
 # ================================================================ approve
@@ -246,6 +316,11 @@ def run(
     emit = _step("Lấy hình ảnh và video")
     scene_list, asset_list = visuals.run(scene_list, cfg, job.file("media"),
                                          force=forced >= 3, on_progress=emit)
+    if job.has("assets.json"):  # giu ghi cong cua anh da gan tay (plan-visuals)
+        from .models import Asset
+        known = {a.local_path for a in asset_list}
+        asset_list = [Asset(**a) for a in job.read_json("assets.json")
+                      if a.get("local_path") not in known] + asset_list
     job.write_json("assets.json", [a.__dict__ for a in asset_list])
     job.write_text("scenes.json", scenes_mod.to_json(scene_list))
     job.mark("visuals", assets=len(asset_list))

@@ -205,3 +205,13 @@ def test_ghi_de_config_bang_set():
     assert cfg.get("video.subtitles_burn") is False
     assert cfg.get("script.chapters") == 8
     assert cfg.get("tts.voice") == "Phạm Tuyên"
+
+
+def test_retime_script_giu_chu_kich_ban_lay_thoi_gian_whisper():
+    from autovid.stages.align import retime_script
+
+    heard = [(0.5, 1.0, "Hồ"), (1.0, 1.4, "Quy"), (1.4, 2.0, "Li"), (2.0, 3.0, "phát")]
+    out = retime_script("Hồ Quý Ly phát", heard)
+    assert [w for _, _, w in out] == ["Hồ", "Quý", "Ly", "phát"]
+    assert out[0][0] == 0.5 and abs(out[-1][1] - 3.0) < 1e-6
+    assert all(a[1] <= b[0] + 1e-9 for a, b in zip(out, out[1:], strict=False))

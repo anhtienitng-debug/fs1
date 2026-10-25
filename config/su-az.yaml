@@ -18,11 +18,12 @@ script:
   include_vietnam_angle: false
 
 tts:
-  # Giong nam mien Bac, phong cach ke chuyen (editors' pick cua VieNeu v3 Turbo).
-  # Du phong: "Thiền Tâm Đức", "Thanh Bình". Kenh HTCQ dang dung "Phạm Tuyên".
-  voice: "Thiện Minh"
+  # Chot sau khi nghe thu 4 giong (Thien Minh, Thien Tam Duc, Thanh Binh, Pham Tuyen).
+  # Pham Tuyen doc ~250 tu/phut; 0.9 dua ve ~225 tu/phut (atempo, giu cao do).
+  voice: "Phạm Tuyên"
   temperature: 0.8
-  speed: 0.97
+  speed: 0.9
+  pause_between_scenes_ms: 700
 
 visuals:
   # Su: anh tu lieu va tranh cu truoc, B-roll stock sau cung
@@ -36,3 +37,6 @@ charts:
 
 publish:
   category_id: "27"           # Education
+
+align:
+  model: "small"             # chi can moc thoi gian, chu lay tu kich ban
