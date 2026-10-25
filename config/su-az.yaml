@@ -31,6 +31,9 @@ visuals:
             "pixabay_photo", "pixabay_video"]
   prefer_video_ratio: 0.25
 
+video:
+  subtitle_size: 62
+
 charts:
   maps: false
   timeline: false

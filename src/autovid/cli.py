@@ -192,10 +192,13 @@ def plan_visuals(
     scene_list = scenes_mod.from_json(job.file("scenes.json").read_text(encoding="utf-8"))
     assets: dict[str, Asset] = {}
     counts = {"photo": 0, "card": 0, "chart": 0}
+    mismatched: list[str] = []
     for sc in scene_list:
         spec = plan.get(sc.id)
         if not spec:
             continue
+        if spec.get("says") and spec["says"].lower() not in sc.narration.lower():
+            mismatched.append(sc.id)
         if "photo" in spec and spec["photo"] in have:
             src = have[spec["photo"]]
             dest = job.file("media", src.name)
@@ -227,6 +230,11 @@ def plan_visuals(
                     author=info.get("artist", ""))
             counts["card"] += 1
         sc.on_screen_text = ""  # the chu da noi dung, khong chong them lower-third
+    if mismatched:
+        # "says" la doan loi doc ma hinh minh hoa: lech nghia la kich ban da chia canh lai
+        con.print(f"[red]Kế hoạch hình lệch với lời đọc ở {', '.join(mismatched)}.[/red] "
+                  "Kiểm tra lại visuals.json, chưa ghi gì.")
+        raise typer.Exit(1)
     job.write_text("scenes.json", scenes_mod.to_json(scene_list))
     job.write_json("assets.json", [a.__dict__ for a in assets.values()])
     con.print(f"[green]✓[/green] {counts['photo']} ảnh tư liệu, {counts['card']} thẻ chữ, "
