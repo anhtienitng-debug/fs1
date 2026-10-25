@@ -32,6 +32,21 @@ Kết quả trong `jobs/<job>/`:
 | `script.md` | Kịch bản bạn đã duyệt |
 | `brief.json` | Kết quả nghiên cứu đối chiếu |
 
+### Từ kịch bản viết sẵn
+
+Không cần bài báo hay LLM cho phần kịch bản. Viết `script.md` theo cùng định dạng
+(`## [HOOK]`, `## [CHƯƠNG n] ...`, `## [OUTRO]`), số liệu để vẽ biểu đồ để trong
+một file JSON riêng:
+
+```bash
+autovid script-new episodes/su-az-001-tien-viet/script.md \
+    -d episodes/su-az-001-tien-viet/data.json --approve
+autovid run latest -c config/su-az.yaml
+```
+
+`-c` chọn cấu hình riêng của từng kênh (giọng đọc, persona, kho ảnh), ghi đè lên
+`default.yaml`.
+
 ## Pipeline
 
 ```

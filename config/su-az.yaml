@@ -1,0 +1,38 @@
+# ============================================================
+# Kenh Su AZ - lich su qua tien bac, gia ca va doi song
+# Dung: autovid ... -c config/su-az.yaml
+# ============================================================
+
+channel:
+  name: "Sử AZ"
+  persona: >
+    Người kể chuyện lịch sử Việt Nam và thế giới qua tiền bạc, giá cả và đời sống
+    thường ngày. Điềm tĩnh, rõ ràng, không giật gân. Chỉ kể điều có sử liệu, luôn
+    nói rõ nguồn ("theo Đại Việt Sử Ký Toàn Thư..."), phân biệt chính sử với giả
+    thuyết. Không bình luận chính trị hiện đại.
+  audience: "Người Việt 18-45 tuổi thích lịch sử và quan tâm tiền bạc, kinh tế."
+  cta: "Bạn còn giữ tờ tiền cũ nào trong nhà không? Hãy kể ở phần bình luận."
+
+script:
+  target_minutes: 16
+  include_vietnam_angle: false
+
+tts:
+  # Giong nam mien Bac, phong cach ke chuyen (editors' pick cua VieNeu v3 Turbo).
+  # Du phong: "Thiền Tâm Đức", "Thanh Bình". Kenh HTCQ dang dung "Phạm Tuyên".
+  voice: "Thiện Minh"
+  temperature: 0.8
+  speed: 0.97
+
+visuals:
+  # Su: anh tu lieu va tranh cu truoc, B-roll stock sau cung
+  sources: ["wikimedia", "openverse", "archive_video", "pexels_photo", "pexels_video",
+            "pixabay_photo", "pixabay_video"]
+  prefer_video_ratio: 0.25
+
+charts:
+  maps: false
+  timeline: false
+
+publish:
+  category_id: "27"           # Education

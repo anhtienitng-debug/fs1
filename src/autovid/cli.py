@@ -29,6 +29,8 @@ app = typer.Typer(add_completion=False, help="Biến link bài báo thành video
 con = Console()
 
 SetOpt = typer.Option(None, "--set", "-s", help="Ghi đè config, ví dụ -s tts.speed=1.05")
+ConfigOpt = typer.Option(None, "--config", "-c",
+                         help="File cấu hình kênh, ví dụ config/su-az.yaml")
 
 
 def _cfg(sets: list[str] | None, config: str | None = None):
@@ -113,6 +115,54 @@ def new(
         title="Script sẵn sàng để bạn duyệt", border_style="green"))
 
 
+# ============================================================= script-new
+@app.command(name="script-new")
+def script_new(
+    script_file: str = typer.Argument(..., help="Kịch bản viết tay theo định dạng script.md"),
+    data: str | None = typer.Option(None, "--data", "-d",
+                                    help="File JSON chứa thesis, data_points, sources"),
+    approve_now: bool = typer.Option(False, "--approve", help="Duyệt luôn kịch bản"),
+):
+    """Tạo job từ kịch bản viết sẵn (không cần bài báo, không gọi LLM)."""
+    import json
+
+    from .models import Article, DataPoint, Source
+    from .util.text import word_count
+
+    path = Path(script_file)
+    md = path.read_text(encoding="utf-8")
+    extra = json.loads(Path(data).read_text(encoding="utf-8")) if data else {}
+    base = VideoScript(
+        title="", hook="", thesis=extra.get("thesis", ""),
+        data_points=[DataPoint(**p) for p in extra.get("data_points", [])],
+        sources=[Source(**x) for x in extra.get("sources", [])],
+    )
+    script = script_mod.from_markdown(md, base)
+    if not script.hook or not script.chapters:
+        con.print("[red]Không đọc được [HOOK] hoặc [CHƯƠNG] trong kịch bản.[/red]")
+        raise typer.Exit(1)
+
+    article = Article(url=path.resolve().as_uri(), title=script.title, source="Kịch bản viết tay",
+                      text=script.full_text(), word_count=word_count(script.full_text()))
+    job = Job.create(article.url, script.title)
+    job.write_json("article.json", article.to_dict())
+    _save_script(job, script)
+    job.write_text("script.md", md)
+    job.mark("script", words=script.est_words, source=str(path))
+    if approve_now:
+        job.approve("script")
+
+    con.print(Panel(
+        f"[bold]{script.title}[/bold]\n\n"
+        f"{len(script.chapters)} chương, {script.est_words} từ ≈ "
+        f"{script.est_words / 145:.1f} phút đọc\n"
+        f"job: [bold]{job.path.name}[/bold]\n\n"
+        + ("Đã duyệt. Chạy: " if approve_now else
+           f"Duyệt: [bold]autovid approve {job.path.name}[/bold]\nRồi chạy: ")
+        + f"[bold]autovid run {job.path.name} -c <config kênh>[/bold]",
+        title="Đã tạo job từ kịch bản", border_style="green"))
+
+
 # ================================================================ approve
 @app.command()
 def approve(
@@ -143,9 +193,10 @@ def run(
         None, "--force", help="Chạy lại từ bước này: scenes|tts|visuals|assemble"),
     skip_render: bool = typer.Option(False, "--skip-render", help="Dừng trước khi dựng"),
     set_: list[str] | None = SetOpt,
+    config: str | None = ConfigOpt,
 ):
     """Chạy phần còn lại: tách cảnh → đọc → căn phụ đề → lấy hình → dựng → đóng gói."""
-    cfg = _cfg(set_)
+    cfg = _cfg(set_, config)
     job = Job.open(job_ref)
 
     if "script" in (cfg.get("review.gates", []) or []) and not job.is_approved("script"):
@@ -276,9 +327,9 @@ def models(set_: list[str] | None = SetOpt):
 
 
 @app.command()
-def voices(set_: list[str] | None = SetOpt):
+def voices(set_: list[str] | None = SetOpt, config: str | None = ConfigOpt):
     """Liệt kê giọng đọc có trên server VieNeu-TTS."""
-    cfg = _cfg(set_)
+    cfg = _cfg(set_, config)
     client = tts_mod.VieNeuClient(cfg)
     try:
         client.health()
@@ -291,11 +342,11 @@ def voices(set_: list[str] | None = SetOpt):
 
 
 @app.command()
-def doctor(set_: list[str] | None = SetOpt):
+def doctor(set_: list[str] | None = SetOpt, config: str | None = ConfigOpt):
     """Kiểm tra môi trường trước khi chạy thật."""
     import os
     import shutil
-    cfg = _cfg(set_)
+    cfg = _cfg(set_, config)
     t = Table(show_header=True, header_style="bold")
     t.add_column("Thành phần")
     t.add_column("OK")
