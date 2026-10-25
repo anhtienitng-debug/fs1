@@ -20,3 +20,4 @@ VieNeu-TTS/
 assets/geo/*.geojson
 assets/music/*
 !assets/music/.gitkeep
+review/
