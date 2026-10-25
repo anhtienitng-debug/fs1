@@ -202,8 +202,47 @@ def end_card(spec: dict, dest: Path, media: dict[str, Path]) -> Path:
     return dest
 
 
+def overlay_card(spec: dict, dest: Path, media: dict[str, Path]) -> Path:
+    """Chu dat tren anh tu lieu ro net (khong lam mo), co dai toi ben trai de doc."""
+    img = Image.new("RGB", (W, H), BG)
+    src_path = media.get(spec.get("bg", ""))
+    if src_path and src_path.exists():
+        src = Image.open(src_path).convert("RGB")
+        k = max(W / src.width, H / src.height)
+        src = src.resize((round(src.width * k), round(src.height * k)), Image.LANCZOS)
+        x, y = (src.width - W) // 2, (src.height - H) // 2
+        img = src.crop((x, y, x + W, y + H))
+    shade = Image.new("L", (W, H), 0)
+    sd = ImageDraw.Draw(shade)
+    for xx in range(W):
+        a = 225 if xx < W * 0.42 else max(0, int(225 * (1 - (xx - W * 0.42) / (W * 0.25))))
+        sd.line([(xx, 0), (xx, H)], fill=a)
+    img = Image.composite(Image.new("RGB", (W, H), BG), img, shade)
+    d = ImageDraw.Draw(img)
+    x, width = 120, int(W * 0.40)
+    ft, fs = _font("bold", 84), _font("regular", 42)
+    title = _wrap(d, spec.get("title", ""), ft, width)
+    body = []
+    for item in spec.get("lines", []):
+        body += _wrap(d, item, fs, width) + [""]
+    block = (70 if spec.get("eyebrow") else 0) + len(title) * 100 + 30 + len(body) * 56
+    y = _eyebrow(d, spec.get("eyebrow", ""), x, _top(block))
+    for line in title:
+        d.text((x, y), line, font=ft, fill=FG)
+        y += 100
+    y += 30
+    for line in body:
+        if line:
+            d.text((x, y), line, font=fs, fill=(214, 209, 199))
+        y += 56 if line else 18
+    if spec.get("source"):
+        d.text((x, y + 10), spec["source"], font=_font("regular", 32), fill=ACCENT)
+    img.save(dest)
+    return dest
+
+
 RENDER = {"title": title_card, "number": number_card, "quote": quote_card,
-          "list": list_card, "end": end_card}
+          "list": list_card, "end": end_card, "overlay": overlay_card}
 
 
 def render(spec: dict, dest: Path, media: dict[str, Path]) -> Path:

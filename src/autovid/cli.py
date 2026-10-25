@@ -199,20 +199,23 @@ def plan_visuals(
             continue
         if spec.get("says") and spec["says"].lower() not in sc.narration.lower():
             mismatched.append(sc.id)
-        if "photo" in spec and spec["photo"] in have:
-            src = have[spec["photo"]]
+        sc.on_screen_text = spec.get("label", "")
+        key = spec.get("photo") or spec.get("video")
+        if key and key in have:
+            src = have[key]
             dest = job.file("media", src.name)
             shutil.copy2(src, dest)
-            sc.media_path, sc.visual_kind = str(dest), "photo"
-            info = db[spec["photo"]]
-            assets[spec["photo"]] = Asset(
-                scene_id=sc.id, provider="Wikimedia Commons", provider_id=info["title"],
-                url=info["desc"], local_path=str(dest), kind="photo",
-                license=info.get("lic", ""), license_url=info.get("licurl", ""),
-                author=info.get("artist", ""))
+            kind = "video" if "video" in spec else "photo"
+            sc.media_path, sc.visual_kind = str(dest), kind
+            info = db[key]
+            assets[key] = Asset(
+                scene_id=sc.id, provider=info.get("provider", "Internet Archive"),
+                provider_id=info["title"], url=info["desc"], local_path=str(dest),
+                kind=kind, license=info.get("lic", ""),
+                license_url=info.get("licurl", ""), author=info.get("artist", ""))
             counts["photo"] += 1
             continue
-        spec = spec.get("else", spec) if "photo" in spec else spec
+        spec = spec.get("else", spec) if key else spec
         if "chart" in spec:
             sc.visual_kind, sc.chart_ref, sc.media_path = "chart", spec["chart"], ""
             counts["chart"] += 1
@@ -229,7 +232,8 @@ def plan_visuals(
                     license=info.get("lic", ""), license_url=info.get("licurl", ""),
                     author=info.get("artist", ""))
             counts["card"] += 1
-        sc.on_screen_text = ""  # the chu da noi dung, khong chong them lower-third
+        if spec.get("card") != "overlay":
+            sc.on_screen_text = ""  # the chu da noi dung, khong chong them nhan
     if mismatched:
         # "says" la doan loi doc ma hinh minh hoa: lech nghia la kich ban da chia canh lai
         con.print(f"[red]Kế hoạch hình lệch với lời đọc ở {', '.join(mismatched)}.[/red] "
@@ -237,7 +241,7 @@ def plan_visuals(
         raise typer.Exit(1)
     job.write_text("scenes.json", scenes_mod.to_json(scene_list))
     job.write_json("assets.json", [a.__dict__ for a in assets.values()])
-    con.print(f"[green]✓[/green] {counts['photo']} ảnh tư liệu, {counts['card']} thẻ chữ, "
+    con.print(f"[green]✓[/green] {counts['photo']} ảnh/phim tư liệu, {counts['card']} thẻ chữ, "
               f"{counts['chart']} biểu đồ · ghi công {len(assets)} ảnh")
 
 

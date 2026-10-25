@@ -174,7 +174,14 @@ def scene_clip(
                  "-i", f"color=c={SURFACE}:s={w}x{h}:r={fps}"]
         vf = "null"
 
-    if font and scene.on_screen_text:
+    if font and scene.on_screen_text and cfg.get("video.label_style") == "corner":
+        # Nhan nguon tu lieu nho o goc duoi trai, kieu phim tai lieu
+        vf += (
+            f",drawtext=fontfile='{font}':text='{_esc(scene.on_screen_text)}':"
+            f"fontcolor=white@0.85:fontsize={int(h * 0.022)}:box=1:"
+            f"boxcolor=0x000000@0.45:boxborderw=12:x={int(w * 0.035)}:y=h-{int(h * 0.075)}"
+        )
+    elif font and scene.on_screen_text:
         vf += (
             f",drawtext=fontfile='{font}':text='{_esc(scene.on_screen_text)}':"
             f"fontcolor=white:fontsize={int(h * 0.042)}:box=1:boxcolor=0x000000AA:"

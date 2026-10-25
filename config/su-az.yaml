@@ -35,6 +35,8 @@ video:
   subtitle_size: 62
   subtitles_burn: false        # phu de xuat file .srt de tai len YouTube, nguoi xem tu bat
   fit_tolerance: 0.3
+  label_style: corner          # nhan nguon tu lieu nho o goc
+  kenburns_zoom: 0.06
 
 charts:
   maps: false
