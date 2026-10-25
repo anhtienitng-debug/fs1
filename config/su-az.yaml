@@ -33,6 +33,8 @@ visuals:
 
 video:
   subtitle_size: 62
+  subtitles_burn: false        # phu de xuat file .srt de tai len YouTube, nguoi xem tu bat
+  fit_tolerance: 0.3
 
 charts:
   maps: false
