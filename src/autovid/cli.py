@@ -201,6 +201,7 @@ def plan_visuals(
         if spec.get("says") and spec["says"].lower() not in sc.narration.lower():
             mismatched.append(sc.id)
         sc.callout = spec.get("callout", "")
+        sc.chapter_tag = spec.get("chapter_tag", "")
         if "anim" in spec or "group" in spec:
             sc.on_screen_text = ""
             continue

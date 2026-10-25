@@ -193,6 +193,11 @@ def merge_short(cues: list[Cue], min_dur: float = 1.0, width: int = 42) -> list[
             if len(wrapped.split("\n")) <= 2:
                 out[-1] = Cue(out[-1].start, c.end, wrapped)
                 continue
+            # khong gop duoc: keo dai dong ngan bang cach lui diem bat dau
+            new_start = max(out[-1].start + 0.8, c.end - min_dur)
+            if new_start < c.start:
+                out[-1] = Cue(out[-1].start, new_start, out[-1].text)
+                c = Cue(new_start, c.end, c.text)
         out.append(c)
     return out
 

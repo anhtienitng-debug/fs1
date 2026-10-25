@@ -240,3 +240,13 @@ def test_phu_de_khong_mat_chu_khi_xuong_dong():
     got = " ".join(c.text.replace("\n", " ") for c in cues).split()
     assert got == text.split()
     assert all(len(c.text.split("\n")) <= 2 for c in cues)
+
+
+def test_dong_phu_de_ngan_duoc_keo_dai():
+    from autovid.stages.align import Cue, merge_short
+
+    a = Cue(0.0, 4.0, "một dòng khá dài chiếm gần hết hai dòng phụ đề\nđể không gộp được thêm gì")
+    b = Cue(4.0, 4.25, "lời.")
+    out = merge_short([a, b])
+    assert " ".join(c.text for c in out).split()[-1] == "lời."
+    assert all(c.end - c.start >= 0.99 for c in out)

@@ -63,6 +63,7 @@ class Scene:
     visual_kind: Literal["video", "photo", "chart", "auto"] = "auto"
     on_screen_text: str = ""        # lower-third / key point
     callout: str = ""               # thanh "Ly do: ..." truot vao cuoi canh
+    chapter_tag: str = ""           # the ten chuong o goc tren trai, dau chuong
     chart_ref: str = ""             # id cua DataPoint neu canh nay la bieu do
     audio_path: str = ""
     media_path: str = ""

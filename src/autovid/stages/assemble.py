@@ -200,11 +200,19 @@ def scene_clip(
     ]
     af = f"aresample=48000,apad,atrim=0:{dur:.3f},aformat=channel_layouts=stereo"
 
-    if scene.callout:
+    if scene.callout or scene.chapter_tag:
         raw = dest.with_suffix(".raw.mp4")
         _encode(args, vf, af, cfg, dur, raw, log)
-        add_callout(raw, scene.callout, dest, dur=dur, log=log)
-        raw.unlink(missing_ok=True)
+        if scene.chapter_tag:
+            tagged = dest.with_suffix(".tag.mp4")
+            add_chapter_tag(raw, scene.chapter_tag, tagged, dur=dur, log=log)
+            raw.unlink(missing_ok=True)
+            raw = tagged
+        if scene.callout:
+            add_callout(raw, scene.callout, dest, dur=dur, log=log)
+            raw.unlink(missing_ok=True)
+        else:
+            raw.replace(dest)
         return dest
     _encode(args, vf, af, cfg, dur, dest, log)
     return dest
@@ -246,6 +254,37 @@ def callout_png(text: str, dest: Path) -> Path:
         d.text((44, y), ln, font=ft, fill=(240, 236, 228, 255))
         y += 54
     img.save(dest)
+    return dest
+
+
+def add_chapter_tag(src: Path, text: str, dest: Path, *, dur: float,
+                    log: Path | None = None) -> Path:
+    """The ten chuong kieu phim tai lieu: hien 0,4-4 giay dau, goc tren trai."""
+    from PIL import Image, ImageDraw
+
+    from .cards import ACCENT, _font
+    f = _font("semi", 34)
+    probe = ImageDraw.Draw(Image.new("RGB", (10, 10)))
+    w = int(probe.textlength(text, font=f)) + 70
+    img = Image.new("RGBA", (w, 70), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle([0, 0, w - 1, 69], radius=10, fill=(14, 15, 18, 215))
+    d.rectangle([0, 0, 8, 70], fill=(*ACCENT, 255))
+    d.text((32, 14), text, font=f, fill=(240, 236, 228, 255))
+    png = src.with_suffix(".tag.png")
+    img.save(png)
+    end = min(4.2, dur - 0.3)
+    ffmpeg.run(
+        ["-i", str(src), "-loop", "1", "-i", str(png),
+         "-filter_complex",
+         f"[1]format=rgba,fade=t=in:st=0.4:d=0.4:alpha=1,"
+         f"fade=t=out:st={max(end - 0.4, 0.8):.2f}:d=0.4:alpha=1[c];"
+         f"[0][c]overlay=x=90:y=80:shortest=1:format=auto,format=yuv420p",
+         "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-c:a", "copy",
+         "-t", f"{dur:.3f}", str(dest)],
+        log=log,
+    )
+    png.unlink(missing_ok=True)
     return dest
 
 

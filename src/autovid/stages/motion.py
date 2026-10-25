@@ -26,7 +26,7 @@ W, H = 1920 * S, 1080 * S
 BG = (14, 15, 18)
 GRID = (36, 38, 44)
 FG = (238, 234, 226)
-MUTED = (150, 148, 142)
+MUTED = (184, 180, 172)
 GOLD = (201, 162, 94)
 RED = (196, 64, 56)
 JADE = (72, 150, 128)
@@ -116,7 +116,8 @@ def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
         p = 1.0 if head_year >= end else 0.0
     head_x = _year_x(head_year, spec)
 
-    # dai thoi ky
+    # dai thoi ky (nhan ve sau, de nam tren cac cham moc)
+    era_labels = []
     for i, era in enumerate(spec.get("eras", [])):
         ex0, ex1 = _year_x(era["from"], spec), _year_x(era["to"], spec)
         if head_x <= ex0:
@@ -127,16 +128,8 @@ def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
         col = ERA_COLORS[i % len(ERA_COLORS)]
         d.rounded_rectangle([ex0 + 3 * S, axis_y - 26 * S, vis - 3 * S, axis_y + 26 * S],
                             radius=10 * S, fill=col)
-        if vis - ex0 > 80 * S:
-            lab = era["label"]
-            fl = f("semi", 22)
-            pad = era.get("pad", 14) * S
-            while d.textlength(lab, font=fl) > (ex1 - ex0) - 2 * pad and fl.size > 12 * S:
-                fl = _font("semi", fl.size - 2 * S)
-            tw = d.textlength(lab, font=fl)
-            lx = ex1 - tw - pad if era.get("align") == "right" else ex0 + pad
-            if era.get("align") != "right" or vis >= ex1:
-                d.text((lx, axis_y - 14 * S), lab, font=fl, fill=FG)
+        if era.get("label") and (vis >= ex1 or vis - ex0 > 160 * S):
+            era_labels.append((era, ex0, ex1, col))
 
     # dau ngat: noi ty le truc thay doi
     for seg in spec["segments"][1:]:
@@ -175,12 +168,26 @@ def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
         cur_end = axis_y + (y_end - axis_y) * k
         d.line([x, axis_y, x, cur_end], fill=_mix(BG, col, 0.8), width=3 * S)
         r = (9 + 4 * (1 - k)) * S
-        d.ellipse([x - r, axis_y - r, x + r, axis_y + r], fill=col)
+        if not ev.get("nodot"):
+            d.ellipse([x - r, axis_y - r, x + r, axis_y + r], fill=col)
         alpha = k
         ty = y_end - 70 * S if up else y_end + 8 * S
         _text_c(d, (x, ty), ev["label"], fe, _mix(BG, FG, alpha))
         if ev.get("note"):
             _text_c(d, (x, ty + 40 * S), ev["note"], fs, _mix(BG, MUTED, alpha))
+
+    for era, ex0, ex1, col in era_labels:
+        lab = era["label"]
+        fl = f("semi", 22)
+        pad = era.get("pad", 14) * S
+        while d.textlength(lab, font=fl) > (ex1 - ex0) - 2 * pad and fl.size > 12 * S:
+            fl = _font("semi", fl.size - 2 * S)
+        tw = d.textlength(lab, font=fl)
+        lx = ex1 - tw - pad if era.get("align") == "right" else ex0 + pad
+        lx = max(lx, ex0 + 4 * S)
+        d.rounded_rectangle([lx - 8 * S, axis_y - 18 * S, lx + tw + 8 * S, axis_y + 18 * S],
+                            radius=8 * S, fill=col)
+        d.text((lx, axis_y - 14 * S), lab, font=fl, fill=FG)
 
     # dau quet
     if p < 1:
@@ -196,8 +203,12 @@ def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
         d.line([bx0, by - 16 * S, bx0, by], fill=RED, width=4 * S)
         if k >= 1:
             d.line([bx1, by - 16 * S, bx1, by], fill=RED, width=4 * S)
-        _text_c(d, ((bx0 + bx1) / 2, by + 12 * S), br["label"], f("bold", 28),
-                _mix(BG, RED, k))
+        fb = f("bold", 28)
+        bw = d.textlength(br["label"], font=fb)
+        cx = (bx0 + bx1) / 2
+        d.rounded_rectangle([cx - bw / 2 - 14 * S, by + 6 * S, cx + bw / 2 + 14 * S,
+                             by + 52 * S], radius=8 * S, fill=_mix(BG, BG, 1))
+        _text_c(d, (cx, by + 12 * S), br["label"], fb, _mix(BG, RED, k))
     return img
 
 

@@ -42,7 +42,7 @@
     {
      "from": 850,
      "to": 970,
-     "label": "Tiền phương Bắc",
+     "label": "",
      "align": "right",
      "pad": 10
     },
@@ -56,7 +56,7 @@
     {
      "from": 1650,
      "to": 1885,
-     "label": "Tiền kẽm, bạc nén"
+     "label": ""
     },
     {
      "from": 1885,
@@ -84,7 +84,8 @@
      "note": "Tiền phương Bắc",
      "side": "down",
      "say": "Trước thế kỷ thứ mười",
-     "level": 0
+     "level": 0,
+     "nodot": true
     },
     {
      "year": 970,
@@ -177,7 +178,8 @@
     "label": "6 mốc thay đổi trong 40 năm",
     "say": "có sáu mốc"
    },
-   "bg": "L04_plate"
+   "bg": "L04_plate",
+   "bg_dim": 0.72
   }
  },
  "s-004": {
@@ -199,7 +201,8 @@
  "s-008": {
   "says": "Năm 968",
   "photo": "L04_plate",
-  "label": "Plate II: tiền thời Đinh, Tiền Lê, Lý · Lacroix, Numismatique annamite, 1900"
+  "label": "Plate II: tiền thời Đinh, Tiền Lê, Lý · Lacroix, Numismatique annamite, 1900",
+  "chapter_tag": "Chương 2 · Năm 970"
  },
  "s-009": {
   "says": "chữ Đinh",
@@ -239,7 +242,8 @@
    "Tiền giấy đầu tiên của Việt Nam",
    "Chưa tìm thấy hiện vật nguyên bản"
   ],
-  "label": "Ảnh nền: tiền cổ · Lacroix, 1900"
+  "label": "Ảnh nền: tiền cổ · Lacroix, 1900",
+  "chapter_tag": "Chương 3 · Năm 1396"
  },
  "s-014": {
   "says": "bảy mệnh giá",
@@ -285,7 +289,8 @@
  "s-019": {
   "says": "không đủ đồng",
   "photo": "L12_grid",
-  "label": "Tiền cổ Việt Nam · Lacroix, 1900"
+  "label": "Tiền cổ Việt Nam · Lacroix, 1900",
+  "chapter_tag": "Chương 4 · Thế kỷ 17–19"
  },
  "s-020": {
   "says": "tiền kẽm",
@@ -316,7 +321,8 @@
  "s-025": {
   "says": "Nửa sau thế kỷ mười chín",
   "video": "v_saigon_opera",
-  "label": "Nhà hát Sài Gòn, phim 1955 · NARA"
+  "label": "Nhà hát Sài Gòn, phim 1955 · NARA",
+  "chapter_tag": "Chương 5 · Cuối thế kỷ 19"
  },
  "s-026": {
   "says": "Ngân hàng Đông Dương",
@@ -349,7 +355,8 @@
   "card": "title",
   "eyebrow": "Năm 1946",
   "title": "Giấy bạc Việt Nam ra đời",
-  "sub": "Người dân gọi là giấy bạc Cụ Hồ · in ở chiến khu, có lúc trên giấy dó"
+  "sub": "Người dân gọi là giấy bạc Cụ Hồ · in ở chiến khu, có lúc trên giấy dó",
+  "chapter_tag": "Chương 6 · 1946–1959"
  },
  "s-032": {
   "says": "Chiến tranh tốn kém",
@@ -397,7 +404,8 @@
  "s-035": {
   "says": "Từ năm 1954",
   "video": "v_saigon_aerial",
-  "label": "Sài Gòn, 1955 · NARA"
+  "label": "Sài Gòn, 1955 · NARA",
+  "chapter_tag": "Chương 7 · 1975–1978"
  },
  "s-036": {
   "says": "Tháng 9 năm 1975",
@@ -406,7 +414,7 @@
  },
  "s-037": {
   "says": "tám hào",
-  "video": "v_saigon_cyclo",
+  "video": "v_saigon_boulevard2",
   "label": "Sài Gòn, 1955 · NARA"
  },
  "s-038": {
@@ -418,7 +426,8 @@
  "s-039": {
   "says": "14 tháng 9 năm 1985",
   "video": "v_saigon_shops",
-  "label": "Sài Gòn, 1955 · NARA"
+  "label": "Sài Gòn, 1955 · NARA",
+  "chapter_tag": "Chương 8 · Năm 1985"
  },
  "s-040": {
   "says": "thâm hụt lớn",
@@ -445,14 +454,15 @@
  },
  "s-043": {
   "says": "gốc rễ",
-  "video": "v_saigon_walk",
+  "video": "v_saigon_traffic",
   "label": "Sài Gòn, 1955 · NARA",
   "callout": "Tiền được phát hành nhanh hơn lượng hàng hóa làm ra"
  },
  "s-044": {
   "says": "Đổi Mới",
   "video": "v_saigon_rain",
-  "label": "Sài Gòn, 1955 · NARA"
+  "label": "Sài Gòn, 1955 · NARA",
+  "chapter_tag": "Kết"
  },
  "s-045": {
   "says": "lạm phát giảm mạnh",
@@ -461,10 +471,15 @@
  },
  "s-046": {
   "says": "polymer",
-  "card": "title",
+  "card": "overlay",
+  "bg": "S00_mold",
   "eyebrow": "Cuối năm 2003",
   "title": "Tiền polymer",
-  "sub": "Thay chất liệu, không phải làm lại đồng tiền"
+  "lines": [
+   "Thay chất liệu: bền hơn, khó làm giả hơn",
+   "Không phải làm lại đồng tiền"
+  ],
+  "label": "Ảnh nền: tiền đồng · Schroeder, 1905"
  },
  "s-047": {
   "says": "giấu đồng xu",
