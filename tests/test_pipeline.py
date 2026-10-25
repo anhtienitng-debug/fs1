@@ -215,3 +215,14 @@ def test_retime_script_giu_chu_kich_ban_lay_thoi_gian_whisper():
     assert [w for _, _, w in out] == ["Hồ", "Quý", "Ly", "phát"]
     assert out[0][0] == 0.5 and abs(out[-1][1] - 3.0) < 1e-6
     assert all(a[1] <= b[0] + 1e-9 for a, b in zip(out, out[1:], strict=False))
+
+
+def test_motion_timeline_ve_duoc_moi_thoi_diem():
+    from autovid.stages import motion
+
+    spec = {"anim": "timeline", "title": "t", "segments": [[900, 1900, 1.0], [1900, 2030, 1.0]],
+            "eras": [{"from": 900, "to": 970, "label": "a"}, {"from": 970, "to": 2030, "label": "b"}],
+            "ticks": [1000], "events": [{"year": 970, "label": "970", "at": 1.0}],
+            "keyframes": [(0.0, 900), (1.0, 970), (3.0, 2030)]}
+    for k in range(0, 31):
+        assert motion.timeline_frame(spec, k / 10, 3.0).size == (motion.W, motion.H)

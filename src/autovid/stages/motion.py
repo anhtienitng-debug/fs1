@@ -82,7 +82,7 @@ def _year_x(year: float, spec: dict) -> float:
 def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
     img = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(img)
-    axis_y = int(H * 0.56)
+    axis_y = int(H * 0.50)
     sweep = spec.get("sweep_end", 0.85)       # ty le thoi luong de quet het truc
     p = ease(t / (dur * sweep))
     _title(d, spec.get("title", ""), spec.get("subtitle", ""), ease_out(t / 0.8))
@@ -105,6 +105,8 @@ def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
         if head_x <= ex0:
             continue
         vis = min(ex1, head_x)
+        if vis - ex0 < 10 * S:      # dai moi nho ra, chua du rong de ve
+            continue
         col = ERA_COLORS[i % len(ERA_COLORS)]
         d.rounded_rectangle([ex0 + 3 * S, axis_y - 26 * S, vis - 3 * S, axis_y + 26 * S],
                             radius=10 * S, fill=col)
@@ -141,7 +143,7 @@ def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
                 continue
         up = ev.get("side", "up" if i % 2 == 0 else "down") == "up"
         level = ev.get("level", 0)
-        stem = (120 + 70 * level) * S
+        stem = (110 + 75 * level) * S
         y_end = axis_y - stem if up else axis_y + stem
         col = RED if ev.get("reset") else GOLD
         cur_end = axis_y + (y_end - axis_y) * k
@@ -163,12 +165,12 @@ def timeline_frame(spec: dict, t: float, dur: float) -> Image.Image:
     if br and t >= br["at"]:
         k = ease_out((t - br["at"]) / 0.7)
         bx0, bx1 = _year_x(br["from"], spec), _year_x(br["to"], spec)
-        by = H - 150 * S
+        by = H - 95 * S
         d.line([bx0, by, bx0 + (bx1 - bx0) * k, by], fill=RED, width=4 * S)
         d.line([bx0, by - 16 * S, bx0, by], fill=RED, width=4 * S)
         if k >= 1:
             d.line([bx1, by - 16 * S, bx1, by], fill=RED, width=4 * S)
-        _text_c(d, ((bx0 + bx1) / 2, by + 18 * S), br["label"], f("bold", 30),
+        _text_c(d, ((bx0 + bx1) / 2, by + 12 * S), br["label"], f("bold", 28),
                 _mix(BG, RED, k))
     return img
 
