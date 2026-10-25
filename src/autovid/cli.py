@@ -212,7 +212,8 @@ def plan_visuals(
                 scene_id=sc.id, provider=info.get("provider", "Internet Archive"),
                 provider_id=info["title"], url=info["desc"], local_path=str(dest),
                 kind=kind, license=info.get("lic", ""),
-                license_url=info.get("licurl", ""), author=info.get("artist", ""))
+                license_url=info.get("licurl", ""),
+                author=info.get("artist") or info["title"])
             counts["photo"] += 1
             continue
         spec = spec.get("else", spec) if key else spec
