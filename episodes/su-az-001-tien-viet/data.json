@@ -1,5 +1,5 @@
 {
-  "thesis": "Mỗi lần đồng tiền Việt phải làm lại từ đầu đều bắt đầu từ cùng một chỗ: niềm tin của người cầm tiền bị phá vỡ.",
+  "thesis": "Qua một nghìn năm, mỗi lần đồng tiền Việt thay đổi lớn đều gắn với một câu hỏi: người cầm tiền có tin vào giá trị của nó hay không.",
   "data_points": [
     {
       "label": "Bao nhiêu đồng cũ đổi 1 đồng mới",
@@ -7,10 +7,22 @@
       "chart_type": "bar",
       "source": "Ngân hàng Nhà nước Việt Nam",
       "series": [
-        {"x": "1951", "y": 10},
-        {"x": "1959", "y": 1000},
-        {"x": "1975 (miền Nam)", "y": 500},
-        {"x": "1985", "y": 10}
+        {
+          "x": "1951",
+          "y": 10
+        },
+        {
+          "x": "1959",
+          "y": 1000
+        },
+        {
+          "x": "1975 (miền Nam)",
+          "y": 500
+        },
+        {
+          "x": "1985",
+          "y": 10
+        }
       ]
     },
     {
@@ -19,21 +31,62 @@
       "chart_type": "line",
       "source": "Tổng cục Thống kê",
       "series": [
-        {"x": "1986", "y": 774.7},
-        {"x": "1987", "y": 323.1},
-        {"x": "1988", "y": 393.8},
-        {"x": "1989", "y": 34.7},
-        {"x": "1990", "y": 67.1},
-        {"x": "1991", "y": 67.5},
-        {"x": "1992", "y": 17.5}
+        {
+          "x": "1986",
+          "y": 774.7
+        },
+        {
+          "x": "1987",
+          "y": 323.1
+        },
+        {
+          "x": "1988",
+          "y": 393.8
+        },
+        {
+          "x": "1989",
+          "y": 34.7
+        },
+        {
+          "x": "1990",
+          "y": 67.1
+        },
+        {
+          "x": "1991",
+          "y": 67.5
+        },
+        {
+          "x": "1992",
+          "y": 17.5
+        }
       ]
     }
   ],
   "sources": [
-    {"title": "Ngân hàng Nhà nước Việt Nam – Lịch sử phát triển", "url": "https://www.sbv.gov.vn", "publisher": "SBV"},
-    {"title": "Đại Việt Sử Ký Toàn Thư", "url": "https://vi.wikisource.org/wiki/%C4%90%E1%BA%A1i_Vi%E1%BB%87t_s%E1%BB%AD_k%C3%BD_to%C3%A0n_th%C6%B0", "publisher": "Viện Khoa học xã hội Việt Nam (bản dịch)"},
-    {"title": "Đỗ Văn Ninh – Tiền cổ Việt Nam", "url": "", "publisher": "NXB Khoa học xã hội"},
-    {"title": "Tổng cục Thống kê – Chỉ số giá tiêu dùng", "url": "https://www.gso.gov.vn", "publisher": "GSO"},
-    {"title": "World Bank – Inflation, consumer prices, Vietnam", "url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=VN", "publisher": "World Bank"}
+    {
+      "title": "Ngân hàng Nhà nước Việt Nam – Lịch sử phát triển",
+      "url": "https://www.sbv.gov.vn",
+      "publisher": "SBV"
+    },
+    {
+      "title": "Đại Việt Sử Ký Toàn Thư",
+      "url": "https://vi.wikisource.org/wiki/%C4%90%E1%BA%A1i_Vi%E1%BB%87t_s%E1%BB%AD_k%C3%BD_to%C3%A0n_th%C6%B0",
+      "publisher": "Viện Khoa học xã hội Việt Nam (bản dịch)"
+    },
+    {
+      "title": "Đỗ Văn Ninh – Tiền cổ Việt Nam",
+      "url": "",
+      "publisher": "NXB Khoa học xã hội"
+    },
+    {
+      "title": "Tổng cục Thống kê – Chỉ số giá tiêu dùng",
+      "url": "https://www.gso.gov.vn",
+      "publisher": "GSO"
+    },
+    {
+      "title": "World Bank – Inflation, consumer prices, Vietnam",
+      "url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=VN",
+      "publisher": "World Bank"
+    }
   ]
 }
