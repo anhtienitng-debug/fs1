@@ -340,8 +340,41 @@ FRAMES: dict[str, Callable[[dict, float, float], Image.Image]] = {
 }
 
 
+FX_DIR = Path(__file__).resolve().parents[3] / "motion-fx"
+CHROME = "/opt/pw-browsers/chromium-1243/chrome-linux64/chrome"
+
+
+def render_remotion(spec: dict, dur: float, dest: Path) -> Path:
+    """Ve bieu do bang Remotion (motion-fx/src/Chart.tsx): net manh, chuyen dong muot."""
+    import json
+    import os
+    import shutil
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    spec = dict(spec)
+    spec.pop("bg", None)  # khoa anh trong media2, Remotion can duong dan trong public/
+    if spec.get("bg_path"):
+        # Remotion chi doc anh trong public/, chep nen vao do
+        src = Path(spec.pop("bg_path"))
+        (FX_DIR / "public/_bg").mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, FX_DIR / "public/_bg" / src.name)
+        spec["bg"] = f"_bg/{src.name}"
+    props = dest.with_suffix(".json")
+    props.write_text(json.dumps({"duration": dur, "spec": spec}, ensure_ascii=False), encoding="utf-8")
+    cmd = ["npx", "remotion", "render", "src/index.ts", "Chart", str(dest.resolve()),
+           f"--props={props.resolve()}", "--codec=h264", "--crf=16", "--log=error"]
+    exe = os.environ.get("REMOTION_CHROME", CHROME)
+    if Path(exe).exists():
+        cmd.append(f"--browser-executable={exe}")
+    subprocess.run(cmd, cwd=FX_DIR, check=True)
+    props.unlink(missing_ok=True)
+    return dest
+
+
 def render(spec: dict, dur: float, dest: Path, fps: int = 24) -> Path:
     """Ve toan bo hieu ung thanh mot clip mp4 (khong tieng)."""
+    if spec.get("engine") == "remotion":
+        return render_remotion(spec, dur, dest)
     fn = FRAMES[spec["anim"]]
     dest.parent.mkdir(parents=True, exist_ok=True)
     n = max(int(round(dur * fps)), 1)
@@ -381,17 +414,19 @@ def render_group(scenes: list, spec: dict, gap: float, workdir: Path,
         starts.append(t)
         t += sc.duration + gap
     total = t
-    for ev in spec.get("events", []) + ([spec["bracket"]] if spec.get("bracket") else []):
+    timed = spec.get("events", []) + spec.get("cards", []) + [
+        spec[k] for k in ("bracket", "zoom", "tail", "focus") if spec.get(k)]
+    for ev in timed:
         say = ev.get("say")
         if not say:
             continue
         for sc, st in zip(scenes, starts, strict=True):
             pos = sc.narration.find(say)
             if pos >= 0:
-                ev["at"] = st + sc.duration * pos / max(len(sc.narration), 1)
+                ev["at"] = st + sc.duration * pos / max(len(sc.narration), 1) + ev.get("delay", 0)
                 break
     spec.setdefault("sweep_end", 0.95)
-    if spec.get("anim") == "timeline":
+    if spec.get("anim") == "timeline" and "segments" in spec:
         timed = sorted((e["at"], e["year"]) for e in spec.get("events", []) if "at" in e)
         if timed:
             first_year = spec["segments"][0][0]

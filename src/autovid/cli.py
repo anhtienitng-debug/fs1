@@ -166,11 +166,13 @@ def script_new(
 
 
 # ============================================================ plan-visuals
-def fx_timing(scene, items: list[dict]) -> list[dict]:
-    """Doi "say" (cum tu trong loi doc) thanh moc giay trong canh.
+def fx_timing(scene, items: list[dict], min_show: float = 1.6) -> list[dict]:
+    """Gan moc from/to (giay) cho lop chu nhan manh theo cum tu trong loi doc.
 
-    Uoc theo vi tri ky tu vi giong doc deu; moi hieu ung giu den hieu ung ke tiep
-    cung vi tri (hoac het canh), toi da "hold" giay neu co.
+    Moi luc chi hien MOT lop chu: lop sau xuat hien thi lop truoc tat. Lop nao
+    hien chua du min_show giay thi bo, vi chu vua hien da tat se gay roi mat.
+    The chuong (goc tren trai, 0,4-4,2 giay) chiem cho cua the ngay, nen the
+    ngay don sang phai.
     """
     out = []
     text = scene.narration
@@ -180,16 +182,23 @@ def fx_timing(scene, items: list[dict]) -> list[dict]:
             pos = text.find(it.pop("say"))
             it["from"] = round(scene.duration * max(pos, 0) / max(len(text), 1), 2)
         it.setdefault("from", 0.0)
+        if scene.chapter_tag and it["type"] == "date" and it["from"] < 4.4:
+            it["pos"] = "top-right"
         out.append(it)
     out.sort(key=lambda i: i["from"])
     end = scene.duration + 0.6
+    if scene.callout:
+        # thanh "LY DO" truot vao goc duoi luc 4,8 giay cuoi canh: chu nhan manh nhuong cho
+        end = max(0.6, scene.duration - 4.8)
+        out = [i for i in out if i["from"] < end - min_show]
+    kept: list[dict] = []
     for i, it in enumerate(out):
-        if "to" in it:
-            continue
-        nxt = next((o["from"] for o in out[i + 1:]
-                    if o.get("pos", "x") == it.get("pos", "x") or o["type"] == it["type"]), end)
-        it["to"] = round(min(nxt + 0.2, end, it["from"] + it.pop("hold", 99)), 2)
-    return out
+        nxt = out[i + 1]["from"] if i + 1 < len(out) else end
+        hold = it.pop("hold", 99)
+        it["to"] = round(min(it.get("to", 99), nxt + 0.15, end, it["from"] + hold), 2)
+        if it["to"] - it["from"] >= min_show or i + 1 == len(out):
+            kept.append(it)
+    return kept
 
 
 

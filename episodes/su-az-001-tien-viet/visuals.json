@@ -1,14 +1,14 @@
 {
  "s-000": {
-  "says": "Bính Tý",
+  "says": "Năm 1396",
   "photo": "S00_wide",
   "label": "Tiền đồng vừa ra khuôn · Schroeder, 1905",
   "fx": [
    {
     "type": "date",
-    "text": "THÁNG TƯ · BÍNH TÝ · 1396",
-    "say": "Tháng tư",
-    "hold": 4
+    "text": "NĂM 1396",
+    "say": "Năm 1396",
+    "hold": 3
    },
    {
     "type": "compare",
@@ -18,17 +18,11 @@
     "rightSub": "tiền giấy",
     "text": "→",
     "say": "Nộp một quan"
-   },
-   {
-    "type": "keyword",
-    "text": "ĐỔI CÓ LỜI",
-    "say": "Đổi có lời",
-    "pos": "center"
    }
   ]
  },
  "s-001": {
-  "says": "14 tháng 9 năm 1985",
+  "says": "Năm 1985",
   "label": "Tiền đồng · Schroeder, 1905",
   "photo": "S01_wide",
   "fx": [
@@ -39,15 +33,10 @@
     "pos": "bottom-left"
    },
    {
-    "type": "date",
-    "text": "14 · 9 · 1985",
-    "say": "ngày 14",
-    "hold": 4
-   },
-   {
     "type": "strike",
     "old": "10 đồng cũ",
     "text": "1 đồng mới",
+    "sub": "năm 1985",
     "say": "mười đồng cũ",
     "pos": "bottom-left"
    }
@@ -63,16 +52,16 @@
     "text": "GIÁ CẢ ×9",
     "say": "giá cả tăng",
     "pos": "bottom-left",
-    "sub": "năm 1986 · theo số liệu thường được trích dẫn"
+    "sub": "năm 1986 · số liệu thường được trích dẫn"
    },
    {
     "type": "compare",
     "left": "1396",
     "leftSub": "giấu đồng xu",
     "right": "1986",
-    "rightSub": "giữ vàng, giữ gạo",
+    "rightSub": "cất vàng, cất gạo",
     "text": "↔",
-    "say": "Giấu đồng xu"
+    "say": "Hai thời điểm"
    },
    {
     "type": "keyword",
@@ -83,173 +72,105 @@
   ]
  },
  "s-003": {
-  "says": "Câu trả lời",
+  "says": "trục thời gian",
   "group": "intro",
   "anim": {
    "anim": "timeline",
+   "engine": "remotion",
    "title": "1000 năm tiền Việt",
-   "subtitle": "Các mốc lớn từ khi có ghi nhận đến nay",
-   "segments": [
-    [
-     850,
-     1000,
-     0.4
-    ],
-    [
-     1000,
-     1900,
-     0.8
-    ],
-    [
-     1900,
-     2030,
-     2.2
-    ]
-   ],
-   "eras": [
-    {
-     "from": 850,
-     "to": 970,
-     "label": "",
-     "align": "right",
-     "pad": 10
-    },
-    {
-     "from": 970,
-     "to": 1650,
-     "label": "Tiền đồng các triều đại",
-     "align": "right",
-     "pad": 30
-    },
-    {
-     "from": 1650,
-     "to": 1885,
-     "label": ""
-    },
-    {
-     "from": 1885,
-     "to": 1946,
-     "label": "Đồng bạc Đông Dương"
-    },
-    {
-     "from": 1946,
-     "to": 2030,
-     "label": "Đồng Việt Nam",
-     "align": "right"
-    }
+   "subtitle": "Những lần đồng tiền phải làm lại từ đầu",
+   "bg": "L04_plate",
+   "bg_dim": 0.86,
+   "range": [
+    940,
+    2030
    ],
    "ticks": [
+    1000,
     1200,
-    1500,
+    1400,
+    1600,
     1800,
-    1925,
-    1995
+    2000
    ],
    "events": [
     {
-     "year": 900,
-     "label": "Trước TK 10",
-     "note": "Tiền phương Bắc",
-     "side": "down",
-     "say": "Trước thế kỷ mười",
-     "level": 0,
-     "nodot": true
-    },
-    {
      "year": 970,
-     "label": "970",
-     "note": "Thái Bình Hưng Bảo",
+     "label": "Tiền Việt đầu tiên",
      "side": "up",
      "say": "Khoảng năm 970"
     },
     {
      "year": 1396,
-     "label": "1396",
-     "note": "Tiền giấy đầu tiên",
+     "label": "Tiền giấy",
      "side": "down",
-     "say": "Năm 1396",
-     "level": 0
-    },
-    {
-     "year": 1650,
-     "label": "TK 17–18",
-     "note": "Tiền kẽm, bạc nén",
-     "side": "up",
-     "say": "Thế kỷ mười bảy"
+     "say": "Năm 1396"
     },
     {
      "year": 1885,
-     "label": "1885",
-     "note": "Đồng bạc Đông Dương",
-     "side": "down",
-     "say": "Cuối thế kỷ mười chín",
-     "level": 1
+     "label": "Đồng bạc Đông Dương",
+     "side": "up",
+     "say": "Cuối thế kỷ"
     },
     {
      "year": 1946,
-     "label": "1946",
-     "note": "Giấy bạc Việt Nam",
+     "label": "Tiền mới",
      "side": "up",
-     "reset": true,
-     "say": "Năm 1946",
-     "level": 0
+     "say": "từ năm 1946",
+     "delay": 1.4
     },
     {
      "year": 1951,
-     "label": "1951",
-     "note": "10 đổi 1",
+     "label": "10 : 1",
      "side": "down",
-     "reset": true,
-     "say": "Năm 1951",
-     "level": 0
+     "say": "từ năm 1946",
+     "delay": 1.9
     },
     {
      "year": 1959,
-     "label": "1959",
-     "note": "1.000 đổi 1",
+     "label": "1.000 : 1",
      "side": "up",
-     "level": 1,
-     "reset": true,
-     "say": "Năm 1959"
+     "say": "từ năm 1946",
+     "delay": 2.4
     },
     {
      "year": 1975,
-     "label": "1975",
-     "note": "500 đổi 1",
+     "label": "500 : 1",
      "side": "down",
-     "level": 1,
-     "reset": true,
-     "say": "Năm 1975"
+     "say": "từ năm 1946",
+     "delay": 2.9
     },
     {
      "year": 1978,
-     "label": "1978",
-     "note": "Thống nhất",
+     "label": "Thống nhất",
      "side": "up",
-     "level": 2,
-     "reset": true,
-     "say": "Năm 1978"
+     "say": "từ năm 1946",
+     "delay": 3.4
     },
     {
      "year": 1985,
-     "label": "1985",
-     "note": "10 đổi 1",
+     "label": "10 : 1",
      "side": "down",
-     "level": 2,
-     "reset": true,
-     "say": "năm 1985, lần cuối"
+     "say": "từ năm 1946",
+     "delay": 3.9
     }
    ],
+   "zoom": {
+    "range": [
+     1938,
+     2030
+    ],
+    "say": "Rồi từ năm 1946"
+   },
    "bracket": {
     "from": 1946,
     "to": 1985,
-    "label": "6 mốc thay đổi trong 40 năm",
-    "say": "Bốn mươi năm, sáu lần"
+    "label": "6 lần trong 40 năm",
+    "say": "sáu lần đổi tiền"
    },
-   "bg": "L04_plate",
-   "bg_dim": 0.72,
-   "camera": {
-    "zoom": 1.18
+   "tail": {
+    "label": "Sau 1985: không đổi thêm",
+    "say": "dừng hẳn"
    }
   }
  },
@@ -258,36 +179,61 @@
   "group": "intro"
  },
  "s-005": {
-  "says": "Thế kỷ mười bảy",
+  "says": "sáu lần đổi tiền",
   "group": "intro"
  },
  "s-006": {
-  "says": "Năm 1946",
-  "group": "intro"
+  "says": "bốn lý do",
+  "group": "reasons",
+  "anim": {
+   "anim": "reasons",
+   "engine": "remotion",
+   "bg": "L04_plate",
+   "bg_dim": 0.9,
+   "title": "Vì sao phải làm lại?",
+   "subtitle": "Bốn lý do lặp lại trong một nghìn năm",
+   "cards": [
+    {
+     "n": "01",
+     "title": "Nhà nước mới",
+     "years": "970 · 1946 · 1978",
+     "say": "Một, có nhà nước mới"
+    },
+    {
+     "n": "02",
+     "title": "Thiếu kim loại",
+     "years": "1396 · thế kỷ 17–19",
+     "say": "Hai, thiếu kim loại"
+    },
+    {
+     "n": "03",
+     "title": "Đổi quyền phát hành",
+     "years": "cuối thế kỷ 19",
+     "say": "Ba, quyền phát hành"
+    },
+    {
+     "n": "04",
+     "title": "Tiền mất giá",
+     "years": "1951 · 1959 · 1985",
+     "say": "Bốn, tiền mất giá"
+    }
+   ],
+   "focus": {
+    "word": "TIN",
+    "sub": "Ngày mai, tờ tiền này còn ai nhận không?",
+    "say": "một chữ: tin"
+   }
+  }
  },
  "s-007": {
-  "says": "không đổi thêm lần nào",
-  "group": "intro",
-  "fx": [
-   {
-    "type": "keyword",
-    "text": "Hơn 40 năm · không đổi",
-    "say": "Rồi dừng hẳn",
-    "pos": "bottom-left"
-   },
-   {
-    "type": "keyword",
-    "text": "Bắt đầu từ MỘT CHỮ",
-    "say": "Lý do đầu tiên",
-    "pos": "bottom-left"
-   }
-  ]
+  "says": "một chữ: tin",
+  "group": "reasons"
  },
  "s-008": {
   "says": "Năm 968",
   "photo": "L04_plate",
   "label": "Plate II: tiền thời Đinh, Tiền Lê, Lý · Lacroix, Numismatique annamite, 1900",
-  "chapter_tag": "Chương 2 · Năm 970"
+  "chapter_tag": "Lý do 1 · Nhà nước mới"
  },
  "s-009": {
   "says": "chữ Đinh",
@@ -336,10 +282,10 @@
   ]
  },
  "s-012": {
-  "says": "nhà nước độc lập",
+  "says": "Triều đại mới",
   "photo": "L05_grid",
   "label": "Tiền cổ Việt Nam · Lacroix, 1900",
-  "callout": "Một nhà nước độc lập cần đồng tiền của chính mình"
+  "callout": "Triều đại mới, đồng tiền mới"
  },
  "s-013": {
   "says": "Hồ Quý Ly",
@@ -352,7 +298,7 @@
    "Chưa tìm thấy hiện vật nguyên bản"
   ],
   "label": "Ảnh nền: tiền cổ · Lacroix, 1900",
-  "chapter_tag": "Chương 3 · Năm 1396"
+  "chapter_tag": "Lý do 2 · Thiếu kim loại"
  },
  "s-014": {
   "says": "bảy mệnh giá",
@@ -402,15 +348,22 @@
   ]
  },
  "s-018": {
-  "says": "Cuối năm 1406",
+  "says": "giấu tiền đồng",
   "photo": "L06_grid",
-  "label": "Tiền cổ Việt Nam · Lacroix, 1900"
+  "label": "Tiền cổ Việt Nam · Lacroix, 1900",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "Đồng xu: cầm chắc trong tay",
+    "say": "đồng xu thì cầm chắc",
+    "pos": "bottom-left"
+   }
+  ]
  },
  "s-019": {
   "says": "không đủ đồng",
   "photo": "L12_grid",
-  "label": "Tiền cổ Việt Nam · Lacroix, 1900",
-  "chapter_tag": "Chương 4 · Thế kỷ 17–19"
+  "label": "Tiền cổ Việt Nam · Lacroix, 1900"
  },
  "s-020": {
   "says": "tiền kẽm",
@@ -470,16 +423,16 @@
   ]
  },
  "s-024": {
-  "says": "nền kinh tế đang lớn lên",
+  "says": "Thiếu đồng",
   "photo": "S24_face",
   "label": "Việt Nam nguyên bảo · Schroeder, 1905",
-  "callout": "Nguồn đồng không đủ cho một nền kinh tế đang lớn lên"
+  "callout": "Thiếu đồng → kẽm, bạc, vàng"
  },
  "s-025": {
   "says": "Nửa sau thế kỷ mười chín",
   "video": "v_saigon_opera",
   "label": "Nhà hát Sài Gòn, phim 1955 · NARA",
-  "chapter_tag": "Chương 5 · Cuối thế kỷ 19"
+  "chapter_tag": "Lý do 3 · Đổi quyền phát hành"
  },
  "s-026": {
   "says": "Ngân hàng Đông Dương",
@@ -515,10 +468,10 @@
   "label": "Tiền thời Nguyễn · Lacroix, 1900"
  },
  "s-030": {
-  "says": "chính quyền thuộc địa",
+  "says": "Người cai trị đổi",
   "video": "v_saigon_boulevard",
   "label": "Sài Gòn, 1955 · NARA",
-  "callout": "Đồng tiền đi theo hệ thống của chính quyền thuộc địa"
+  "callout": "Người cai trị đổi, đồng tiền đổi theo"
  },
  "s-031": {
   "says": "Năm 1946",
@@ -526,24 +479,25 @@
   "eyebrow": "Năm 1946",
   "title": "Giấy bạc Việt Nam ra đời",
   "sub": "Người dân gọi là giấy bạc Cụ Hồ · in ở chiến khu, có lúc trên giấy dó",
-  "chapter_tag": "Chương 6 · 1946–1959"
+  "chapter_tag": "Thế kỷ 20 · Các lý do quay lại"
  },
  "s-032": {
-  "says": "Chiến tranh tốn kém",
+  "says": "tiền mất giá",
   "video": "v_print_1",
-  "label": "Xưởng in tiền Mỹ (minh hoạ) · Washington Stories"
+  "label": "Xưởng in tiền Mỹ (minh hoạ) · Washington Stories",
+  "chapter_tag": "Lý do 4 · Tiền mất giá"
  },
  "s-033": {
   "says": "Năm 1959",
   "anim": {
    "anim": "bars",
-   "title": "Bao nhiêu đồng cũ đổi 1 đồng mới?",
-   "subtitle": "Các lần đổi tiền 1951 – 1985",
+   "title": "Bao nhiêu đồng cũ đổi 1 đồng mới",
+   "subtitle": "Các lần đổi tiền, 1951–1985",
    "items": [
     {
      "label": "1951",
      "value": 10,
-     "note": "Ngân hàng Quốc gia"
+     "note": "cả nước"
     },
     {
      "label": "1959",
@@ -562,30 +516,21 @@
      "note": "cả nước"
     }
    ],
-   "source": "Ngân hàng Nhà nước Việt Nam; tổng hợp báo chí"
-  },
-  "fx": [
-   {
-    "type": "strike",
-    "old": "1.000 đồng",
-    "text": "1 đồng",
-    "sub": "miền Bắc, 1959",
-    "say": "Ba chữ số không",
-    "pos": "top-right"
-   }
-  ]
+   "source": "Nguồn: Ngân hàng Nhà nước Việt Nam; tổng hợp báo chí",
+   "engine": "remotion"
+  }
  },
  "s-034": {
-  "says": "nhà nước mới cần đồng tiền riêng",
+  "says": "hai lý do chồng lên nhau",
   "video": "v_saigon_street",
   "label": "Sài Gòn, 1955 · NARA",
-  "callout": "Nhà nước mới cần tiền riêng; chi phí chiến tranh làm tiền mất giá"
+  "callout": "Nhà nước mới + tiền mất giá"
  },
  "s-035": {
   "says": "Từ năm 1954",
   "video": "v_saigon_aerial",
   "label": "Sài Gòn, 1955 · NARA",
-  "chapter_tag": "Chương 7 · 1975–1978"
+  "chapter_tag": "Lý do 1 · Thống nhất tiền tệ"
  },
  "s-036": {
   "says": "Tháng 9 năm 1975",
@@ -618,23 +563,17 @@
   ]
  },
  "s-038": {
-  "says": "đất nước thống nhất",
+  "says": "thống nhất cần",
   "video": "v_saigon_port",
   "label": "Sài Gòn, 1955 · NARA",
-  "callout": "Đất nước thống nhất cần một đồng tiền thống nhất"
+  "callout": "Đất nước thống nhất, đồng tiền thống nhất"
  },
  "s-039": {
-  "says": "14 tháng 9 năm 1985",
+  "says": "lần đổi tiền cuối cùng",
   "video": "v_saigon_shops",
   "label": "Sài Gòn, 1955 · NARA",
-  "chapter_tag": "Chương 8 · Năm 1985",
+  "chapter_tag": "Lý do 4 · Năm 1985",
   "fx": [
-   {
-    "type": "date",
-    "text": "14 · 9 · 1985",
-    "say": "14 tháng 9",
-    "hold": 4
-   },
    {
     "type": "keyword",
     "text": "GIÁ · LƯƠNG · TIỀN",
@@ -653,16 +592,17 @@
   "anim": {
    "anim": "counter",
    "title": "Giá cả năm 1986",
-   "subtitle": "Theo số liệu thường được trích dẫn",
+   "subtitle": "So với năm 1985",
    "value": 775,
    "suffix": "%",
    "from_label": "Mức giá năm 1985",
-   "to_label": "Mức giá năm 1986: gần gấp chín",
-   "source": "Nguồn: Tổng cục Thống kê (số liệu thường được trích dẫn; có nguồn ghi khác)"
+   "to_label": "Giá cả gần gấp chín trong một năm",
+   "source": "Nguồn: Tổng cục Thống kê (số liệu thường được trích dẫn; có nguồn ghi khác)",
+   "engine": "remotion"
   }
  },
  "s-042": {
-  "says": "Gần sáu trăm năm trước",
+  "says": "người ta giấu đồng xu",
   "photo": "L06_grid",
   "label": "Tiền cổ Việt Nam · Lacroix, 1900",
   "fx": [
@@ -673,7 +613,7 @@
     "right": "1986",
     "rightSub": "giữ vàng, giữ gạo",
     "text": "↔",
-    "say": "Gần sáu trăm"
+    "say": "Năm 1396"
    }
   ]
  },
@@ -681,7 +621,7 @@
   "says": "gốc rễ",
   "video": "v_saigon_traffic",
   "label": "Sài Gòn, 1955 · NARA",
-  "callout": "Tiền được phát hành nhanh hơn lượng hàng hóa làm ra"
+  "callout": "Tiền phát hành nhanh hơn hàng hóa làm ra"
  },
  "s-044": {
   "says": "Đổi Mới",

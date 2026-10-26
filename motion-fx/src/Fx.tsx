@@ -70,7 +70,7 @@ const DateStamp: React.FC<{it: FxItem}> = ({it}) => {
   const text = it.text ?? '';
   const n = Math.floor(interpolate(t, [it.from + 0.15, it.from + 0.15 + text.length * 0.045], [0, text.length], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}));
   return (
-    <div style={{position: 'absolute', left: 110, top: 150, opacity: k, display: 'flex', alignItems: 'center', gap: 18,
+    <div style={{position: 'absolute', ...(it.pos === 'top-right' ? {right: 110} : {left: 110}), top: 150, opacity: k, display: 'flex', alignItems: 'center', gap: 18,
       background: 'rgba(14,15,18,0.85)', padding: '16px 28px', borderRadius: 12, borderLeft: `8px solid ${C.gold}`}}>
       <div style={{fontFamily: 'BVP', fontWeight: 700, fontSize: 46, color: C.cream, letterSpacing: 1}}>
         {text.slice(0, n)}<span style={{opacity: n < text.length ? 1 : 0, color: C.gold}}>▍</span>

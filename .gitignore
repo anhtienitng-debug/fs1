@@ -24,3 +24,4 @@ review/
 motion-fx/node_modules/
 motion-fx/package-lock.json
 motion-fx/out/
+motion-fx/public/_bg/
