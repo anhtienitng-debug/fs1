@@ -58,8 +58,8 @@ const Keyword: React.FC<{it: FxItem}> = ({it}) => {
         <div style={{fontFamily: 'BVP', fontWeight: 700, fontSize: 84, color: C.cream, lineHeight: 1.1, letterSpacing: -1}}>{it.text}</div>
         <div style={{height: 8, width: `${sweep}%`, background: C.red, borderRadius: 4, marginTop: 8}} />
       </div>
-      {it.sub && <div style={{fontFamily: 'BVP', fontWeight: 600, fontSize: 38, color: C.gold, marginTop: 14,
-        textShadow: '0 2px 12px rgba(0,0,0,0.9)'}}>{it.sub}</div>}
+      {it.sub && <div style={{fontFamily: 'BVP', fontWeight: 600, fontSize: 34, color: C.gold, marginTop: 12,
+        background: 'rgba(14,15,18,0.82)', padding: '6px 18px', borderRadius: 10, alignSelf: it.pos === 'center' ? 'center' : 'flex-start'}}>{it.sub}</div>}
     </div>
   );
 };
