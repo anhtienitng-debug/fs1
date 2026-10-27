@@ -221,9 +221,9 @@ const Bars: React.FC<{spec: ChartSpec}> = ({spec}) => {
           const val = Math.round(it.value * k);
           return (
             <div key={i} style={{display: 'flex', alignItems: 'center', height: 120, opacity: appear(t, at - 0.2, 0.4)}}>
-              <div style={{width: 200}}>
+              <div style={{width: items.some((x) => (x.note ?? '').length > 14) ? 420 : 200, whiteSpace: 'nowrap'}}>
                 <div style={{fontFamily: 'BVP', fontWeight: 700, fontSize: 48, color: C.cream}}>{it.label}</div>
-                {it.note && <div style={{fontFamily: 'BVP', fontSize: 22, color: C.muted}}>{it.note}</div>}
+                {it.note && <div style={{fontFamily: 'BVP', fontSize: 26, color: C.muted}}>{it.note}</div>}
               </div>
               <div style={{flex: 1, position: 'relative', height: 44}}>
                 <div style={{position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.04)', borderRadius: 22}} />
