@@ -414,7 +414,7 @@ def render_group(scenes: list, spec: dict, gap: float, workdir: Path,
         starts.append(t)
         t += sc.duration + gap
     total = t
-    timed = spec.get("events", []) + spec.get("cards", []) + [
+    timed = spec.get("events", []) + spec.get("cards", []) + spec.get("mark", []) + [
         spec[k] for k in ("bracket", "zoom", "tail", "focus") if spec.get(k)]
     for ev in timed:
         say = ev.get("say")

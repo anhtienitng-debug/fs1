@@ -17,7 +17,7 @@ type Ev = {year: number; label?: string; note?: string; at?: number; side?: 'up'
 type Card = {n: string; title: string; years?: string; color?: string; at?: number};
 type Item = {label: string; value: number; note?: string; highlight?: boolean};
 export type ChartSpec = {
-  anim: 'timeline' | 'reasons' | 'bars' | 'counter';
+  anim: 'timeline' | 'reasons' | 'bars' | 'counter' | 'ladder';
   title?: string; subtitle?: string; source?: string; bg?: string; bg_dim?: number;
   // timeline
   range?: [number, number]; ticks?: number[]; events?: Ev[];
@@ -26,6 +26,8 @@ export type ChartSpec = {
   tail?: {label: string; at?: number};
   // reasons
   cards?: Card[]; focus?: {word: string; sub?: string; at?: number};
+  // ladder: thang bac, chi ghi so lieu o bac co nguon
+  steps?: {label: string; value?: string}[]; mark?: {step: number; at?: number}[];
   // bars
   items?: Item[]; unit?: string;
   // counter
@@ -241,6 +243,45 @@ const Bars: React.FC<{spec: ChartSpec}> = ({spec}) => {
   );
 };
 
+// ---------------------------------------------------------------- ladder
+const Ladder: React.FC<{spec: ChartSpec}> = ({spec}) => {
+  const {t} = useT();
+  const steps = spec.steps ?? [];
+  const n = steps.length;
+  const top = 230, bottom = 980, gap = (bottom - top) / Math.max(n, 1);
+  const marks = (spec.mark ?? []).filter((m) => m.at !== undefined);
+  // vi tri con tro: bac cua moc gan nhat da qua, truot muot giua cac moc
+  let cur = marks.length ? marks[0].step : n - 1, prev = cur, tAt = 0;
+  for (const m of marks) { if (t >= m.at!) { prev = cur; cur = m.step; tAt = m.at!; } }
+  const mk = interpolate(t, [tAt, tAt + 1.1], [0, 1], {...clamp, easing: io});
+  const pos = prev + (cur - prev) * mk;
+  const py = top + pos * gap + gap / 2;
+  const shown = marks.length ? appear(t, marks[0].at!, 0.6) : 1;
+  return (
+    <AbsoluteFill>
+      <Backdrop spec={spec} />
+      <Header spec={spec} />
+      {steps.map((s, i) => {
+        const k = appear(t, 0.2 + (n - i) * 0.05, 0.5);
+        const lit = Math.max(0, 1 - Math.abs(pos - i)) * shown;
+        const w = 520 + (n - 1 - i) * 22;
+        return (
+          <div key={i} style={{position: 'absolute', top: top + i * gap + 4, left: 960 - w / 2, width: w, height: gap - 8, opacity: k,
+            borderRadius: 6, background: `rgba(212,174,106,${0.10 + 0.55 * lit})`, border: `1px solid rgba(212,174,106,${0.25 + 0.6 * lit})`}}>
+            {s.label && <div style={{position: 'absolute', right: w + 30, top: '50%', transform: 'translateY(-50%)', whiteSpace: 'nowrap',
+              fontFamily: 'BVP', fontWeight: 600, fontSize: 24, color: lit > 0.5 ? C.cream : C.muted}}>{s.label}</div>}
+            {s.value && <div style={{position: 'absolute', left: w + 30, top: '50%', transform: 'translateY(-50%)', whiteSpace: 'nowrap',
+              fontFamily: 'BVP', fontWeight: 700, fontSize: 30, color: C.gold, opacity: lit}}>{s.value}</div>}
+          </div>
+        );
+      })}
+      <div style={{position: 'absolute', left: 960 - 10, top: py - 10, width: 20, height: 20, borderRadius: 10, background: C.cream, opacity: shown,
+        boxShadow: '0 0 30px rgba(241,237,229,0.8)'}} />
+      <Source spec={spec} />
+    </AbsoluteFill>
+  );
+};
+
 // ---------------------------------------------------------------- counter
 const Counter: React.FC<{spec: ChartSpec}> = ({spec}) => {
   const {t} = useT();
@@ -278,5 +319,6 @@ export const Chart: React.FC<ChartProps> = ({spec, duration}) => (
     {spec.anim === 'reasons' && <Reasons spec={spec} />}
     {spec.anim === 'bars' && <Bars spec={spec} />}
     {spec.anim === 'counter' && <Counter spec={spec} />}
+    {spec.anim === 'ladder' && <Ladder spec={spec} />}
   </AbsoluteFill>
 );

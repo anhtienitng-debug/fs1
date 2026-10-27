@@ -1,0 +1,293 @@
+{
+ "s-000": {
+  "says": "kinh thành Huế",
+  "photo": "V_quanbo",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
+  "fx": [
+   {
+    "type": "date",
+    "text": "HUẾ · NĂM 1839",
+    "say": "Năm 1839",
+    "hold": 4.5
+   }
+  ]
+ },
+ "s-001": {
+  "says": "tòng cửu phẩm",
+  "anim": {
+   "anim": "ladder",
+   "engine": "remotion",
+   "title": "18 bậc phẩm hàm",
+   "subtitle": "Quan văn, võ triều Nguyễn",
+   "steps": [
+    {
+     "label": "Chánh nhất phẩm",
+     "value": "400 quan · 300 phương"
+    },
+    {
+     "label": "Tòng nhất phẩm"
+    },
+    {
+     "label": "Chánh nhị phẩm"
+    },
+    {
+     "label": "Tòng nhị phẩm"
+    },
+    {
+     "label": "Chánh tam phẩm"
+    },
+    {
+     "label": "Tòng tam phẩm"
+    },
+    {
+     "label": "Chánh tứ phẩm"
+    },
+    {
+     "label": "Tòng tứ phẩm"
+    },
+    {
+     "label": "Chánh ngũ phẩm"
+    },
+    {
+     "label": "Tòng ngũ phẩm"
+    },
+    {
+     "label": "Chánh lục phẩm"
+    },
+    {
+     "label": "Tòng lục phẩm"
+    },
+    {
+     "label": "Chánh thất phẩm"
+    },
+    {
+     "label": "Tòng thất phẩm"
+    },
+    {
+     "label": "Chánh bát phẩm"
+    },
+    {
+     "label": "Tòng bát phẩm"
+    },
+    {
+     "label": "Chánh cửu phẩm"
+    },
+    {
+     "label": "Tòng cửu phẩm",
+     "value": "18 quan · 16 phương"
+    }
+   ],
+   "mark": [
+    {
+     "step": 17,
+     "say": "bậc thấp nhất"
+    }
+   ]
+  }
+ },
+ "s-002": {
+  "says": "mười tám quan tiền",
+  "photo": "S13_minhmang",
+  "label": "Tiền đồng thời Minh Mạng · Schroeder, 1905",
+  "fx": [
+   {
+    "type": "counter",
+    "value": 18,
+    "suffix": " quan",
+    "sub": "+ 16 phương gạo + 4 quan áo xuân · cả năm",
+    "say": "mười tám quan"
+   }
+  ]
+ },
+ "s-003": {
+  "says": "bát đong",
+  "photo": "V_market",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
+  "fx": [
+   {
+    "type": "compare",
+    "left": "16 phương",
+    "leftSub": "gạo / năm",
+    "right": "480 bát",
+    "rightSub": "bát đong",
+    "text": "=",
+    "say": "Vậy cả năm"
+   }
+  ]
+ },
+ "s-004": {
+  "says": "người khác",
+  "photo": "V_plough",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam"
+ },
+ "s-005": {
+  "says": "tịch điền",
+  "photo": "V_plough2",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
+  "fx": [
+   {
+    "type": "date",
+    "text": "NĂM 1802 · RUỘNG TỊCH ĐIỀN",
+    "say": "Năm 1802",
+    "hold": 4
+   },
+   {
+    "type": "keyword",
+    "text": "12 quan · 12 phương / năm",
+    "say": "Cả năm là",
+    "pos": "bottom-left"
+   }
+  ]
+ },
+ "s-006": {
+  "says": "chỉ để hình dung",
+  "anim": {
+   "anim": "bars",
+   "engine": "remotion",
+   "title": "Lương một năm",
+   "subtitle": "Tính bằng quan tiền, chưa kể gạo",
+   "unit": " quan",
+   "items": [
+    {
+     "label": "Quan",
+     "note": "tòng cửu phẩm · 1839",
+     "value": 18,
+     "highlight": true
+    },
+    {
+     "label": "Thợ cày",
+     "note": "ruộng tịch điền · 1802",
+     "value": 12
+    }
+   ],
+   "source": "Hai mốc cách nhau 37 năm, chỉ để hình dung"
+  }
+ },
+ "s-007": {
+  "says": "chánh nhất phẩm",
+  "anim": {
+   "anim": "ladder",
+   "engine": "remotion",
+   "title": "18 bậc phẩm hàm",
+   "subtitle": "Lương năm theo bảng năm 1839",
+   "steps": [
+    {
+     "label": "Chánh nhất phẩm",
+     "value": "400 quan · gấp ~22 lần"
+    },
+    {
+     "label": "Tòng nhất phẩm"
+    },
+    {
+     "label": "Chánh nhị phẩm"
+    },
+    {
+     "label": "Tòng nhị phẩm"
+    },
+    {
+     "label": "Chánh tam phẩm"
+    },
+    {
+     "label": "Tòng tam phẩm"
+    },
+    {
+     "label": "Chánh tứ phẩm"
+    },
+    {
+     "label": "Tòng tứ phẩm"
+    },
+    {
+     "label": "Chánh ngũ phẩm"
+    },
+    {
+     "label": "Tòng ngũ phẩm"
+    },
+    {
+     "label": "Chánh lục phẩm"
+    },
+    {
+     "label": "Tòng lục phẩm"
+    },
+    {
+     "label": "Chánh thất phẩm"
+    },
+    {
+     "label": "Tòng thất phẩm"
+    },
+    {
+     "label": "Chánh bát phẩm"
+    },
+    {
+     "label": "Tòng bát phẩm"
+    },
+    {
+     "label": "Chánh cửu phẩm"
+    },
+    {
+     "label": "Tòng cửu phẩm",
+     "value": "18 quan · 16 phương"
+    }
+   ],
+   "mark": [
+    {
+     "step": 17,
+     "say": "Còn ở bậc"
+    },
+    {
+     "step": 0,
+     "say": "chánh nhất phẩm"
+    }
+   ]
+  }
+ },
+ "s-008": {
+  "says": "ít ai ngờ",
+  "photo": "V_mandarins_house",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam"
+ },
+ "s-009": {
+  "says": "Trương Đăng Quế",
+  "photo": "V_quanbo",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
+  "fx": [
+   {
+    "type": "quote",
+    "text": "Quan trên xin bớt lương, chia cho quan dưới",
+    "source": "Năm 1839 · tấu của Trương Đăng Quế và các đại thần",
+    "say": "Họ xin bớt"
+   }
+  ]
+ },
+ "s-010": {
+  "says": "tự xin bớt",
+  "photo": "V_mandarins_house",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "VÌ SAO?",
+    "say": "Vì sao",
+    "pos": "center"
+   }
+  ]
+ },
+ "s-011": {
+  "says": "dưỡng liêm",
+  "photo": "S13_minhmang",
+  "label": "Tiền đồng thời Minh Mạng · Schroeder, 1905",
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "DƯỠNG LIÊM",
+    "say": "tiền dưỡng liêm",
+    "pos": "center",
+    "sub": "tiền để nuôi sự trong sạch"
+   }
+  ]
+ },
+ "s-012": {
+  "says": "theo bạn về nhà",
+  "photo": "V_mandarin_garden",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam"
+ }
+}
