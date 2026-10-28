@@ -301,6 +301,17 @@ def plan_visuals(
             next(plan[m.id]["anim"] for m in members if "anim" in plan[m.id])))
         if spec.get("bg") in have:
             spec["bg_path"] = str(have[spec["bg"]])
+        for b in spec.get("beats", []):
+            # anh in tren ban ho so: chep vao Remotion va ghi cong nhu anh thuong
+            key = b.pop("photo", None)
+            if key in have:
+                b["src_path"] = str(have[key])
+                info = db[key]
+                assets.setdefault(key, Asset(
+                    scene_id=members[0].id, provider=info.get("provider", "Internet Archive"),
+                    provider_id=info["title"], url=info["desc"], local_path=str(have[key]),
+                    kind="photo", license=info.get("lic", ""), license_url=info.get("licurl", ""),
+                    author=info.get("artist") or info["title"]))
         clips = motion.render_group(members, spec, gap,
                                     job.file("motion", g), fps)
         for m in members:

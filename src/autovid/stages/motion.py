@@ -359,9 +359,16 @@ def render_remotion(spec: dict, dur: float, dest: Path) -> Path:
         (FX_DIR / "public/_bg").mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, FX_DIR / "public/_bg" / src.name)
         spec["bg"] = f"_bg/{src.name}"
+    for b in spec.get("beats", []):
+        if b.get("src_path"):
+            src = Path(b.pop("src_path"))
+            (FX_DIR / "public/_bg").mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, FX_DIR / "public/_bg" / src.name)
+            b["src"] = f"_bg/{src.name}"
     props = dest.with_suffix(".json")
     props.write_text(json.dumps({"duration": dur, "spec": spec}, ensure_ascii=False), encoding="utf-8")
-    cmd = ["npx", "remotion", "render", "src/index.ts", "Chart", str(dest.resolve()),
+    comp = "Dossier" if spec.get("anim") == "dossier" else "Chart"
+    cmd = ["npx", "remotion", "render", "src/index.ts", comp, str(dest.resolve()),
            f"--props={props.resolve()}", "--codec=h264", "--crf=16", "--log=error"]
     exe = os.environ.get("REMOTION_CHROME", CHROME)
     if Path(exe).exists():
@@ -414,7 +421,7 @@ def render_group(scenes: list, spec: dict, gap: float, workdir: Path,
         starts.append(t)
         t += sc.duration + gap
     total = t
-    timed = spec.get("events", []) + spec.get("cards", []) + spec.get("mark", []) + spec.get("items", []) + [
+    timed = spec.get("events", []) + spec.get("cards", []) + spec.get("mark", []) + spec.get("items", []) + spec.get("beats", []) + [
         spec[k] for k in ("bracket", "zoom", "tail", "focus", "badge") if spec.get(k)]
     for ev in timed:
         say = ev.get("say")

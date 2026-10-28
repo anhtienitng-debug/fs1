@@ -1,0 +1,247 @@
+{
+ "s-000": {
+  "says": "Năm 1839",
+  "group": "hoso",
+  "anim": {
+   "anim": "dossier",
+   "engine": "remotion",
+   "beats": [
+    {
+     "type": "print",
+     "photo": "C_chau10",
+     "caption": "Văn bản chữ Hán triều Nguyễn · minh họa · Châu bản (Internet Archive)",
+     "say": "Năm 1839"
+    },
+    {
+     "type": "note",
+     "term": "Tấu",
+     "han": "奏",
+     "text": "Văn bản các quan dâng lên vua.",
+     "say": "một bản tấu"
+    },
+    {
+     "type": "slip",
+     "text": "Xin bớt bổng lộc của chính mình.",
+     "sub": "Bản tấu năm 1839",
+     "say": "Họ xin bớt"
+    },
+    {
+     "type": "note",
+     "term": "Bổng lộc",
+     "han": "俸祿",
+     "text": "Lương của quan, trả bằng tiền và gạo.",
+     "say": "bổng lộc"
+    },
+    {
+     "type": "ranks",
+     "say": "ngũ phẩm",
+     "from": 8
+    },
+    {
+     "type": "note",
+     "term": "Phẩm",
+     "han": "品",
+     "text": "Quan chia 9 phẩm, mỗi phẩm có chánh và tòng: 18 bậc. Ngũ phẩm nằm giữa.",
+     "say": "ngũ phẩm"
+    },
+    {
+     "type": "clear",
+     "say": "Và vua"
+    },
+    {
+     "type": "seal",
+     "text": "CHUẨN",
+     "han": "准",
+     "say": "chuẩn tấu"
+    },
+    {
+     "type": "print",
+     "photo": "V_mandarin_garden",
+     "caption": "Một vị quan · ảnh minh họa, chụp khoảng 1905 · G. M. Vassal",
+     "say": "Người xin bớt"
+    },
+    {
+     "type": "ledger",
+     "title": "Lương một năm · 1839",
+     "say": "định lại bảng lương"
+    },
+    {
+     "type": "print",
+     "photo": "S13_minhmang",
+     "caption": "Tiền đồng thời Minh Mạng · Schroeder, 1905",
+     "say": "Vị quan ở bậc"
+    },
+    {
+     "type": "line",
+     "label": "Bậc thấp nhất · tòng cửu phẩm",
+     "value": "18 quan · 16 phương",
+     "say": "mười tám quan"
+    },
+    {
+     "type": "note",
+     "term": "Quan tiền",
+     "han": "貫",
+     "text": "Một xâu 600 đồng xu. Khác với “vị quan” là người.",
+     "say": "Một quan tiền là"
+    },
+    {
+     "type": "note",
+     "term": "Phương",
+     "han": "方",
+     "text": "Đấu đong gạo, chừng 38 lít, ước gần 30 ký.",
+     "say": "Còn một phương"
+    },
+    {
+     "type": "print",
+     "photo": "V_market",
+     "caption": "Chợ quê · ảnh minh họa, chụp khoảng 1905 · G. M. Vassal",
+     "say": "Năm 1826"
+    },
+    {
+     "type": "line",
+     "label": "Giá gạo ở Huế, 1826 (năm giá cao)",
+     "value": "~1,5 quan / phương",
+     "small": true,
+     "say": "một phương gạo bán"
+    },
+    {
+     "type": "line",
+     "label": "1 quan tiền, quy theo giá gạo 2026",
+     "value": "≈ 300.000 đ",
+     "small": true,
+     "say": "Quy theo"
+    },
+    {
+     "type": "note",
+     "term": "Cách quy đổi",
+     "text": "1 quan mua chừng 18 ký gạo (giá 1826) × khoảng 18.000 đ/ký hôm nay. Chỉ để hình dung.",
+     "say": "một quan tiền vào khoảng"
+    },
+    {
+     "type": "line",
+     "label": "Quan thấp nhất · cả tiền lẫn gạo",
+     "value": "≈ 1,2 triệu đ / tháng",
+     "mark": true,
+     "say": "một triệu hai"
+    },
+    {
+     "type": "print",
+     "photo": "V_plough",
+     "caption": "Cày ruộng · ảnh minh họa, chụp khoảng 1905 · G. M. Vassal",
+     "say": "Tính cùng cách"
+    },
+    {
+     "type": "line",
+     "label": "Người cày ruộng vua thuê · 1802",
+     "value": "≈ 850.000 đ / tháng",
+     "small": true,
+     "say": "tám trăm nghìn"
+    },
+    {
+     "type": "print",
+     "photo": "S00_wide",
+     "caption": "Tiền đồng mới đúc · Schroeder, 1905",
+     "say": "Còn vị quan"
+    },
+    {
+     "type": "line",
+     "label": "Bậc cao nhất · chánh nhất phẩm",
+     "value": "400 quan · 300 phương",
+     "say": "bốn trăm quan"
+    },
+    {
+     "type": "line",
+     "label": "Quy đổi",
+     "value": "≈ 24 triệu đ / tháng",
+     "mark": true,
+     "say": "Gần hai mươi bốn"
+    },
+    {
+     "type": "note",
+     "term": "Dưỡng liêm",
+     "han": "養廉",
+     "text": "Khoản cấp thêm, đặt năm 1818, để quan giữ mình trong sạch.",
+     "say": "dưỡng liêm"
+    },
+    {
+     "type": "line",
+     "label": "Dưỡng liêm · từ 1818",
+     "value": "?",
+     "small": true,
+     "say": "nuôi sự trong sạch"
+    },
+    {
+     "type": "ident",
+     "text": "HỒ SƠ SỐ 02",
+     "sub": "Đồng lương của một vị quan nhỏ",
+     "say": "Hồ sơ này"
+    },
+    {
+     "type": "clear",
+     "say": "cũng chính là"
+    },
+    {
+     "type": "clear",
+     "say": "Tính cùng cách"
+    }
+   ],
+   "source": "Nguồn: Việt Nam sử lược · Taga (2023) · Lưu trữ QG I · Tia Sáng"
+  }
+ },
+ "s-001": {
+  "says": "Họ xin bớt",
+  "group": "hoso"
+ },
+ "s-002": {
+  "says": "ngũ phẩm",
+  "group": "hoso"
+ },
+ "s-003": {
+  "says": "chuẩn tấu",
+  "group": "hoso"
+ },
+ "s-004": {
+  "says": "Người xin bớt",
+  "group": "hoso"
+ },
+ "s-005": {
+  "says": "định lại",
+  "group": "hoso"
+ },
+ "s-006": {
+  "says": "mười tám quan",
+  "group": "hoso"
+ },
+ "s-007": {
+  "says": "xâu sáu trăm",
+  "group": "hoso"
+ },
+ "s-008": {
+  "says": "Năm 1826",
+  "group": "hoso"
+ },
+ "s-009": {
+  "says": "ba trăm nghìn",
+  "group": "hoso"
+ },
+ "s-010": {
+  "says": "một triệu hai",
+  "group": "hoso"
+ },
+ "s-011": {
+  "says": "tám trăm nghìn",
+  "group": "hoso"
+ },
+ "s-012": {
+  "says": "bốn trăm quan",
+  "group": "hoso"
+ },
+ "s-013": {
+  "says": "dưỡng liêm",
+  "group": "hoso"
+ },
+ "s-014": {
+  "says": "Hồ sơ này",
+  "group": "hoso"
+ }
+}
