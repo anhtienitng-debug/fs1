@@ -28,6 +28,34 @@
  },
  "s-001": {
   "says": "Trương Đăng Quế",
+  "photo": "C_chau10",
+  "label": "Văn bản chữ Hán triều Nguyễn, minh họa · Châu bản (Internet Archive)",
+  "shots": [
+   [
+    0.36,
+    0.04,
+    0.62,
+    0.24
+   ],
+   [
+    0.36,
+    0.04,
+    0.4,
+    0.155
+   ]
+  ],
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "Trương Đăng Quế",
+    "say": "Trương Đăng Quế",
+    "pos": "bottom-left",
+    "sub": "Thượng thư Bộ Lễ, năm 1839"
+   }
+  ]
+ },
+ "s-002": {
+  "says": "rất lạ",
   "photo": "V_mandarins_house",
   "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
   "shots": [
@@ -46,41 +74,14 @@
   ],
   "fx": [
    {
-    "type": "keyword",
-    "text": "Trương Đăng Quế",
-    "say": "Trương Đăng Quế",
-    "pos": "bottom-left",
-    "sub": "Thượng thư Bộ Lễ, năm 1839"
-   }
-  ]
- },
- "s-002": {
-  "says": "rất lạ",
-  "photo": "C_chau10",
-  "label": "Văn bản chữ Hán triều Nguyễn, minh họa · Châu bản (Internet Archive)",
-  "shots": [
-   [
-    0.36,
-    0.1,
-    0.62,
-    0.24
-   ],
-   [
-    0.5,
-    0.2,
-    0.45,
-    0.17
-   ]
-  ],
-  "fx": [
-   {
     "type": "compare",
     "left": "Quan lớn",
     "leftSub": "lương đủ",
     "right": "Quan nhỏ",
     "rightSub": "từ ngũ phẩm trở xuống: thiếu",
     "text": "·",
-    "say": "Lương của các quan"
+    "say": "Lương của các quan",
+    "pos": "bottom-left"
    }
   ]
  },
@@ -182,7 +183,7 @@
      "note": "tòng cửu phẩm",
      "value": 18,
      "highlight": true,
-     "say": "mười tám quan"
+     "say": "Ở bậc thấp nhất"
     },
     {
      "label": "Bậc cao nhất",
