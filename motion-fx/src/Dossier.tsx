@@ -80,7 +80,7 @@ const Slip: React.FC<{b: Beat; until: number}> = ({b, until}) => {
   if (t < at || t > until + 0.6) return null;
   const k = inK(t, at, 0.5) * (1 - inK(t, until, 0.5));
   return (
-    <div style={{position: 'absolute', left: 230, top: 610, width: 900, padding: '30px 44px', background: paperBg, opacity: k,
+    <div style={{position: 'absolute', left: 200, top: 470, width: 900, padding: '30px 44px', background: paperBg, opacity: k,
       transform: `translateY(${(1 - k) * 30}px) rotate(-1deg)`, boxShadow: '0 18px 40px rgba(0,0,0,0.5)'}}>
       <div style={{fontFamily: SERIF, fontWeight: 700, fontSize: 58, color: P.ink, lineHeight: 1.15}}>{b.text}</div>
       {b.sub && <div style={{fontFamily: SERIF, fontStyle: 'italic', fontSize: 30, color: P.inkSoft, marginTop: 10}}>{b.sub}</div>}
@@ -131,7 +131,7 @@ const Ranks: React.FC<{b: Beat; until: number}> = ({b, until}) => {
   const from = b.from ?? 8;
   const lit = inK(t, at + 0.8, 0.8);
   return (
-    <div style={{position: 'absolute', left: 820, top: 150, width: 380, padding: '22px 26px', background: paperBg, opacity: k,
+    <div style={{position: 'absolute', left: 1340, top: 110, width: 420, padding: '22px 26px', background: paperBg, opacity: k,
       transform: `rotate(1.5deg) translateY(${(1 - k) * 30}px)`, boxShadow: '0 18px 40px rgba(0,0,0,0.5)'}}>
       <div style={{fontFamily: MONO, fontSize: 18, letterSpacing: 2, color: P.inkSoft}}>18 BẬC PHẨM HÀM</div>
       {Array.from({length: 18}).map((_, i) => {
