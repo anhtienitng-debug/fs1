@@ -138,6 +138,29 @@ def _esc(text: str) -> str:
             .replace("'", "\u2019").replace("%", "\\%"))
 
 
+def shots_clip(media: str, shots: list[list[float]], dest: Path, *, dur: float, cfg: Any,
+               seed: str = "", log: Path | None = None) -> Path:
+    """Mot anh thanh nhieu cu may: moi khung cat [x,y,w,h] (ty le) la mot cu Ken Burns,
+    noi thang voi nhau. Toan canh roi cat can chi tiet, de anh tinh khong dung yen qua lau."""
+    from PIL import Image
+
+    im = Image.open(media)
+    W, H = im.size
+    parts = []
+    each = dur / len(shots)
+    for k, (x, y, w, h) in enumerate(shots):
+        crop = dest.with_name(f"{dest.stem}.shot{k}.png")
+        im.crop((int(x * W), int(y * H), int((x + w) * W), int((y + h) * H))).save(crop)
+        part = dest.with_name(f"{dest.stem}.shot{k}.mp4")
+        kenburns(str(crop), part, dur=each, cfg=cfg, seed=f"{seed}-{k}", log=log)
+        crop.unlink(missing_ok=True)
+        parts.append(part)
+    ffmpeg.concat(parts, dest, dest.with_suffix(".shots.txt"), log=log)
+    for p in parts:
+        p.unlink(missing_ok=True)
+    return dest
+
+
 # ------------------------------------------------------------ mot canh
 def scene_clip(
     scene: Scene,
@@ -147,6 +170,7 @@ def scene_clip(
     gap_ms: int,
     font: str = "",
     log: Path | None = None,
+    fade_edges: bool = True,
 ) -> Path:
     w, h = cfg.get("video.resolution", [1920, 1080])
     fps = cfg.get("video.fps", 30)
@@ -163,7 +187,10 @@ def scene_clip(
             vf = f"scale={w}:{h}:force_original_aspect_ratio=decrease,pad={w}:{h}:-1:-1"
         else:
             moving = dest.with_suffix(".motion.mp4")
-            kenburns(media, moving, dur=dur, cfg=cfg, seed=scene.id, log=log)
+            if scene.shots:
+                shots_clip(media, scene.shots, moving, dur=dur, cfg=cfg, seed=scene.id, log=log)
+            else:
+                kenburns(media, moving, dur=dur, cfg=cfg, seed=scene.id, log=log)
             args += ["-i", str(moving)]
             vf = "null"
     elif media and Path(media).exists():
@@ -192,7 +219,7 @@ def scene_clip(
             f"boxborderw=24:x=(w-text_w)/2:y=h-{int(h * 0.20)}:"
             f"enable='between(t,0.6,{max(dur - 0.6, 1.2):.2f})'"
         )
-    if "motion" not in Path(media or "").parts:  # hieu ung lien canh: khong nhay den
+    if fade_edges and "motion" not in Path(media or "").parts:  # chi nhay den khi doi chuong
         vf += f",fade=t=in:st=0:d={fade},fade=t=out:st={max(dur - fade, 0):.3f}:d={fade}"
     vf += ",format=yuv420p"
 
@@ -206,7 +233,7 @@ def scene_clip(
         # Lop chuyen dong nhan manh (Remotion, nen trong suot) chong len canh
         base = dest.with_suffix(".base.mp4")
         inner = Scene(**{**scene.__dict__, "fx": []})
-        scene_clip(inner, cfg, base, gap_ms=gap_ms, font=font, log=log)
+        scene_clip(inner, cfg, base, gap_ms=gap_ms, font=font, log=log, fade_edges=fade_edges)
         add_fx(base, scene.fx, dest, dur=dur, log=log)
         base.unlink(missing_ok=True)
         return dest
@@ -434,7 +461,10 @@ def run(
     for i, scene in enumerate(scenes, 1):
         dest = clips_dir / f"{scene.id}.mp4"
         if not dest.exists() or force:
-            scene_clip(scene, cfg, dest, gap_ms=gap, font=font, log=log)
+            # Trong mot chuong: cat thang. Doi chuong: nhay den ngan de nguoi xem biet da sang y moi
+            new_chapter = i == 1 or scene.chapter != scenes[i - 2].chapter
+            scene_clip(scene, cfg, dest, gap_ms=gap, font=font, log=log,
+                       fade_edges=new_chapter or not cfg.get("video.cut_within_chapter", False))
             if on_progress and i % 5 == 0:
                 on_progress(f"dựng clip {i}/{len(scenes)}")
         clips.append(dest)
@@ -461,6 +491,15 @@ def run(
                 on_progress(f"trộn nhạc nền: {music.name}")
         elif on_progress:
             on_progress(f"chưa có nhạc trong {cfg.get('music.dir')} — bỏ qua")
+
+    if cfg.get("audio.loudnorm", False):
+        # Chuan YouTube khoang -14 LUFS; khong thi video nghe nho hon cac kenh khac
+        out = job_dir / "loudnorm.mp4"
+        ffmpeg.run(["-i", str(current), "-c:v", "copy", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11",
+                    "-c:a", "aac", "-b:a", "192k", "-ar", "48000", str(out)], log=log)
+        current = out
+        if on_progress:
+            on_progress("chuẩn hóa âm lượng -14 LUFS")
 
     final = job_dir / "final.mp4"
     shutil.move(str(current), final)

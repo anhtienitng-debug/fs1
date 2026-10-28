@@ -239,6 +239,7 @@ def plan_visuals(
         sc.callout = spec.get("callout", "")
         sc.chapter_tag = spec.get("chapter_tag", "")
         sc.fx = fx_timing(sc, spec.get("fx", []))
+        sc.shots = spec.get("shots", [])
         if "anim" in spec or "group" in spec:
             sc.on_screen_text = ""
             continue

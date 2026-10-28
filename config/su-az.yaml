@@ -23,7 +23,7 @@ tts:
   voice: "Phạm Tuyên"
   temperature: 0.8
   speed: 0.9
-  pause_between_scenes_ms: 700
+  pause_between_scenes_ms: 300   # review dung phim: 700 ms + fade den lam phim le the
 
 visuals:
   # Su: anh tu lieu va tranh cu truoc, B-roll stock sau cung
@@ -34,11 +34,15 @@ visuals:
 video:
   subtitle_size: 62
   subtitles_burn: false        # phu de xuat file .srt de tai len YouTube, nguoi xem tu bat
-  fit_tolerance: 0.3
+  fit_tolerance: 0.45          # anh 4:3 phu kin khung thay vi 30% nen mo
   label_style: corner          # nhan nguon tu lieu nho o goc
-  kenburns_zoom: 0.06
+  kenburns_zoom: 0.12
+  cut_within_chapter: true     # cat thang trong chuong, chi nhay den khi doi chuong
   kenburns_prefilter: 0.9      # lam mem truoc khi zoom, het nhap nhay o ban in luoi cham
   fps: 24                      # phim tu lieu goc 24 hinh/giay: khong lap khung, khong giat
+
+audio:
+  loudnorm: true               # -14 LUFS nhu YouTube
 
 charts:
   maps: false

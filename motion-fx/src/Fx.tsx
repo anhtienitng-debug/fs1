@@ -55,7 +55,7 @@ const Keyword: React.FC<{it: FxItem}> = ({it}) => {
     <div style={{position: 'absolute', display: 'flex', flexDirection: 'column', ...place(it.pos), opacity: k,
       transform: `translateY(${(1 - inK) * 30}px) scale(${0.94 + 0.06 * inK})`}}>
       <div style={{display: 'inline-block', position: 'relative', padding: '10px 26px 16px', background: 'rgba(14,15,18,0.82)', borderRadius: 14}}>
-        <div style={{fontFamily: 'BVP', fontWeight: 700, fontSize: 84, color: C.cream, lineHeight: 1.1, letterSpacing: -1}}>{it.text}</div>
+        <div style={{fontFamily: 'BVP', fontWeight: 700, fontSize: it.pos === 'center' && (it.text ?? '').length <= 14 ? 150 : 84, color: C.cream, lineHeight: 1.1, letterSpacing: -1}}>{it.text}</div>
         <div style={{height: 8, width: `${sweep}%`, background: C.red, borderRadius: 4, marginTop: 8}} />
       </div>
       {it.sub && <div style={{fontFamily: 'BVP', fontWeight: 600, fontSize: 34, color: C.gold, marginTop: 12,
@@ -136,7 +136,8 @@ const Counter: React.FC<{it: FxItem}> = ({it}) => {
   const {k, live, t} = useEnvelope(it);
   if (!live) return null;
   const v = interpolate(t, [it.from + 0.2, it.from + 1.6], [0, it.value ?? 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: ease});
-  const s = Math.round(v).toLocaleString('de-DE');
+  const dec = Number.isInteger(it.value ?? 0) ? 0 : 1;
+  const s = v.toLocaleString('de-DE', {minimumFractionDigits: dec, maximumFractionDigits: dec});
   return (
     <div style={{position: 'absolute', display: 'flex', flexDirection: 'column', ...place(it.pos ?? 'top-right'), opacity: k}}>
       <div style={{background: 'rgba(14,15,18,0.86)', borderRadius: 14, padding: '14px 30px', borderBottom: `8px solid ${C.red}`}}>

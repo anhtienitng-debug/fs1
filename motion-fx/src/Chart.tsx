@@ -15,7 +15,7 @@ const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
 type Ev = {year: number; label?: string; note?: string; at?: number; side?: 'up' | 'down'};
 type Card = {n: string; title: string; years?: string; color?: string; at?: number};
-type Item = {label: string; value: number; note?: string; highlight?: boolean};
+type Item = {label: string; value: number; note?: string; highlight?: boolean; at?: number};
 export type ChartSpec = {
   anim: 'timeline' | 'reasons' | 'bars' | 'counter' | 'ladder';
   title?: string; subtitle?: string; source?: string; bg?: string; bg_dim?: number;
@@ -29,7 +29,7 @@ export type ChartSpec = {
   // ladder: thang bac, chi ghi so lieu o bac co nguon
   steps?: {label: string; value?: string}[]; mark?: {step: number; at?: number}[];
   // bars
-  items?: Item[]; unit?: string;
+  items?: Item[]; unit?: string; badge?: {text: string; at?: number};
   // counter
   value?: number; suffix?: string; from_label?: string; to_label?: string; ratio?: number;
 };
@@ -66,7 +66,7 @@ const Header: React.FC<{spec: ChartSpec}> = ({spec}) => {
 };
 
 const Source: React.FC<{spec: ChartSpec}> = ({spec}) =>
-  spec.source ? <div style={{position: 'absolute', left: 140, bottom: 60, fontFamily: 'BVP', fontSize: 20, color: C.dim}}>{spec.source}</div> : null;
+  spec.source ? <div style={{position: 'absolute', left: 140, bottom: 60, fontFamily: 'BVP', fontSize: 28, color: C.muted}}>{spec.source}</div> : null;
 
 // ---------------------------------------------------------------- timeline
 const X0 = 160, X1 = 1760, AXIS = 590;
@@ -209,35 +209,44 @@ const Bars: React.FC<{spec: ChartSpec}> = ({spec}) => {
   const {t} = useT();
   const items = spec.items ?? [];
   const max = Math.max(...items.map((i) => i.value), 1);
+  const wide = items.some((x) => (x.note ?? '').length > 14);
+  const bd = spec.badge;
+  const bk = bd?.at !== undefined ? spring({frame: Math.round((t - bd.at) * 24), fps: 24, config: {damping: 14, mass: 0.7}}) : 0;
   return (
     <AbsoluteFill>
       <Backdrop spec={spec} />
       <Header spec={spec} />
-      <div style={{position: 'absolute', left: 140, right: 140, top: 300}}>
+      <div style={{position: 'absolute', left: 140, right: 140, top: '54%', transform: 'translateY(-50%)'}}>
         {items.map((it, i) => {
-          const at = 0.8 + i * 0.45;
-          const k = interpolate(t, [at, at + 1.1], [0, 1], {...clamp, easing: ease});
+          // moi cot moc len dung luc loi doc nhac toi (at), khong thi lan luot
+          const at = it.at ?? 0.8 + i * 0.45;
+          const k = interpolate(t, [at, at + 1.3], [0, 1], {...clamp, easing: ease});
           const col = it.highlight ? C.red : C.gold;
           const val = Math.round(it.value * k);
           return (
-            <div key={i} style={{display: 'flex', alignItems: 'center', height: 120, opacity: appear(t, at - 0.2, 0.4)}}>
-              <div style={{width: items.some((x) => (x.note ?? '').length > 14) ? 420 : 200, whiteSpace: 'nowrap'}}>
-                <div style={{fontFamily: 'BVP', fontWeight: 700, fontSize: 48, color: C.cream}}>{it.label}</div>
-                {it.note && <div style={{fontFamily: 'BVP', fontSize: 26, color: C.muted}}>{it.note}</div>}
+            <div key={i} style={{display: 'flex', alignItems: 'center', height: 190, opacity: appear(t, at - 0.2, 0.4)}}>
+              <div style={{width: wide ? 460 : 260, whiteSpace: 'nowrap'}}>
+                <div style={{fontFamily: 'BVP', fontWeight: 700, fontSize: 62, color: C.cream, lineHeight: 1.05}}>{it.label}</div>
+                {it.note && <div style={{fontFamily: 'BVP', fontSize: 32, color: C.muted, marginTop: 6}}>{it.note}</div>}
               </div>
-              <div style={{flex: 1, position: 'relative', height: 44}}>
-                <div style={{position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.04)', borderRadius: 22}} />
-                <div style={{position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: 22, background: col,
-                  width: `${Math.max((it.value / max) * 100 * k, 2.5 * k)}%`}} />
+              <div style={{flex: 1, position: 'relative', height: 84}}>
+                <div style={{position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.05)', borderRadius: 14}} />
+                <div style={{position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: 14, background: col,
+                  width: `${Math.max((it.value / max) * 100 * k, 1.2 * k)}%`}} />
               </div>
-              <div style={{width: 300, textAlign: 'right', fontFamily: 'BVP', fontWeight: 700, fontSize: 52, color: it.highlight ? C.red : C.cream,
+              <div style={{width: 340, textAlign: 'right', fontFamily: 'BVP', fontWeight: 700, fontSize: 76, color: it.highlight ? C.red : C.cream,
                 fontVariantNumeric: 'tabular-nums'}}>
-                {val.toLocaleString('de-DE')}<span style={{fontSize: 30, color: C.muted, fontWeight: 400}}>{spec.unit ?? ' : 1'}</span>
+                {val.toLocaleString('de-DE')}<span style={{fontSize: 36, color: C.muted, fontWeight: 400}}>{spec.unit ?? ' : 1'}</span>
               </div>
             </div>
           );
         })}
       </div>
+      {bd && bk > 0.01 && (
+        <div style={{position: 'absolute', right: 150, top: 120, fontFamily: 'BVP', fontWeight: 700, fontSize: 170, color: C.gold,
+          letterSpacing: -4, transform: `scale(${0.6 + 0.4 * bk})`, transformOrigin: 'right top', opacity: Math.min(1, bk * 1.4),
+          textShadow: '0 10px 40px rgba(0,0,0,0.8)'}}>{bd.text}</div>
+      )}
       <Source spec={spec} />
     </AbsoluteFill>
   );

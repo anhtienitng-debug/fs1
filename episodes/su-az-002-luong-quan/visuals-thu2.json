@@ -1,0 +1,273 @@
+{
+ "s-000": {
+  "says": "bản tấu",
+  "photo": "C_chau10",
+  "label": "Văn bản chữ Hán triều Nguyễn, minh họa · Châu bản (Internet Archive)",
+  "shots": [
+   [
+    0.36,
+    0.04,
+    0.62,
+    0.24
+   ],
+   [
+    0.36,
+    0.28,
+    0.62,
+    0.24
+   ]
+  ],
+  "fx": [
+   {
+    "type": "date",
+    "text": "HUẾ · NĂM 1839",
+    "say": "Năm 1839",
+    "hold": 4
+   }
+  ]
+ },
+ "s-001": {
+  "says": "Trương Đăng Quế",
+  "photo": "V_mandarins_house",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
+  "shots": [
+   [
+    0,
+    0,
+    1,
+    1
+   ],
+   [
+    0.42,
+    0.12,
+    0.56,
+    0.47
+   ]
+  ],
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "Trương Đăng Quế",
+    "say": "Trương Đăng Quế",
+    "pos": "bottom-left",
+    "sub": "Thượng thư Bộ Lễ, năm 1839"
+   }
+  ]
+ },
+ "s-002": {
+  "says": "rất lạ",
+  "photo": "C_chau10",
+  "label": "Văn bản chữ Hán triều Nguyễn, minh họa · Châu bản (Internet Archive)",
+  "shots": [
+   [
+    0.36,
+    0.1,
+    0.62,
+    0.24
+   ],
+   [
+    0.5,
+    0.2,
+    0.45,
+    0.17
+   ]
+  ],
+  "fx": [
+   {
+    "type": "compare",
+    "left": "Quan lớn",
+    "leftSub": "lương đủ",
+    "right": "Quan nhỏ",
+    "rightSub": "từ ngũ phẩm trở xuống: thiếu",
+    "text": "·",
+    "say": "Lương của các quan"
+   }
+  ]
+ },
+ "s-003": {
+  "says": "xin bớt bổng",
+  "photo": "V_mandarin_garden",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
+  "shots": [
+   [
+    0,
+    0,
+    1,
+    1
+   ],
+   [
+    0.12,
+    0.12,
+    0.55,
+    0.48
+   ]
+  ],
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "BỚT TRÊN · CHIA DƯỚI",
+    "say": "xin bớt",
+    "pos": "center"
+   }
+  ]
+ },
+ "s-004": {
+  "says": "chuẩn cho thi hành",
+  "photo": "V_mandarins_house",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
+  "shots": [
+   [
+    0.42,
+    0.12,
+    0.56,
+    0.47
+   ],
+   [
+    0,
+    0,
+    1,
+    1
+   ]
+  ],
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "Người đề nghị = người bị bớt",
+    "say": "cũng chính là",
+    "pos": "bottom-left"
+   }
+  ]
+ },
+ "s-005": {
+  "says": "thiếu đến mức nào",
+  "photo": "V_market",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
+  "shots": [
+   [
+    0,
+    0,
+    1,
+    1
+   ],
+   [
+    0.05,
+    0.35,
+    0.6,
+    0.46
+   ]
+  ],
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "THIẾU ĐẾN ĐÂU?",
+    "say": "thiếu đến mức nào",
+    "pos": "center"
+   }
+  ]
+ },
+ "s-006": {
+  "says": "định lại bảng lương",
+  "group": "luong",
+  "anim": {
+   "anim": "bars",
+   "engine": "remotion",
+   "title": "Lương một năm · bảng năm 1839",
+   "subtitle": "Tính bằng quan tiền, chưa kể gạo",
+   "bg": "V_mandarins_house",
+   "bg_dim": 0.8,
+   "unit": " quan",
+   "items": [
+    {
+     "label": "Bậc thấp nhất",
+     "note": "tòng cửu phẩm",
+     "value": 18,
+     "highlight": true,
+     "say": "mười tám quan"
+    },
+    {
+     "label": "Bậc cao nhất",
+     "note": "chánh nhất phẩm",
+     "value": 400,
+     "say": "bốn trăm quan"
+    }
+   ],
+   "badge": {
+    "text": "×22",
+    "say": "Hơn hai mươi lần"
+   },
+   "source": "Nguồn: Trần Trọng Kim, Việt Nam sử lược (lương năm Kỷ Hợi, 1839)"
+  }
+ },
+ "s-007": {
+  "says": "một quan rưỡi",
+  "group": "luong",
+  "fx": [
+   {
+    "type": "counter",
+    "value": 1.5,
+    "suffix": " quan / tháng",
+    "sub": "18 quan chia 12 tháng",
+    "say": "Chia ra"
+   }
+  ]
+ },
+ "s-008": {
+  "says": "bậc cao nhất",
+  "group": "luong"
+ },
+ "s-009": {
+  "says": "dưỡng liêm",
+  "photo": "S13_minhmang",
+  "label": "Tiền đồng thời Minh Mạng · Schroeder, 1905",
+  "shots": [
+   [
+    0.05,
+    0.22,
+    0.9,
+    0.296
+   ],
+   [
+    0.05,
+    0.24,
+    0.5,
+    0.17
+   ]
+  ],
+  "fx": [
+   {
+    "type": "keyword",
+    "text": "DƯỠNG LIÊM",
+    "say": "tiền dưỡng liêm",
+    "pos": "center",
+    "sub": "tiền nuôi sự trong sạch · đặt từ năm 1818"
+   }
+  ]
+ },
+ "s-010": {
+  "says": "tiết tháo trong sạch",
+  "photo": "V_mandarin_garden",
+  "label": "Ảnh chụp khoảng 1905–1910, minh họa · G. M. Vassal, On and Off Duty in Annam",
+  "shots": [
+   [
+    0.12,
+    0.12,
+    0.55,
+    0.48
+   ],
+   [
+    0,
+    0,
+    1,
+    1
+   ]
+  ],
+  "fx": [
+   {
+    "type": "quote",
+    "text": "Để khuyến khích tiết tháo trong sạch",
+    "source": "Vua Minh Mạng nói về tiền dưỡng liêm",
+    "say": "Vua Minh Mạng"
+   }
+  ]
+ }
+}

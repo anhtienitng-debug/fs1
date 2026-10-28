@@ -65,6 +65,7 @@ class Scene:
     callout: str = ""               # thanh "Ly do: ..." truot vao cuoi canh
     chapter_tag: str = ""           # the ten chuong o goc tren trai, dau chuong
     fx: list[dict[str, Any]] = field(default_factory=list)  # lop chuyen dong nhan manh
+    shots: list[list[float]] = field(default_factory=list)  # cac khung cat [x,y,w,h] (0-1) noi tiep
     chart_ref: str = ""             # id cua DataPoint neu canh nay la bieu do
     audio_path: str = ""
     media_path: str = ""
