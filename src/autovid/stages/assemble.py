@@ -234,7 +234,10 @@ def _encode(args: list, vf: str, af: str, cfg: Any, dur: float, dest: Path,
     crf = cfg.get("video.crf", 19)
     preset = cfg.get("video.preset", "medium")
     ffmpeg.run(
+        # Chon ro luong: clip Remotion co san mot track tieng cam, khong co -map
+        # thi ffmpeg lay track cam do thay cho loi doc
         [*[str(a) for a in args],
+         "-map", "0:v:0", "-map", "1:a:0",
          "-vf", vf, "-af", af,
          "-c:v", "libx264", "-preset", preset, "-crf", str(crf),
          "-r", str(fps), "-pix_fmt", "yuv420p",

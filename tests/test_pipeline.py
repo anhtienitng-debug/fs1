@@ -270,3 +270,28 @@ def test_ken_burns_khong_lo_mep_den(tmp_path):
                               "-pix_fmt", "gray", "-"], capture_output=True).stdout
         frames = np.frombuffer(raw, np.uint8).reshape(-1, 180, 320)
         assert frames[:, :, :3].min() > 100 and frames[:, :, -3:].min() > 100
+
+
+def test_canh_dong_hoa_giu_loi_doc_du_clip_co_track_cam(tmp_path):
+    """Clip Remotion co san track tieng cam: canh dung xong van phai nghe loi doc."""
+    import subprocess
+
+    from autovid.models import Scene
+    from autovid.stages.assemble import scene_clip
+
+    cfg = load_config(extra=["video.fps=4"])
+    motion = tmp_path / "motion" / "s.mp4"
+    motion.parent.mkdir()
+    subprocess.run(["ffmpeg", "-loglevel", "error", "-f", "lavfi", "-i", "color=c=black:s=320x180:r=4:d=2",
+                    "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-t", "2", "-shortest",
+                    str(motion)], check=True)
+    voice = tmp_path / "v.wav"
+    subprocess.run(["ffmpeg", "-loglevel", "error", "-f", "lavfi", "-i", "sine=f=440:d=1.5",
+                    str(voice)], check=True)
+    sc = Scene(id="s-000", chapter="c", narration="x", media_path=str(motion),
+               audio_path=str(voice), duration=1.5, visual_kind="video")
+    out = scene_clip(sc, cfg, tmp_path / "out.mp4", gap_ms=200)
+    log = subprocess.run(["ffmpeg", "-i", str(out), "-af", "volumedetect", "-f", "null", "-"],
+                         capture_output=True, text=True).stderr
+    mean = float(log.split("mean_volume:")[1].split("dB")[0])
+    assert mean > -40
